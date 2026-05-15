@@ -26,7 +26,7 @@ export default function TopBar({ role = 'member' }: TopBarProps) {
           <h1 className="font-serif text-xl font-normal tracking-wide text-[#f0e8d4]">
             Community
           </h1>
-          <span className="text-[10px] uppercase tracking-widest text-[#3a5570]">
+          <span className="text-[10px] uppercase tracking-widest text-[#c6a75e]">
             Alignment Church
           </span>
         </div>
