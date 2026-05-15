@@ -39,12 +39,13 @@ export default function SignupPage() {
       return;
     }
 
-    // Insert profile row
+    // Insert profile row — church_id hardcoded to Alignment Church
     if (data.user) {
       await supabase.from('profiles').upsert({
         id: data.user.id,
         full_name: fullName,
         role: 'member',
+        church_id: '9bd327b2-b4f5-4b26-aeb0-c3b723e6e205',
       });
     }
 
@@ -139,6 +140,11 @@ export default function SignupPage() {
           Already have an account?{' '}
           <Link href="/login" style={{ color: S.gold, textDecoration: 'none' }}>
             Sign in
+          </Link>
+        </p>
+        <p style={{ marginTop: 12, textAlign: 'center', fontSize: 12, color: S.soft }}>
+          <Link href="/" style={{ color: S.soft, textDecoration: 'none', letterSpacing: '0.05em' }}>
+            ← Back to website
           </Link>
         </p>
       </div>

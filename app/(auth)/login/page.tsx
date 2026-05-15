@@ -110,6 +110,11 @@ export default function LoginPage() {
             Sign up
           </Link>
         </p>
+        <p style={{ marginTop: 12, textAlign: 'center', fontSize: 12, color: S.soft }}>
+          <Link href="/" style={{ color: S.soft, textDecoration: 'none', letterSpacing: '0.05em' }}>
+            ← Back to website
+          </Link>
+        </p>
       </div>
     </main>
   );
