@@ -185,11 +185,46 @@
   transition: border-color 0.3s, transform 0.3s;
 }
 .value-card:hover { border-color: #c6a75e; transform: translateY(-3px); }
+.value-icon { color: #c6a75e; font-size: 0.85rem; display: block; margin-bottom: 0.4rem; }
 .value-card h4 {
   font-family: var(--font-cormorant), serif;
   font-size: 1.1rem; color: #0f1e2e; margin-bottom: 0.3rem;
 }
 .value-card p { font-size: 0.82rem; color: rgba(15,30,46,0.6); line-height: 1.6; font-family: var(--font-jost), sans-serif; }
+
+/* ── LEADERS ── */
+.leaders-section {
+  background: #0f1e2e; min-height: auto !important; padding: 8rem 3rem;
+}
+.leaders-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start;
+}
+.leaders-image { position: relative; }
+.leaders-photo {
+  width: 100%; max-height: 500px; object-fit: cover;
+  border: 1px solid rgba(198,167,94,0.35);
+  display: block;
+}
+.leaders-content { padding-top: 0.5rem; }
+.leaders-rule {
+  width: 48px; height: 1px; background: #c6a75e; margin-bottom: 1.2rem;
+}
+.leaders-names {
+  font-family: var(--font-cormorant), serif;
+  font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 300;
+  color: #ffffff; line-height: 1.2; margin-bottom: 0.5rem;
+}
+.leaders-role {
+  font-family: var(--font-jost), sans-serif;
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #c6a75e; margin-bottom: 2rem; display: block;
+}
+.leaders-bio {
+  font-family: var(--font-jost), sans-serif;
+  font-size: 0.92rem; color: rgba(255,255,255,0.7);
+  line-height: 1.85; margin-bottom: 1.2rem;
+}
 
 /* ── BELIEFS ── */
 #beliefs {
@@ -199,28 +234,26 @@
 .beliefs-header { text-align: center; margin-bottom: 4rem; }
 .beliefs-header .section-title { color: #ffffff; }
 .beliefs-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  display: grid; grid-template-columns: 1fr 1fr;
   gap: 1.5rem; width: 100%; max-width: 1100px;
 }
 .belief-card {
-  border: 1px solid rgba(198,167,94,0.2); padding: 2rem;
-  position: relative; overflow: hidden; transition: border-color 0.4s, transform 0.3s; cursor: default;
+  background: #0f1e2e;
+  border: 1px solid rgba(198,167,94,0.15);
+  border-top: 2px solid #c6a75e;
+  padding: 1.8rem 2rem;
+  transition: transform 0.3s, border-color 0.3s; cursor: default;
 }
-.belief-card::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(198,167,94,0.06) 0%, transparent 100%);
-  opacity: 0; transition: opacity 0.4s;
-}
-.belief-card:hover { border-color: #c6a75e; transform: translateY(-4px); }
-.belief-card:hover::before { opacity: 1; }
-.belief-number {
-  font-family: var(--font-cormorant), serif;
-  font-size: 3rem; font-weight: 300; color: rgba(198,167,94,0.2); line-height: 1; margin-bottom: 0.8rem;
-}
+.belief-card:hover { transform: translateY(-4px); border-color: #c6a75e; }
 .belief-card h3 {
-  font-family: var(--font-cormorant), serif; font-size: 1.4rem; color: #c6a75e; margin-bottom: 0.8rem;
+  font-family: var(--font-cormorant), serif; font-size: 1.3rem; color: #c6a75e; margin-bottom: 0.6rem;
 }
-.belief-card p { font-size: 0.88rem; color: rgba(255,255,255,0.65); line-height: 1.8; font-family: var(--font-jost), sans-serif; }
+.belief-card p { font-size: 0.88rem; color: rgba(255,255,255,0.8); line-height: 1.8; font-family: var(--font-jost), sans-serif; }
+.belief-ref {
+  font-family: var(--font-cormorant), serif !important;
+  font-style: italic; font-size: 0.9rem !important;
+  color: #c6a75e !important; margin-top: 0.8rem; line-height: 1.4 !important;
+}
 
 /* ── SERVICES ── */
 #services { background: #f8f5ef; color: #0f1e2e; padding: 8rem 3rem; }
@@ -433,9 +466,12 @@
   #about { grid-template-columns: 1fr; }
   .about-image-side { min-height: 40vh; }
   .about-content { padding: 3rem 1.5rem; }
+  .leaders-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .leaders-section { padding: 5rem 1.5rem; }
+  .beliefs-grid { grid-template-columns: 1fr; }
   .connect-inner { grid-template-columns: 1fr; }
   .service-main { grid-template-columns: 1fr; }
   .service-meta { border-left: none; border-top: 1px solid rgba(198,167,94,0.3); padding-left: 0; padding-top: 1.5rem; }
-  #home, #beliefs, #services, #connect, #give, #media { padding-left: 1.5rem; padding-right: 1.5rem; }
+  #home, #beliefs, #services, #connect, #give { padding-left: 1.5rem; padding-right: 1.5rem; }
   .landing-footer { padding: 2rem 1.5rem; }
 }

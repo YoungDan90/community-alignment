@@ -40,6 +40,7 @@ export default function LandingPage() {
         <ul className="nav-links">
           <li><a href="#home">Home</a></li>
           <li><a href="#about">About</a></li>
+          <li><a href="#leaders">Leadership</a></li>
           <li><a href="#beliefs">Beliefs</a></li>
           <li><a href="#services">Services</a></li>
           <li><a href="#connect">Connect</a></li>
@@ -75,31 +76,62 @@ export default function LandingPage() {
           <div className="about-monogram">AC</div>
         </div>
         <div className="about-content">
-          <p className="section-eyebrow reveal">Our Story</p>
-          <h2 className="section-title reveal reveal-delay-1">A Community<br />Called to <em>Align</em></h2>
+          <p className="section-eyebrow reveal">Who We Are</p>
+          <h2 className="section-title reveal reveal-delay-1">A Church Aligned with the <em>Will of God</em></h2>
           <p className="section-body reveal reveal-delay-2">
-            Alignment Church is a Spirit-led, apostolic community rooted in biblical truth and committed to seeing God&apos;s kingdom manifest in Southend-on-Sea and beyond. We were founded by Senior Leader Daniel Williams with a simple conviction — that the Church thrives when it aligns with the heart of God.
+            Alignment Church is an apostolic, Spirit-led community based in Southend-on-Sea. We exist to see people, cities, and nations aligned with the will, purposes, and agenda of God on the earth — rooted in the prayer of Jesus: &ldquo;Your kingdom come, your will be done, on earth as it is in heaven.&rdquo;
           </p>
           <p className="section-body reveal reveal-delay-3">
-            We are a charitable community gathering at The Cornerstone, bringing together people from every walk of life to worship, grow, and serve together.
+            We are a community built on prayer, the Word, discipleship, and Kingdom impact. We believe transformation begins within — and that Spirit-led believers, living in obedience to the Father, carry the culture of heaven into every area of life.
           </p>
           <div className="values-grid reveal reveal-delay-4">
             <div className="value-card">
-              <h4>Biblical</h4>
-              <p>Scripture is the foundation of everything we believe and practise.</p>
+              <span className="value-icon">✦</span>
+              <h4>Internal Alignment</h4>
+              <p>True transformation through healing, deliverance, and restoration of the soul</p>
             </div>
             <div className="value-card">
-              <h4>Apostolic</h4>
-              <p>We embrace fivefold ministry and sent-out, kingdom-advancing culture.</p>
+              <span className="value-icon">✦</span>
+              <h4>Waiting on the Lord</h4>
+              <p>A culture of stillness, prayer, and attentiveness to God — Psalm 46:10</p>
             </div>
             <div className="value-card">
-              <h4>Community</h4>
-              <p>Belonging and discipleship happen in relationship, not just attendance.</p>
+              <span className="value-icon">✦</span>
+              <h4>Obedience to the Will of God</h4>
+              <p>The highest purpose of life is to know and do the will of the Father — John 4:34</p>
             </div>
             <div className="value-card">
-              <h4>Prophetic</h4>
-              <p>We cultivate sensitivity to the voice and movement of the Holy Spirit.</p>
+              <span className="value-icon">✦</span>
+              <h4>Authority of Scripture</h4>
+              <p>The Word of God is our foundation and standard for truth — 2 Timothy 3:16</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* LEADERS */}
+      <section id="leaders" className="leaders-section">
+        <div className="leaders-inner">
+          <div className="leaders-image reveal">
+            <img src="/images/daniel-and-rachael.jpg" alt="Pastor Daniel and Rachael Williams" className="leaders-photo" />
+          </div>
+          <div className="leaders-content">
+            <p className="section-eyebrow reveal">Senior Leaders</p>
+            <div className="leaders-rule reveal reveal-delay-1"></div>
+            <h2 className="leaders-names reveal reveal-delay-1">Pastor Daniel &amp; Rachael Williams</h2>
+            <p className="leaders-role reveal reveal-delay-2">Senior Leader &amp; Co-Leader · Alignment Church Southend</p>
+            <p className="leaders-bio reveal reveal-delay-2">
+              Daniel Williams is the Senior Leader and Founder of Alignment Church Southend. He carries an apostolic heart to see the Kingdom of God expanded on earth and is passionate about helping people align with God&apos;s purpose for their lives.
+            </p>
+            <p className="leaders-bio reveal reveal-delay-3">
+              Alongside ministry, Daniel works as a Business Analyst and runs a Christian CIC, Naba Studios, a media platform dedicated to sharing Godly creativity and inspiring faith-based content online. He has previously served in church leadership roles with a focus on preaching, teaching, and developing healthy, growing churches.
+            </p>
+            <p className="leaders-bio reveal reveal-delay-3">
+              Daniel is married to Rachael, and together they have a daughter, Kyomi. Rachael and Daniel share a deep commitment to mentoring and supporting people both locally and further afield.
+            </p>
+            <p className="leaders-bio reveal reveal-delay-4">
+              Their call to church planting came through a shared journey of prayer, prophetic confirmation, and discernment. Alongside trusted mentors and accountability leaders who prayed with them and helped confirm the direction, they became united in the conviction that God was leading them to plant Alignment Church Southend. Their ministry is rooted in obedience, faith, and a desire to build what God is establishing in this generation.
+            </p>
           </div>
         </div>
       </section>
@@ -111,36 +143,27 @@ export default function LandingPage() {
           <h2 className="section-title reveal reveal-delay-1">Our <em>Foundations</em></h2>
         </div>
         <div className="beliefs-grid">
-          <div className="belief-card reveal">
-            <div className="belief-number">01</div>
-            <h3>Scripture</h3>
-            <p>The Bible is the inspired, authoritative Word of God — our final guide for faith and conduct.</p>
-          </div>
-          <div className="belief-card reveal reveal-delay-1">
-            <div className="belief-number">02</div>
-            <h3>The Trinity</h3>
-            <p>We believe in one God eternally existing as Father, Son, and Holy Spirit.</p>
-          </div>
-          <div className="belief-card reveal reveal-delay-2">
-            <div className="belief-number">03</div>
-            <h3>Salvation</h3>
-            <p>Salvation is by grace through faith in Jesus Christ alone — his death and resurrection.</p>
-          </div>
-          <div className="belief-card reveal reveal-delay-3">
-            <div className="belief-number">04</div>
-            <h3>The Holy Spirit</h3>
-            <p>We embrace the full work and gifts of the Holy Spirit, active in the Church today.</p>
-          </div>
-          <div className="belief-card reveal reveal-delay-1">
-            <div className="belief-number">05</div>
-            <h3>The Church</h3>
-            <p>The Church is the body of Christ — called, equipped, and sent to advance his kingdom.</p>
-          </div>
-          <div className="belief-card reveal reveal-delay-2">
-            <div className="belief-number">06</div>
-            <h3>Fivefold Ministry</h3>
-            <p>Apostles, prophets, evangelists, pastors, and teachers equip the saints for works of service.</p>
-          </div>
+          {[
+            { title: 'The Bible', body: 'We believe the Bible is the inspired, infallible, and authoritative Word of God.', ref: '2 Timothy 3:16' },
+            { title: 'The One True God', body: 'We believe in one God who eternally exists as Father, Son, and Holy Spirit.', ref: 'Deuteronomy 6:4' },
+            { title: 'Jesus Christ', body: 'Jesus Christ is the Son of God, fully God and fully man, who died and rose again for the salvation of humanity.', ref: 'John 3:16' },
+            { title: 'Salvation', body: 'Salvation is the gift of God received by grace through faith in Jesus Christ.', ref: 'Ephesians 2:8' },
+            { title: 'The Holy Spirit', body: 'The Holy Spirit indwells believers and empowers them to live Spirit-led lives.', ref: 'Romans 8:14' },
+            { title: 'The Gifts of the Spirit', body: 'We believe the gifts of the Holy Spirit continue to operate today for the building up of the Church.', ref: '1 Corinthians 12:7' },
+            { title: 'The Fivefold Ministry', body: 'We believe Christ has given apostles, prophets, evangelists, pastors, and teachers to equip the Church.', ref: 'Ephesians 4:11–12' },
+            { title: 'The Sacraments', body: 'We practise believer\'s baptism and the Lord\'s Supper as acts of obedience and expressions of faith.', ref: 'Matthew 28:19' },
+            { title: 'Transformation and Deliverance', body: 'We believe believers can experience healing, restoration, and freedom through the work of the Holy Spirit.', ref: 'Luke 4:18' },
+            { title: 'The Church', body: 'The Church is the body of Christ, called to worship God, disciple believers, and proclaim the Kingdom.', ref: 'Colossians 1:18' },
+            { title: 'The Kingdom of God', body: 'The Kingdom of God is the reign and rule of God revealed through Jesus Christ and expressed through His Church.', ref: 'Matthew 6:10' },
+            { title: 'The Return of Christ', body: 'Jesus Christ will return again to establish the fullness of His Kingdom.', ref: 'Acts 1:11' },
+            { title: 'Eternal Life', body: 'Those who belong to Christ will inherit eternal life with God.', ref: 'John 11:25' },
+          ].map((b, i) => (
+            <div key={b.title} className={`belief-card reveal${i % 2 === 1 ? ' reveal-delay-1' : ''}`}>
+              <h3>{b.title}</h3>
+              <p>{b.body}</p>
+              <p className="belief-ref">{b.ref}</p>
+            </div>
+          ))}
         </div>
       </section>
 
