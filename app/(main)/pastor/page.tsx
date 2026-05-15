@@ -12,7 +12,7 @@ import PendingTestimonies from '@/components/pastor/PendingTestimonies';
 const S = {
   font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
   gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  border: '#162030', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#3a5570',
+  border: '#162030', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
 type Section = 'overview' | 'verse' | 'members' | 'notifications' | 'testimonies';

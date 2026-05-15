@@ -25,7 +25,7 @@ export default function PageSpinner() {
       >
         ✦
       </span>
-      <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#3a5570' }}>
+      <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#c6a75e' }}>
         Community
       </p>
     </div>

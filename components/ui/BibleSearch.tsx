@@ -130,7 +130,7 @@ export default function BibleSearch({
                   padding: '8px 14px',
                   background: translation === t ? 'rgba(198,167,94,0.15)' : 'none',
                   border: 'none',
-                  color: translation === t ? '#c6a75e' : '#3a5570',
+                  color: translation === t ? '#c6a75e' : '#c6a75e',
                   fontSize: 11,
                   cursor: 'pointer',
                   fontFamily: "Georgia, 'Times New Roman', serif",
@@ -163,7 +163,7 @@ export default function BibleSearch({
             }}
           >
             {loading && (
-              <div style={{ padding: '12px 16px', fontSize: 12, color: '#3a5570', fontStyle: 'italic' }}>
+              <div style={{ padding: '12px 16px', fontSize: 12, color: '#c6a75e', fontStyle: 'italic' }}>
                 Searching…
               </div>
             )}
@@ -211,7 +211,7 @@ export default function BibleSearch({
             </p>
             <button
               onClick={handleClear}
-              style={{ background: 'none', border: 'none', color: '#3a5570', fontSize: 11, cursor: 'pointer', letterSpacing: '0.08em' }}
+              style={{ background: 'none', border: 'none', color: '#c6a75e', fontSize: 11, cursor: 'pointer', letterSpacing: '0.08em' }}
             >
               × Clear
             </button>

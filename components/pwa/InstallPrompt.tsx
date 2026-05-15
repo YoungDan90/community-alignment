@@ -103,7 +103,7 @@ export default function InstallPrompt() {
               style={{
                 padding: '9px 16px', background: 'transparent',
                 border: '1px solid #162030', borderRadius: 2,
-                color: '#3a5570', fontSize: 12, cursor: 'pointer',
+                color: '#c6a75e', fontSize: 12, cursor: 'pointer',
                 fontFamily: "Georgia, 'Times New Roman', serif",
                 minHeight: 44,
               }}

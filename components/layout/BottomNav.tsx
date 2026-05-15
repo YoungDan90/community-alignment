@@ -36,7 +36,7 @@ export default function BottomNav({ role = 'member' }: BottomNavProps) {
               key={item.href}
               href={item.href}
               className="flex flex-col items-center gap-0.5 px-4 py-1"
-              style={{ color: active ? '#c6a75e' : '#3a5570' }}
+              style={{ color: active ? '#c6a75e' : '#c6a75e' }}
             >
               <span className="text-lg leading-none">{item.icon}</span>
               <span className="text-[9px] uppercase tracking-wider">

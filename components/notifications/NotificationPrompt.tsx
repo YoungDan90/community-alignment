@@ -16,7 +16,7 @@ const S = {
   text: '#ddd0b8',
   textLight: '#f0e8d4',
   soft: '#6a8aaa',
-  muted: '#3a5570',
+  muted: '#c6a75e',
   dark: '#070c12',
 };
 

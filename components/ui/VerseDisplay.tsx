@@ -93,7 +93,7 @@ export default function VerseDisplay({
       >
         <div>
           {seriesLabel && (
-            <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3a5570' }}>
+            <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c6a75e' }}>
               {seriesLabel}
             </p>
           )}
@@ -121,7 +121,7 @@ export default function VerseDisplay({
                   padding: '4px 12px',
                   background: activeTranslation === t ? 'rgba(198,167,94,0.15)' : 'none',
                   border: 'none',
-                  color: activeTranslation === t ? '#c6a75e' : '#3a5570',
+                  color: activeTranslation === t ? '#c6a75e' : '#c6a75e',
                   fontSize: 10,
                   cursor: 'pointer',
                   fontFamily: "Georgia, 'Times New Roman', serif",
@@ -152,7 +152,7 @@ export default function VerseDisplay({
       </p>
 
       {/* Translation label */}
-      <p style={{ margin: '10px 0 0', fontSize: 10, color: '#3a5570', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+      <p style={{ margin: '10px 0 0', fontSize: 10, color: '#c6a75e', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
         {activeTranslation.toUpperCase()}
       </p>
     </div>

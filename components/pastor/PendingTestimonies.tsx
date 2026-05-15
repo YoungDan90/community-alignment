@@ -6,7 +6,7 @@ import TestimonyCard, { type Testimony } from '@/components/prayer-wall/Testimon
 
 const S = {
   font: { body: "Georgia, 'Times New Roman', serif" },
-  muted: '#3a5570', soft: '#6a8aaa', gold: '#c6a75e',
+  muted: '#c6a75e', soft: '#6a8aaa', gold: '#c6a75e',
 };
 
 export default function PendingTestimonies() {

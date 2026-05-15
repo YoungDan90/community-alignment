@@ -37,7 +37,7 @@ export default function TopBar({ role = 'member' }: TopBarProps) {
           </span>
           <button
             onClick={handleSignOut}
-            className="text-[11px] uppercase tracking-wider text-[#3a5570] transition-colors duration-200 hover:text-[#c6a75e]"
+            className="text-[11px] uppercase tracking-wider text-[#c6a75e] transition-colors duration-200 hover:text-[#c6a75e]"
             style={{ minHeight: 44, padding: '0 4px' }}
           >
             Sign out

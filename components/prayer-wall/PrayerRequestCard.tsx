@@ -43,7 +43,7 @@ const S = {
   text: '#ddd0b8',
   textLight: '#f0e8d4',
   soft: '#6a8aaa',
-  muted: '#3a5570',
+  muted: '#c6a75e',
   green: '#5a8a5a',
   greenDim: 'rgba(90,138,90,0.15)',
 };

@@ -19,7 +19,7 @@ const FALLBACK_VERSE: ActiveVerse = {
 const S = {
   font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
   gold: '#c6a75e', goldBorder: 'rgba(198,167,94,0.25)',
-  border: '#162030', text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#3a5570',
+  border: '#162030', text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
 export default function SelahPage() {

@@ -59,7 +59,7 @@ export default function ProgressTrack({ stages, currentStage }: ProgressTrackPro
                 style={{
                   fontSize: 13,
                   lineHeight: 1,
-                  color: done ? '#5a8a5a' : active ? '#c6a75e' : '#3a5570',
+                  color: done ? '#5a8a5a' : active ? '#c6a75e' : '#c6a75e',
                   transition: 'color 0.3s',
                 }}
               >
@@ -71,7 +71,7 @@ export default function ProgressTrack({ stages, currentStage }: ProgressTrackPro
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
                   fontFamily: F.body,
-                  color: active ? '#c6a75e' : '#3a5570',
+                  color: active ? '#c6a75e' : '#c6a75e',
                 }}
               >
                 {s.label}

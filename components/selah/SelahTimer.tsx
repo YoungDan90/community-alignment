@@ -57,7 +57,7 @@ export default function SelahTimer({ duration, timeLeft }: SelahTimerProps) {
         <span
           style={{
             fontSize: 10,
-            color: '#3a5570',
+            color: '#c6a75e',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
             marginTop: 6,
