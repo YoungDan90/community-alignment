@@ -44,7 +44,6 @@ export default function LandingPage() {
           <li><a href="#services">Services</a></li>
           <li><a href="#connect">Connect</a></li>
           <li><a href="#give">Give</a></li>
-          <li><a href="#media">Media</a></li>
           <li><a href="#connect" className="nav-cta">Join Us</a></li>
           <li><Link href="/login" className="nav-cta">Member Login</Link></li>
         </ul>
@@ -214,32 +213,18 @@ export default function LandingPage() {
               Whether you&apos;re new to faith or looking for a spiritual home, there&apos;s a place for you at Alignment Church. Reach out, submit a prayer request, or come visit us on Sunday.
             </p>
             <div className="connect-links reveal reveal-delay-3">
-              <Link href="/prayer-wall" className="connect-link">
-                <span className="connect-link-icon">🙏</span>
-                <dl className="connect-link-text">
-                  <dt>Prayer Requests</dt>
-                  <dd>Submit a prayer request</dd>
-                </dl>
-              </Link>
-              <a href="https://alignmentchurch.uk" className="connect-link" target="_blank" rel="noopener noreferrer">
-                <span className="connect-link-icon">🌐</span>
-                <dl className="connect-link-text">
-                  <dt>Website</dt>
-                  <dd>alignmentchurch.uk</dd>
-                </dl>
-              </a>
               <div className="connect-link">
                 <span className="connect-link-icon">📍</span>
                 <dl className="connect-link-text">
                   <dt>Location</dt>
-                  <dd>The Cornerstone, Southend-on-Sea</dd>
+                  <dd>The Cornerstone URC, Bournemouth Park Rd, Southend-on-Sea SS2 5JL</dd>
                 </dl>
               </div>
               <div className="connect-link">
                 <span className="connect-link-icon">📧</span>
                 <dl className="connect-link-text">
                   <dt>Email</dt>
-                  <dd>hello@alignmentchurch.uk</dd>
+                  <dd>info@alignmentchurch.uk</dd>
                 </dl>
               </div>
             </div>
@@ -294,63 +279,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* MEDIA */}
-      <section id="media">
-        <div className="media-inner">
-          <div className="media-header">
-            <p className="section-eyebrow reveal">Watch &amp; Listen</p>
-            <h2 className="section-title reveal reveal-delay-1">Sermons &amp; <em>Media</em></h2>
-          </div>
-          <div className="media-grid">
-            <div className="media-card reveal">
-              <div className="media-card-thumb"></div>
-              <div className="media-card-body">
-                <p className="media-tag">Sermon Series</p>
-                <h3>Kingdom Identity</h3>
-                <p>Apostolic teaching on who you are in Christ and your purpose in the kingdom.</p>
-              </div>
-            </div>
-            <div className="media-card reveal reveal-delay-1">
-              <div className="media-card-thumb"></div>
-              <div className="media-card-body">
-                <p className="media-tag">Prophetic</p>
-                <h3>A Word for This Season</h3>
-                <p>Prophetic declarations and video content released through our Instagram channel.</p>
-              </div>
-            </div>
-            <div className="media-card reveal reveal-delay-2">
-              <div className="media-card-thumb"></div>
-              <div className="media-card-body">
-                <p className="media-tag">Teaching</p>
-                <h3>Foundations of Faith</h3>
-                <p>Core biblical teachings for new and growing believers in the Alignment community.</p>
-              </div>
-            </div>
-          </div>
-          <div className="social-strip reveal">
-            <p>Follow us on social media</p>
-            <div className="social-icons">
-              <a href="https://instagram.com/alignmentchurch" className="social-icon" target="_blank" rel="noopener noreferrer" title="Instagram">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
-              </a>
-              <a href="#" className="social-icon" title="YouTube">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42A2.78 2.78 0 0 0 20.6 4.5C18.88 4 12 4 12 4s-6.88 0-8.6.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.5C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.94A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
-              </a>
-              <a href="#" className="social-icon" title="Facebook">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-              </a>
-              <a href="#" className="social-icon" title="TikTok">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.74a4.85 4.85 0 01-1.01-.05z"/></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* FOOTER */}
       <footer className="landing-footer">
         <p className="logo">Alignment Church</p>
-        <p>The Cornerstone, Southend-on-Sea · hello@alignmentchurch.uk</p>
+        <p>The Cornerstone URC, Bournemouth Park Rd, Southend-on-Sea SS2 5JL · info@alignmentchurch.uk</p>
         <p style={{ marginTop: '0.5rem' }}>© 2026 Alignment Church · Registered CIO · &ldquo;Your kingdom come, your will be done.&rdquo; — Matthew 6:10</p>
         <p style={{ marginTop: '1rem' }}>
           <Link href="/login" style={{ color: 'rgba(198,167,94,0.6)', textDecoration: 'none', fontSize: '0.78rem', letterSpacing: '0.1em' }}>
