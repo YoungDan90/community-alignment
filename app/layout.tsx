@@ -1,5 +1,14 @@
 import type { Metadata, Viewport } from 'next';
+import { Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Community',
@@ -23,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className={`${cormorant.variable} antialiased`}>{children}</body>
     </html>
   );
 }
