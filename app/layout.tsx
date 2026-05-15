@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond } from 'next/font/google';
+import ServiceWorkerRegistrar from '@/components/ServiceWorkerRegistrar';
 import './globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -32,7 +33,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${cormorant.variable} antialiased`}>{children}</body>
+      <body className={`${cormorant.variable} antialiased`}>
+        <ServiceWorkerRegistrar />
+        {children}
+      </body>
     </html>
   );
 }
