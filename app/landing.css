@@ -423,13 +423,13 @@
   50%       { transform: translateY(-12px); }
 }
 
+.mobile-login { display: none; }
+
 /* ── MOBILE ── */
 @media (max-width: 768px) {
   .landing-nav { padding: 1rem 1.5rem; }
   .nav-links { display: none; }
-  .mobile-login {
-    display: flex !important;
-  }
+  .mobile-login { display: flex !important; }
   #about { grid-template-columns: 1fr; }
   .about-image-side { min-height: 40vh; }
   .about-content { padding: 3rem 1.5rem; }
