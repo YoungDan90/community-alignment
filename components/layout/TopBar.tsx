@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 interface TopBarProps {
@@ -8,12 +7,11 @@ interface TopBarProps {
 }
 
 export default function TopBar({ role = 'member' }: TopBarProps) {
-  const router = useRouter();
 
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push('/login');
+    window.location.href = '/login';
   };
 
   return (

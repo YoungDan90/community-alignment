@@ -46,7 +46,7 @@ export default function DashboardPage() {
     setSigningOut(true);
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push('/login');
+    window.location.href = '/login';
   };
 
   const greeting = () => {
