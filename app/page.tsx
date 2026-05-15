@@ -116,10 +116,10 @@ export default function LandingPage() {
             <img src="/images/daniel-and-rachael.jpg" alt="Pastor Daniel and Rachael Williams" className="leaders-photo" />
           </div>
           <div className="leaders-content">
-            <p className="section-eyebrow reveal">Senior Leaders</p>
+            <p className="section-eyebrow reveal">Senior Leader</p>
             <div className="leaders-rule reveal reveal-delay-1"></div>
-            <h2 className="leaders-names reveal reveal-delay-1">Pastor Daniel &amp; Rachael Williams</h2>
-            <p className="leaders-role reveal reveal-delay-2">Senior Leader &amp; Co-Leader · Alignment Church Southend</p>
+            <h2 className="leaders-names reveal reveal-delay-1">Pastor Daniel Williams</h2>
+            <p className="leaders-role reveal reveal-delay-2">Senior Leader · Alignment Church Southend</p>
             <p className="leaders-bio reveal reveal-delay-2">
               Daniel Williams is the Senior Leader and Founder of Alignment Church Southend. He carries an apostolic heart to see the Kingdom of God expanded on earth and is passionate about helping people align with God&apos;s purpose for their lives.
             </p>
