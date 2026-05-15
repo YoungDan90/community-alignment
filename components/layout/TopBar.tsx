@@ -1,12 +1,27 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
-interface TopBarProps {
-  role?: 'member' | 'prophetic_team' | 'pastor' | 'admin';
-}
+const ROLE_LABELS: Record<string, string> = {
+  member: 'Member',
+  prophetic_team: 'Prophetic',
+  pastor: 'Pastor',
+  admin: 'Admin',
+};
 
-export default function TopBar({ role = 'member' }: TopBarProps) {
+export default function TopBar() {
+  const [role, setRole] = useState<string>('member');
+
+  useEffect(() => {
+    (async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+      if (data?.role) setRole(data.role);
+    })();
+  }, []);
 
   const handleSignOut = async () => {
     const supabase = createClient();
@@ -31,7 +46,7 @@ export default function TopBar({ role = 'member' }: TopBarProps) {
 
         <div className="flex items-center gap-3">
           <span className="rounded border border-[#162030] px-2.5 py-1 text-[10px] uppercase tracking-wider text-[#6a8aaa]">
-            {role}
+            {ROLE_LABELS[role] ?? role}
           </span>
           <button
             onClick={handleSignOut}

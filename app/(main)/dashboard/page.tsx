@@ -36,7 +36,8 @@ export default function DashboardPage() {
       const { data: { user: u } } = await supabase.auth.getUser();
       if (!u) { router.push('/login'); return; }
       setUser({ email: u.email ?? '' });
-      const { data } = await supabase.from('profiles').select('full_name, role').eq('id', u.id).maybeSingle();
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', u.id).maybeSingle();
+      console.log('[dashboard] data:', data, 'error:', error);
       setProfile(data ?? { full_name: null, role: 'member' });
       setLoading(false);
     })();

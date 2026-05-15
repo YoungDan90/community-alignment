@@ -85,6 +85,15 @@ export default function SelahPage() {
   }, [phase, config]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBegin = (cfg: SessionConfig) => {
+    if (cfg.verseOverride) {
+      setActiveVerse({
+        id: 'custom',
+        reference: cfg.verseOverride.reference,
+        nkjv_text: cfg.verseOverride.text,
+        nlt_text: cfg.verseOverride.text,
+        sermon_series: null,
+      });
+    }
     setConfig(cfg);
     setSessionTranslation(cfg.translation);
     setPhase('session');

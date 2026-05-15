@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import BibleSearch from '@/components/ui/BibleSearch';
 
 const DURATIONS = [5, 10, 15, 30];
 const FOCUS_TYPES = ['Worship', 'Prayer', 'Stillness', 'Listening', 'Gratitude'];
@@ -10,6 +11,7 @@ export interface SessionConfig {
   focus: string;
   translation: 'nkjv' | 'nlt';
   musicUrl: string;
+  verseOverride?: { reference: string; text: string };
 }
 
 export interface ActiveVerse {
@@ -37,6 +39,8 @@ export default function SelahSetup({ activeVerse, onBegin }: SelahSetupProps) {
   const [focus, setFocus] = useState('Stillness');
   const [translation, setTranslation] = useState<'nkjv' | 'nlt'>('nkjv');
   const [musicUrl, setMusicUrl] = useState('');
+  const [showVerseSearch, setShowVerseSearch] = useState(false);
+  const [customVerse, setCustomVerse] = useState<{ reference: string; text: string } | null>(null);
 
   return (
     <div style={{ padding: '28px 20px', maxWidth: 600, margin: '0 auto', fontFamily: S.font.body }}>
@@ -51,21 +55,73 @@ export default function SelahSetup({ activeVerse, onBegin }: SelahSetupProps) {
         &ldquo;Be still and know that I am God.&rdquo; — Psalm 46:10
       </p>
 
-      {/* This week's verse */}
-      {activeVerse && (
-        <div style={{ background: S.card, border: `1px solid ${S.goldBorder}`, borderRadius: 3, padding: '18px 22px', marginBottom: 28, position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(to right, ${S.gold}, transparent)` }} />
-          <p style={{ margin: '0 0 4px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.gold }}>
-            This Week · {activeVerse.reference}
+      {/* Verse — week's or custom */}
+      {!showVerseSearch && (activeVerse || customVerse) && (
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ background: S.card, border: `1px solid ${customVerse ? S.goldBorder : S.goldBorder}`, borderRadius: 3, padding: '18px 22px', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(to right, ${S.gold}, transparent)` }} />
+            {customVerse ? (
+              <>
+                <p style={{ margin: '0 0 4px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.gold }}>
+                  Your choice · {customVerse.reference}
+                </p>
+                <p style={{ margin: 0, fontSize: 15, color: S.text, fontFamily: S.font.display, fontStyle: 'italic', lineHeight: 1.75 }}>
+                  &ldquo;{customVerse.text.slice(0, 120)}{customVerse.text.length > 120 ? '…' : ''}&rdquo;
+                </p>
+              </>
+            ) : activeVerse ? (
+              <>
+                <p style={{ margin: '0 0 4px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.gold }}>
+                  This Week · {activeVerse.reference}
+                </p>
+                {activeVerse.sermon_series && (
+                  <p style={{ margin: '0 0 6px', fontSize: 11, color: S.muted, fontStyle: 'italic' }}>
+                    {activeVerse.sermon_series}
+                  </p>
+                )}
+                <p style={{ margin: 0, fontSize: 15, color: S.text, fontFamily: S.font.display, fontStyle: 'italic', lineHeight: 1.75 }}>
+                  &ldquo;{(activeVerse.nkjv_text ?? '').slice(0, 120)}&hellip;&rdquo;
+                </p>
+              </>
+            ) : null}
+          </div>
+          <div style={{ display: 'flex', gap: 16, marginTop: 10 }}>
+            <button
+              onClick={() => setShowVerseSearch(true)}
+              style={{ background: 'none', border: 'none', color: S.soft, fontSize: 12, cursor: 'pointer', padding: 0, fontFamily: S.font.body, letterSpacing: '0.04em' }}
+            >
+              Choose a different verse →
+            </button>
+            {customVerse && (
+              <button
+                onClick={() => setCustomVerse(null)}
+                style={{ background: 'none', border: 'none', color: S.muted, fontSize: 12, cursor: 'pointer', padding: 0, fontFamily: S.font.body }}
+              >
+                Use this week&apos;s verse
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* BibleSearch for custom verse */}
+      {showVerseSearch && (
+        <div style={{ marginBottom: 28 }}>
+          <p style={{ margin: '0 0 10px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.gold }}>
+            Choose a verse
           </p>
-          {activeVerse.sermon_series && (
-            <p style={{ margin: '0 0 6px', fontSize: 11, color: S.muted, fontStyle: 'italic' }}>
-              {activeVerse.sermon_series}
-            </p>
-          )}
-          <p style={{ margin: 0, fontSize: 15, color: S.text, fontFamily: S.font.display, fontStyle: 'italic', lineHeight: 1.75 }}>
-            &ldquo;{(activeVerse.nkjv_text ?? '').slice(0, 120)}&hellip;&rdquo;
-          </p>
+          <BibleSearch
+            onSelect={(verse) => {
+              setCustomVerse({ reference: verse.reference, text: verse.text });
+              setShowVerseSearch(false);
+            }}
+          />
+          <button
+            onClick={() => setShowVerseSearch(false)}
+            style={{ background: 'none', border: 'none', color: S.soft, fontSize: 12, cursor: 'pointer', padding: '8px 0 0', fontFamily: S.font.body }}
+          >
+            ← Cancel
+          </button>
         </div>
       )}
 
@@ -158,7 +214,7 @@ export default function SelahSetup({ activeVerse, onBegin }: SelahSetupProps) {
 
       {/* Begin */}
       <button
-        onClick={() => onBegin({ duration, focus, translation, musicUrl })}
+        onClick={() => onBegin({ duration, focus, translation, musicUrl, verseOverride: customVerse ?? undefined })}
         style={{
           width: '100%', padding: '15px', background: S.gold, border: 'none', borderRadius: 2,
           color: '#070c12', fontSize: 15, fontWeight: 'bold', cursor: 'pointer',

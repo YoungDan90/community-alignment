@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import BibleSearch, { type BibleVerse } from '@/components/ui/BibleSearch';
 
 interface ActiveVerse {
   id: string;
@@ -35,6 +36,7 @@ export default function AssignVerse() {
   const [saving, setSaving]         = useState(false);
   const [success, setSuccess]       = useState(false);
   const [error, setError]           = useState('');
+  const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -56,6 +58,22 @@ export default function AssignVerse() {
     nextMonday.setDate(today.getDate() + daysUntilMonday);
     setWeekStart(nextMonday.toISOString().split('T')[0]);
   }, []);
+
+  const handleVerseSelect = async (verse: BibleVerse) => {
+    setReference(verse.reference);
+    setNkjvText(verse.text);
+    setNltText(verse.text);
+    setShowSearch(false);
+    // Attempt a second lookup for the other translation (best-effort)
+    try {
+      const res = await fetch(`/api/bible/verse?reference=${encodeURIComponent(verse.reference)}`);
+      const data = await res.json();
+      if (data.verse?.text) {
+        setNkjvText(data.verse.text);
+        setNltText(data.verse.text);
+      }
+    } catch { /* keep the text from search */ }
+  };
 
   const lookupVerse = async () => {
     if (!reference.trim()) return;
@@ -131,6 +149,34 @@ export default function AssignVerse() {
           ✦ Verse published and set as active.
         </div>
       )}
+
+      {/* Bible verse search */}
+      <div style={{ marginBottom: 20 }}>
+        <button
+          onClick={() => setShowSearch(!showSearch)}
+          style={{
+            background: showSearch ? S.goldDim : 'transparent',
+            border: `1px solid ${showSearch ? S.goldBorder : S.border}`,
+            borderRadius: 2, padding: '8px 16px',
+            color: showSearch ? S.gold : S.soft,
+            fontSize: 11, cursor: 'pointer', fontFamily: S.font.body,
+            letterSpacing: '0.1em', textTransform: 'uppercase', transition: 'all 0.2s',
+          }}
+        >
+          {showSearch ? '↑ Hide search' : '◈ Search for a verse'}
+        </button>
+        {showSearch && (
+          <div style={{ marginTop: 12 }}>
+            <BibleSearch
+              onSelect={handleVerseSelect}
+              placeholder="Search by reference or keyword — e.g. John 15:5"
+            />
+            <p style={{ margin: '8px 0 0', fontSize: 11, color: S.soft, fontStyle: 'italic' }}>
+              Text pre-fills from KJV — update NKJV/NLT fields below as needed.
+            </p>
+          </div>
+        )}
+      </div>
 
       <div style={{ display: 'grid', gap: 14 }}>
         <div>

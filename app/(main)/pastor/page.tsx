@@ -47,6 +47,7 @@ export default function PastorPage() {
 
       const { data: profile } = await supabase
         .from('profiles').select('role').eq('id', user.id).maybeSingle();
+      console.log('[pastor] profile fetch result:', profile);
 
       if (profile?.role === 'pastor' || profile?.role === 'admin') {
         setAuthorized(true);
