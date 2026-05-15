@@ -1,0 +1,170 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
+
+interface Member {
+  id: string;
+  full_name: string | null;
+  role: string;
+  created_at: string;
+}
+
+const S = {
+  font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
+  gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
+  card: '#0b1118', dark: '#070c12', border: '#162030',
+  text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#3a5570',
+};
+
+const ROLE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  pastor:         { bg: S.goldDim,                  text: S.gold,   border: S.goldBorder },
+  prophetic_team: { bg: 'rgba(90,138,90,0.15)',      text: '#5a8a5a', border: 'rgba(90,138,90,0.3)' },
+  admin:          { bg: 'rgba(106,138,170,0.15)',    text: S.soft,   border: 'rgba(106,138,170,0.3)' },
+  member:         { bg: 'transparent',               text: S.muted,  border: S.border },
+};
+
+const ROLES = ['member', 'prophetic_team', 'pastor', 'admin'];
+
+export default function MemberList() {
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [nudging, setNudging] = useState<string | null>(null);
+  const [updatingRole, setUpdatingRole] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    (async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, full_name, role, created_at')
+        .order('created_at', { ascending: true });
+      setMembers((data as Member[]) ?? []);
+      setLoading(false);
+    })();
+  }, []);
+
+  const setMsg = (id: string, msg: string) => {
+    setFeedback((p) => ({ ...p, [id]: msg }));
+    setTimeout(() => setFeedback((p) => { const n = { ...p }; delete n[id]; return n; }), 3000);
+  };
+
+  const handleNudge = async (member: Member) => {
+    setNudging(member.id);
+    try {
+      const res = await fetch('/api/notifications/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'A word from your pastor',
+          body: `${member.full_name ?? 'Hey'}, don't forget your Word to Walk this week.`,
+          url: '/word-to-walk',
+          target: member.id,
+        }),
+      });
+      const { sent } = await res.json();
+      setMsg(member.id, sent > 0 ? 'Nudge sent ✓' : 'No active subscription');
+    } catch {
+      setMsg(member.id, 'Failed to send');
+    }
+    setNudging(null);
+  };
+
+  const handleRoleChange = async (member: Member, newRole: string) => {
+    setUpdatingRole(member.id);
+    setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, role: newRole } : m));
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', member.id);
+      if (error) throw error;
+      setMsg(member.id, 'Role updated ✓');
+    } catch {
+      // Revert optimistic update
+      setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, role: member.role } : m));
+      setMsg(member.id, 'Update failed — check RLS policy');
+    }
+    setUpdatingRole(null);
+  };
+
+  if (loading) return <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic' }}>Loading members…</p>;
+  if (!members.length) return <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic' }}>No members found.</p>;
+
+  return (
+    <div>
+      <p style={{ margin: '0 0 14px', fontSize: 11, color: S.muted }}>{members.length} member{members.length !== 1 ? 's' : ''}</p>
+      {members.map((m) => {
+        const rc = ROLE_COLORS[m.role] ?? ROLE_COLORS.member;
+        return (
+          <div
+            key={m.id}
+            style={{
+              background: S.card, border: `1px solid ${S.border}`, borderRadius: 3,
+              padding: '14px 16px', marginBottom: 8,
+              display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
+            }}
+          >
+            {/* Avatar */}
+            <div style={{
+              width: 34, height: 34, borderRadius: '50%',
+              background: S.goldDim, border: `1px solid ${S.goldBorder}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 13, color: S.gold, flexShrink: 0,
+            }}>
+              {(m.full_name ?? '?')[0].toUpperCase()}
+            </div>
+
+            {/* Name + feedback */}
+            <div style={{ flex: 1, minWidth: 100 }}>
+              <p style={{ margin: 0, fontSize: 14, color: S.textLight, fontFamily: S.font.display }}>
+                {m.full_name ?? 'Unnamed member'}
+              </p>
+              {feedback[m.id] && (
+                <p style={{ margin: '2px 0 0', fontSize: 10, color: S.gold, letterSpacing: '0.08em' }}>{feedback[m.id]}</p>
+              )}
+            </div>
+
+            {/* Role badge / dropdown */}
+            <div style={{ position: 'relative' }}>
+              <select
+                value={m.role}
+                disabled={updatingRole === m.id}
+                onChange={(e) => handleRoleChange(m, e.target.value)}
+                style={{
+                  padding: '4px 10px', borderRadius: 20,
+                  background: rc.bg, border: `1px solid ${rc.border}`,
+                  color: rc.text, fontSize: 10, letterSpacing: '0.1em',
+                  textTransform: 'uppercase', cursor: 'pointer',
+                  fontFamily: S.font.body, outline: 'none',
+                  appearance: 'none', paddingRight: 22,
+                }}
+              >
+                {ROLES.map((r) => (
+                  <option key={r} value={r} style={{ background: S.dark, color: S.text, textTransform: 'none' }}>
+                    {r.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+              <span style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', fontSize: 8, color: rc.text, pointerEvents: 'none' }}>▾</span>
+            </div>
+
+            {/* Nudge */}
+            <button
+              onClick={() => handleNudge(m)}
+              disabled={nudging === m.id}
+              style={{
+                padding: '5px 12px', background: 'transparent',
+                border: `1px solid ${S.border}`, borderRadius: 2,
+                color: S.soft, fontSize: 10, cursor: 'pointer',
+                fontFamily: S.font.body, letterSpacing: '0.08em',
+                whiteSpace: 'nowrap', flexShrink: 0,
+              }}
+            >
+              {nudging === m.id ? '…' : 'Send Nudge'}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
