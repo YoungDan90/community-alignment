@@ -351,3 +351,23 @@ CREATE POLICY "Users can update own notification preferences"
   ON notification_preferences FOR UPDATE
   TO authenticated
   USING (user_id = auth.uid());
+
+-- ── Contact Messages ──────────────────────────────────────────
+CREATE TABLE contact_messages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  email text NOT NULL,
+  subject text,
+  message text NOT NULL,
+  created_at timestamptz DEFAULT now(),
+  is_read boolean DEFAULT false
+);
+ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can submit a contact message"
+  ON contact_messages FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
+CREATE POLICY "Pastor can read contact messages"
+  ON contact_messages FOR SELECT
+  TO authenticated
+  USING ((SELECT role FROM profiles WHERE id = auth.uid()) IN ('pastor', 'admin'));

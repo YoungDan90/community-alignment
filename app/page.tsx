@@ -1,10 +1,36 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import './landing.css';
 
 export default function LandingPage() {
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactSubject, setContactSubject] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+  const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactStatus('loading');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: contactName, email: contactEmail, subject: contactSubject, message: contactMessage }),
+      });
+      if (res.ok) {
+        setContactStatus('success');
+        setContactName(''); setContactEmail(''); setContactSubject(''); setContactMessage('');
+      } else {
+        setContactStatus('error');
+      }
+    } catch {
+      setContactStatus('error');
+    }
+  };
+
   useEffect(() => {
     const navbar = document.getElementById('navbar');
     const handleScroll = () => {
@@ -254,19 +280,34 @@ export default function LandingPage() {
           </div>
           <div className="connect-form reveal reveal-delay-2">
             <h3>Send a Message</h3>
-            <div className="form-group">
-              <input type="text" placeholder="Your Name" />
-            </div>
-            <div className="form-group">
-              <input type="email" placeholder="Email Address" />
-            </div>
-            <div className="form-group">
-              <input type="text" placeholder="Subject" />
-            </div>
-            <div className="form-group">
-              <textarea placeholder="Your message…"></textarea>
-            </div>
-            <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Send Message</button>
+            {contactStatus === 'success' ? (
+              <p style={{ color: '#c6a75e', fontFamily: 'var(--font-cormorant), serif', fontStyle: 'italic', fontSize: '1.1rem', lineHeight: 1.7, padding: '1rem 0' }}>
+                Thank you — we will be in touch soon.
+              </p>
+            ) : (
+              <form onSubmit={handleContactSubmit}>
+                <div className="form-group">
+                  <input type="text" placeholder="Your Name" value={contactName} onChange={e => setContactName(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                  <input type="email" placeholder="Email Address" value={contactEmail} onChange={e => setContactEmail(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                  <input type="text" placeholder="Subject" value={contactSubject} onChange={e => setContactSubject(e.target.value)} />
+                </div>
+                <div className="form-group">
+                  <textarea placeholder="Your message…" value={contactMessage} onChange={e => setContactMessage(e.target.value)} required></textarea>
+                </div>
+                {contactStatus === 'error' && (
+                  <p style={{ color: '#e07070', fontSize: '0.82rem', marginBottom: '0.8rem', lineHeight: 1.6 }}>
+                    Something went wrong — please email us directly at <a href="mailto:info@alignmentchurch.uk" style={{ color: '#e07070' }}>info@alignmentchurch.uk</a>
+                  </p>
+                )}
+                <button type="submit" className="btn-primary" disabled={contactStatus === 'loading'} style={{ width: '100%', justifyContent: 'center', opacity: contactStatus === 'loading' ? 0.6 : 1, cursor: contactStatus === 'loading' ? 'wait' : 'pointer' }}>
+                  {contactStatus === 'loading' ? 'Sending…' : 'Send Message'}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </section>

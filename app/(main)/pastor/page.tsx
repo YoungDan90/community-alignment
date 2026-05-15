@@ -8,6 +8,7 @@ import AssignVerse from '@/components/pastor/AssignVerse';
 import MemberList from '@/components/pastor/MemberList';
 import NotificationComposer from '@/components/pastor/NotificationComposer';
 import PendingTestimonies from '@/components/pastor/PendingTestimonies';
+import ContactMessages from '@/components/pastor/ContactMessages';
 
 const S = {
   font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
@@ -15,7 +16,7 @@ const S = {
   border: '#162030', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
-type Section = 'overview' | 'verse' | 'members' | 'notifications' | 'testimonies';
+type Section = 'overview' | 'verse' | 'members' | 'notifications' | 'testimonies' | 'messages';
 
 const SECTIONS: { id: Section; label: string; icon: string }[] = [
   { id: 'overview',      label: 'Overview',      icon: '◈' },
@@ -23,6 +24,7 @@ const SECTIONS: { id: Section; label: string; icon: string }[] = [
   { id: 'members',       label: 'Members',        icon: '◉' },
   { id: 'notifications', label: 'Notifications',  icon: '◆' },
   { id: 'testimonies',   label: 'Testimonies',    icon: '↺' },
+  { id: 'messages',     label: 'Messages',       icon: '✉' },
 ];
 
 const SECTION_TITLES: Record<Section, { heading: string; sub: string }> = {
@@ -31,6 +33,7 @@ const SECTION_TITLES: Record<Section, { heading: string; sub: string }> = {
   members:       { heading: 'Church Members',                  sub: 'Manage roles and send personal nudges.' },
   notifications: { heading: 'Send a Notification',            sub: 'Compose and send a custom push notification.' },
   testimonies:   { heading: 'Pending Testimonies',            sub: 'Review, approve, and feature community testimonies.' },
+  messages:      { heading: 'Contact Messages',               sub: 'Messages submitted through the Alignment Church website.' },
 };
 
 export default function PastorPage() {
@@ -122,6 +125,7 @@ export default function PastorPage() {
       {section === 'members'       && <MemberList />}
       {section === 'notifications' && <NotificationComposer />}
       {section === 'testimonies'   && <PendingTestimonies />}
+      {section === 'messages'      && <ContactMessages />}
     </div>
   );
 }
