@@ -6,7 +6,10 @@ interface TopBarProps {
 
 export default function TopBar({ role = 'member' }: TopBarProps) {
   return (
-    <div className="sticky top-0 z-50 border-b border-[#162030] bg-[rgba(7,12,18,0.9)] px-5 backdrop-blur-md">
+    <div
+      className="sticky top-0 z-50 border-b border-[#162030] bg-[rgba(7,12,18,0.9)] px-5 backdrop-blur-md"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
       <div className="mx-auto flex h-14 max-w-3xl items-center justify-between">
         <div className="flex items-baseline gap-2.5">
           <h1 className="font-serif text-xl font-normal tracking-wide text-[#f0e8d4]">

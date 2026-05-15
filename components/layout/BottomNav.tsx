@@ -24,7 +24,10 @@ export default function BottomNav({ role = 'member' }: BottomNavProps) {
   const items = role === 'pastor' || role === 'admin' ? PASTOR_NAV : NAV_ITEMS;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#162030] bg-[rgba(7,12,18,0.96)] pb-3 pt-2 backdrop-blur-md">
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#162030] bg-[rgba(7,12,18,0.96)] pt-2 backdrop-blur-md"
+      style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}
+    >
       <div className="mx-auto flex max-w-sm justify-around">
         {items.map((item) => {
           const active = pathname === item.href;

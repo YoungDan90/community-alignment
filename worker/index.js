@@ -1,4 +1,25 @@
-// Push notification handler — merged into sw.js by next-pwa on build
+// Custom worker — merged into sw.js by next-pwa on build
+
+const CACHE_NAME = 'community-shell-v1';
+const SHELL_URLS = ['/dashboard', '/selah', '/word-to-walk', '/prayer-wall'];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_URLS)).catch(() => {})
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.mode !== 'navigate') return;
+  const url = new URL(event.request.url);
+  if (!SHELL_URLS.includes(url.pathname)) return;
+
+  event.respondWith(
+    fetch(event.request).catch(() =>
+      caches.match(event.request).then((cached) => cached ?? Response.error())
+    )
+  );
+});
 
 self.addEventListener('push', (event) => {
   if (!event.data) return;
