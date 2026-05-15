@@ -1,0 +1,23 @@
+{
+  "name": "Community",
+  "short_name": "Community",
+  "description": "Alignment Church Community Platform",
+  "theme_color": "#0f1e2e",
+  "background_color": "#070c12",
+  "display": "standalone",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
