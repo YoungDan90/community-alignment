@@ -8,7 +8,7 @@ export default function PageSpinner() {
         alignItems: 'center',
         justifyContent: 'center',
         gap: 16,
-        fontFamily: "Georgia, 'Times New Roman', serif",
+        fontFamily: "var(--font-jost), 'Jost', sans-serif",
       }}
     >
       <style>{`

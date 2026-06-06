@@ -220,7 +220,7 @@ export default function LandingPage() {
               </div>
               <div className="service-meta-item">
                 <dt>Location</dt>
-                <dd>The Cornerstone<br />Southend-on-Sea</dd>
+                <dd>The Cornerstone URC<br />Bournemouth Park Rd<br />Southend-on-Sea SS2 5JL</dd>
               </div>
             </dl>
           </div>
@@ -348,6 +348,11 @@ export default function LandingPage() {
         <p className="logo">Alignment Church</p>
         <p>The Cornerstone URC, Bournemouth Park Rd, Southend-on-Sea SS2 5JL · info@alignmentchurch.uk</p>
         <p style={{ marginTop: '0.5rem' }}>© 2026 Alignment Church · Registered CIO · &ldquo;Your kingdom come, your will be done.&rdquo; — Matthew 6:10</p>
+        <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', marginTop: '1.25rem' }}>
+          <a href="https://www.instagram.com/alignmentchurchsouthend/" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(198,167,94,0.7)', textDecoration: 'none', fontSize: '0.78rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Instagram</a>
+          <a href="https://www.tiktok.com/@alignmentchurchsouthend" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(198,167,94,0.7)', textDecoration: 'none', fontSize: '0.78rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>TikTok</a>
+          <a href="https://www.facebook.com/share/17oeTLmkE1/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(198,167,94,0.7)', textDecoration: 'none', fontSize: '0.78rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Facebook</a>
+        </div>
         <p style={{ marginTop: '1rem' }}>
           <Link href="/login" style={{ color: 'rgba(198,167,94,0.6)', textDecoration: 'none', fontSize: '0.78rem', letterSpacing: '0.1em' }}>
             Member Portal →

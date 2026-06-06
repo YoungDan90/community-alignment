@@ -19,7 +19,7 @@ export default function SelahTimer({ duration, timeLeft }: SelahTimerProps) {
         height="200"
         style={{ transform: 'rotate(-90deg)', position: 'absolute', top: 0, left: 0 }}
       >
-        <circle cx="100" cy="100" r={r} fill="none" stroke="#162030" strokeWidth="2" />
+        <circle cx="100" cy="100" r={r} fill="none" stroke="#1e3a52" strokeWidth="2" />
         <circle
           cx="100"
           cy="100"

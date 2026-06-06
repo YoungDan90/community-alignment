@@ -86,12 +86,12 @@ type ResponseMap = Record<string, StageResponse>;
 const S = {
   font: {
     display: 'var(--font-cormorant), Georgia, serif',
-    body: "Georgia, 'Times New Roman', serif",
+    body: "var(--font-jost), 'Jost', sans-serif",
   },
   gold: '#c6a75e',
   goldBorder: 'rgba(198,167,94,0.25)',
-  border: '#162030',
-  dark: '#070c12',
+  border: '#1e3a52',
+  dark: '#0f1e2e',
   text: '#ddd0b8',
   textLight: '#f0e8d4',
   soft: '#6a8aaa',
@@ -171,12 +171,12 @@ export default function WordToWalkPage() {
         .from('meditations')
         .insert({
           user_id: user?.id ?? null,
-          verse_id: activeVerse?.id === 'fallback' ? null : (activeVerse?.id ?? null),
+          verse_id: (activeVerse?.id === 'fallback' || activeVerse?.id === 'custom') ? null : (activeVerse?.id ?? null),
           is_shared: isShared,
           status: 'in_progress',
         })
         .select('id')
-        .single();
+        .maybeSingle();
       if (data?.id) {
         setMeditationId(data.id);
         return data.id;
@@ -334,7 +334,7 @@ export default function WordToWalkPage() {
       {/* Receive stage — custom UI with BibleSearch */}
       {stage === 0 && (
         <div style={{
-          background: '#0b1118', border: `1px solid ${S.border}`, borderRadius: 3,
+          background: '#0a1828', border: `1px solid ${S.border}`, borderRadius: 3,
           padding: '28px 28px 24px',
           opacity: animating ? 0 : 1, transform: animating ? 'translateY(8px)' : 'translateY(0)',
           transition: 'opacity 0.25s ease, transform 0.25s ease', fontFamily: S.font.body,

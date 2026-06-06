@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import NotificationPrompt from '@/components/notifications/NotificationPrompt';
+import { subscribeUser, unsubscribeUser } from '@/lib/notifications/push';
 
 const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
+  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
   gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0b1118', dark: '#070c12', border: '#162030',
+  card: '#0a1828', dark: '#0f1e2e', border: '#1e3a52',
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
@@ -29,6 +30,8 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState<{ full_name: string | null; role: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
+  const [notifState, setNotifState] = useState<'unsupported' | 'denied' | 'granted' | 'default'>('default');
+  const [notifLoading, setNotifLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -36,12 +39,38 @@ export default function DashboardPage() {
       const { data: { user: u } } = await supabase.auth.getUser();
       if (!u) { router.push('/login'); return; }
       setUser({ email: u.email ?? '' });
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', u.id).maybeSingle();
-      console.log('[dashboard] data:', data, 'error:', error);
+      const { data } = await supabase.from('profiles').select('*').eq('id', u.id).maybeSingle();
       setProfile(data ?? { full_name: null, role: 'member' });
       setLoading(false);
     })();
+
+    if (typeof window !== 'undefined') {
+      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        setNotifState('unsupported');
+      } else {
+        setNotifState(Notification.permission as 'denied' | 'granted' | 'default');
+      }
+    }
   }, [router]);
+
+  const handleToggleNotifications = async () => {
+    setNotifLoading(true);
+    if (notifState === 'granted') {
+      await unsubscribeUser();
+      setNotifState('default');
+      localStorage.removeItem('notification_prompt_dismissed');
+    } else {
+      const { requestPermission } = await import('@/lib/notifications/push');
+      const permission = await requestPermission();
+      if (permission === 'granted') {
+        await subscribeUser();
+        setNotifState('granted');
+      } else {
+        setNotifState(permission);
+      }
+    }
+    setNotifLoading(false);
+  };
 
   const handleSignOut = async () => {
     setSigningOut(true);
@@ -147,6 +176,39 @@ export default function DashboardPage() {
             {ROLE_LABELS[profile?.role ?? 'member'] ?? profile?.role}
           </span>
         </div>
+
+        {/* Notification toggle */}
+        {notifState !== 'unsupported' && (
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '12px 0', borderBottom: `1px solid ${S.border}`, marginBottom: 12,
+          }}>
+            <div>
+              <p style={{ margin: '0 0 2px', fontSize: 12, color: S.text, letterSpacing: '0.05em' }}>Push Notifications</p>
+              <p style={{ margin: 0, fontSize: 11, color: S.soft, fontStyle: 'italic' }}>
+                {notifState === 'granted' ? 'You will receive updates from the church' :
+                 notifState === 'denied'  ? 'Blocked — enable in browser settings' :
+                                            'Tap to receive church updates'}
+              </p>
+            </div>
+            <button
+              onClick={handleToggleNotifications}
+              disabled={notifLoading || notifState === 'denied'}
+              style={{
+                position: 'relative', width: 44, height: 24, flexShrink: 0,
+                background: notifState === 'granted' ? S.gold : S.border,
+                border: 'none', borderRadius: 12, cursor: notifState === 'denied' ? 'not-allowed' : 'pointer',
+                transition: 'background 0.25s', opacity: notifLoading ? 0.6 : 1,
+              }}
+            >
+              <span style={{
+                position: 'absolute', top: 3, left: notifState === 'granted' ? 23 : 3,
+                width: 18, height: 18, borderRadius: '50%',
+                background: '#fff', transition: 'left 0.25s',
+              }} />
+            </button>
+          </div>
+        )}
 
         {/* Sign out */}
         <button

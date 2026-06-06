@@ -4,42 +4,47 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
-  { href: '/dashboard', label: 'Home', icon: '⌂' },
-  { href: '/selah', label: 'Selah', icon: '✦' },
-  { href: '/word-to-walk', label: 'Word', icon: '◈' },
-  { href: '/prayer-wall', label: 'Prayer', icon: '🙏' },
+  { href: '/dashboard',    label: 'Home',    icon: '⌂' },
+  { href: '/selah',        label: 'Selah',   icon: '✦' },
+  { href: '/word-to-walk', label: 'Word',    icon: '◈' },
+  { href: '/prayer-wall',  label: 'Prayer',  icon: '🙏' },
+  { href: '/profile',      label: 'Profile', icon: '◉' },
 ];
 
-const PASTOR_NAV = [
-  ...NAV_ITEMS,
-  { href: '/pastor', label: 'Pastor', icon: '◆' },
-];
-
-interface BottomNavProps {
-  role?: 'member' | 'prophetic_team' | 'pastor' | 'admin';
-}
-
-export default function BottomNav({ role = 'member' }: BottomNavProps) {
+export default function BottomNav() {
   const pathname = usePathname();
-  const items = role === 'pastor' || role === 'admin' ? PASTOR_NAV : NAV_ITEMS;
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#162030] bg-[rgba(7,12,18,0.96)] pt-2 backdrop-blur-md"
-      style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}
+      style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
+        background: 'rgba(15,30,46,0.96)',
+        backdropFilter: 'blur(12px)',
+        borderTop: '1px solid rgba(198,167,94,0.15)',
+        paddingTop: 8,
+        paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))',
+      }}
     >
-      <div className="mx-auto flex max-w-sm justify-around">
-        {items.map((item) => {
-          const active = pathname === item.href;
+      <div style={{ maxWidth: 420, margin: '0 auto', display: 'flex', justifyContent: 'space-around' }}>
+        {NAV_ITEMS.map((item) => {
+          const active = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link
               key={item.href}
               href={item.href}
-              className="flex flex-col items-center gap-0.5 px-4 py-1"
-              style={{ color: active ? '#c6a75e' : '#c6a75e' }}
+              style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+                padding: '4px 12px', textDecoration: 'none',
+                color: active ? '#c6a75e' : 'rgba(198,167,94,0.45)',
+                transition: 'color 0.2s',
+              }}
             >
-              <span className="text-lg leading-none">{item.icon}</span>
-              <span className="text-[9px] uppercase tracking-wider">
+              <span style={{ fontSize: 18, lineHeight: 1 }}>{item.icon}</span>
+              <span style={{
+                fontFamily: 'var(--font-jost), sans-serif',
+                fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase',
+                fontWeight: active ? 500 : 300,
+              }}>
                 {item.label}
               </span>
             </Link>

@@ -10,7 +10,7 @@ interface ProgressTrackProps {
 }
 
 const F = {
-  body: "Georgia, 'Times New Roman', serif",
+  body: "var(--font-jost), 'Jost', sans-serif",
 };
 
 export default function ProgressTrack({ stages, currentStage }: ProgressTrackProps) {
@@ -23,7 +23,7 @@ export default function ProgressTrack({ stages, currentStage }: ProgressTrackPro
       <div
         style={{
           height: 2,
-          background: '#162030',
+          background: '#1e3a52',
           borderRadius: 1,
           marginBottom: 14,
           overflow: 'hidden',

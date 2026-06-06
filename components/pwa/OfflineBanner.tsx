@@ -30,7 +30,7 @@ export default function OfflineBanner() {
         textAlign: 'center',
         fontSize: 12,
         color: '#e07070',
-        fontFamily: "Georgia, 'Times New Roman', serif",
+        fontFamily: "var(--font-jost), 'Jost', sans-serif",
         fontStyle: 'italic',
         letterSpacing: '0.06em',
       }}

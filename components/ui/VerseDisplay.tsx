@@ -59,13 +59,13 @@ export default function VerseDisplay({
   return (
     <div
       style={{
-        background: '#0b1118',
+        background: '#0a1828',
         border: '1px solid rgba(198,167,94,0.25)',
         borderRadius: 3,
         padding: size === 'sm' ? '14px 18px' : '20px 24px',
         position: 'relative',
         overflow: 'hidden',
-        fontFamily: "Georgia, 'Times New Roman', serif",
+        fontFamily: "var(--font-jost), 'Jost', sans-serif",
       }}
     >
       {/* Gold top accent */}
@@ -108,7 +108,7 @@ export default function VerseDisplay({
             style={{
               display: 'flex',
               background: 'rgba(255,255,255,0.03)',
-              border: '1px solid #162030',
+              border: '1px solid #1e3a52',
               borderRadius: 20,
               overflow: 'hidden',
             }}
@@ -124,7 +124,7 @@ export default function VerseDisplay({
                   color: activeTranslation === t ? '#c6a75e' : '#c6a75e',
                   fontSize: 10,
                   cursor: 'pointer',
-                  fontFamily: "Georgia, 'Times New Roman', serif",
+                  fontFamily: "var(--font-jost), 'Jost', sans-serif",
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
                   transition: 'all 0.2s',

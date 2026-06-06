@@ -58,12 +58,12 @@ export default function InstallPrompt() {
         left: 16,
         right: 16,
         zIndex: 200,
-        background: '#0b1118',
+        background: '#0a1828',
         border: '1px solid rgba(198,167,94,0.3)',
         borderRadius: 6,
         padding: '18px 20px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
-        fontFamily: "Georgia, 'Times New Roman', serif",
+        fontFamily: "var(--font-jost), 'Jost', sans-serif",
       }}
     >
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(to right, #c6a75e, transparent)', borderRadius: '6px 6px 0 0' }} />
@@ -90,9 +90,9 @@ export default function InstallPrompt() {
               disabled={installing}
               style={{
                 padding: '9px 18px', background: '#c6a75e', border: 'none',
-                borderRadius: 2, color: '#070c12', fontSize: 12, fontWeight: 'bold',
+                borderRadius: 2, color: '#0f1e2e', fontSize: 12, fontWeight: 'bold',
                 cursor: installing ? 'wait' : 'pointer',
-                fontFamily: "Georgia, 'Times New Roman', serif", letterSpacing: '0.06em',
+                fontFamily: "var(--font-jost), 'Jost', sans-serif", letterSpacing: '0.06em',
                 minHeight: 44,
               }}
             >
@@ -102,9 +102,9 @@ export default function InstallPrompt() {
               onClick={handleDismiss}
               style={{
                 padding: '9px 16px', background: 'transparent',
-                border: '1px solid #162030', borderRadius: 2,
+                border: '1px solid #1e3a52', borderRadius: 2,
                 color: '#c6a75e', fontSize: 12, cursor: 'pointer',
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "var(--font-jost), 'Jost', sans-serif",
                 minHeight: 44,
               }}
             >

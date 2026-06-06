@@ -12,9 +12,9 @@ interface ActiveVerse {
 }
 
 const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
+  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
   gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0b1118', dark: '#070c12', border: '#162030',
+  card: '#0a1828', dark: '#0f1e2e', border: '#1e3a52',
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
@@ -103,6 +103,10 @@ export default function AssignVerse() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
 
+      const { data: profile } = await supabase
+        .from('profiles').select('church_id').eq('id', user!.id).maybeSingle();
+      const church_id = profile?.church_id ?? null;
+
       // Deactivate current active verse
       await supabase.from('verses').update({ is_active: false }).eq('is_active', true);
 
@@ -115,6 +119,7 @@ export default function AssignVerse() {
         playlist_url: playlistUrl.trim() || null,
         week_start: weekStart,
         is_active: true,
+        church_id,
         assigned_by: user?.id ?? null,
       }).select('id, reference, sermon_series, week_start').single();
 

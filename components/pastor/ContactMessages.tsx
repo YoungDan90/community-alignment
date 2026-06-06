@@ -14,9 +14,9 @@ interface ContactMessage {
 }
 
 const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
+  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
   gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0b1118', border: '#162030',
+  card: '#0a1828', border: '#1e3a52',
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 

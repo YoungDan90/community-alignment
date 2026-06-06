@@ -8,9 +8,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <div
       style={{
         minHeight: '100dvh',
-        background: '#070c12',
+        background: '#0f1e2e',
         backgroundImage:
-          'radial-gradient(ellipse at 10% 10%, #0f1e2e 0%, transparent 50%), radial-gradient(ellipse at 90% 90%, #0a1200 0%, transparent 50%)',
+          'radial-gradient(ellipse at 10% 10%, #1e3a52 0%, transparent 55%), radial-gradient(ellipse at 90% 90%, #0a1624 0%, transparent 55%)',
         color: '#ddd0b8',
         display: 'flex',
         flexDirection: 'column',

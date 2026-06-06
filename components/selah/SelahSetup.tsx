@@ -28,9 +28,9 @@ interface SelahSetupProps {
 }
 
 const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
+  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
   gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0b1118', dark: '#070c12', border: '#162030',
+  card: '#0a1828', dark: '#0f1e2e', border: '#1e3a52',
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
@@ -217,7 +217,7 @@ export default function SelahSetup({ activeVerse, onBegin }: SelahSetupProps) {
         onClick={() => onBegin({ duration, focus, translation, musicUrl, verseOverride: customVerse ?? undefined })}
         style={{
           width: '100%', padding: '15px', background: S.gold, border: 'none', borderRadius: 2,
-          color: '#070c12', fontSize: 15, fontWeight: 'bold', cursor: 'pointer',
+          color: '#0f1e2e', fontSize: 15, fontWeight: 'bold', cursor: 'pointer',
           fontFamily: S.font.body, letterSpacing: '0.08em', transition: 'opacity 0.2s',
         }}
       >

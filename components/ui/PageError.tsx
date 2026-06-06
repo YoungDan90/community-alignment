@@ -11,7 +11,7 @@ export default function PageError({ reset }: { reset?: () => void }) {
         justifyContent: 'center',
         padding: '32px 24px',
         textAlign: 'center',
-        fontFamily: "Georgia, 'Times New Roman', serif",
+        fontFamily: "var(--font-jost), 'Jost', sans-serif",
       }}
     >
       <span style={{ fontSize: 32, color: '#c6a75e', marginBottom: 16 }}>✦</span>
@@ -37,11 +37,11 @@ export default function PageError({ reset }: { reset?: () => void }) {
             background: '#c6a75e',
             border: 'none',
             borderRadius: 2,
-            color: '#070c12',
+            color: '#0f1e2e',
             fontSize: 13,
             fontWeight: 'bold',
             cursor: 'pointer',
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "var(--font-jost), 'Jost', sans-serif",
             letterSpacing: '0.06em',
             minHeight: 44,
           }}

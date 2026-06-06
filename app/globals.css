@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #070c12;
+  --background: #0f1e2e;
   --foreground: #ddd0b8;
 }
 
@@ -16,8 +16,8 @@ html {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Georgia, 'Times New Roman', serif;
-  /* Fill safe areas with the app background */
+  font-family: var(--font-jost), 'Jost', sans-serif;
+  font-weight: 300;
   background-attachment: fixed;
 }
 

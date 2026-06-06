@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Cormorant_Garamond } from 'next/font/google';
+import { Cormorant_Garamond, Jost } from 'next/font/google';
 import ServiceWorkerRegistrar from '@/components/ServiceWorkerRegistrar';
 import './globals.css';
 
@@ -8,6 +8,13 @@ const cormorant = Cormorant_Garamond({
   weight: ['300', '400', '500', '600', '700'],
   style: ['normal', 'italic'],
   variable: '--font-cormorant',
+  display: 'swap',
+});
+
+const jost = Jost({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-jost',
   display: 'swap',
 });
 
@@ -36,7 +43,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${cormorant.variable} antialiased`}>
+      <body className={`${cormorant.variable} ${jost.variable} antialiased`}>
         <ServiceWorkerRegistrar />
         {children}
       </body>

@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import TestimonyCard, { type Testimony } from '@/components/prayer-wall/TestimonyCard';
 
 const S = {
-  font: { body: "Georgia, 'Times New Roman', serif" },
+  font: { body: "var(--font-jost), 'Jost', sans-serif" },
   muted: '#c6a75e', soft: '#6a8aaa', gold: '#c6a75e',
 };
 

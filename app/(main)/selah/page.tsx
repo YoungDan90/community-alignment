@@ -16,10 +16,41 @@ const FALLBACK_VERSE: ActiveVerse = {
   sermon_series: 'Rooted — A Series on the Word',
 };
 
+function getMusicEmbedUrl(url: string): { src: string; type: 'youtube' | 'spotify' } | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+
+    // YouTube
+    if (u.hostname.includes('youtube.com') || u.hostname.includes('youtu.be')) {
+      let videoId = u.searchParams.get('v');
+      if (!videoId && u.hostname === 'youtu.be') videoId = u.pathname.slice(1);
+      const listId = u.searchParams.get('list');
+      if (videoId) {
+        const src = `https://www.youtube.com/embed/${videoId}?autoplay=1${listId ? `&list=${listId}` : ''}&rel=0`;
+        return { src, type: 'youtube' };
+      }
+      if (listId) {
+        return { src: `https://www.youtube.com/embed/videoseries?list=${listId}&autoplay=1`, type: 'youtube' };
+      }
+    }
+
+    // Spotify
+    if (u.hostname.includes('spotify.com')) {
+      // /playlist/ID, /track/ID, /album/ID
+      const match = u.pathname.match(/\/(playlist|track|album|episode)\/([a-zA-Z0-9]+)/);
+      if (match) {
+        return { src: `https://open.spotify.com/embed/${match[1]}/${match[2]}?utm_source=generator&theme=0`, type: 'spotify' };
+      }
+    }
+  } catch { /* invalid URL */ }
+  return null;
+}
+
 const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
+  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
   gold: '#c6a75e', goldBorder: 'rgba(198,167,94,0.25)',
-  border: '#162030', text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
+  border: '#1e3a52', text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
 export default function SelahPage() {
@@ -116,7 +147,7 @@ export default function SelahPage() {
       const { data: { user } } = await supabase.auth.getUser();
       await supabase.from('selah_sessions').insert({
         user_id: user?.id ?? null,
-        verse_id: activeVerse?.id === 'fallback' ? null : (activeVerse?.id ?? null),
+        verse_id: (activeVerse?.id === 'fallback' || activeVerse?.id === 'custom') ? null : (activeVerse?.id ?? null),
         duration_minutes: config?.duration ?? 0,
         focus_type: config?.focus ?? null,
         translation: sessionTranslation,
@@ -201,6 +232,25 @@ export default function SelahPage() {
           </button>
         ))}
       </div>
+
+      {/* Music player */}
+      {(() => {
+        const embed = getMusicEmbedUrl(config?.musicUrl ?? '');
+        if (!embed) return null;
+        return (
+          <div style={{ width: '100%', maxWidth: 480, marginBottom: 24 }}>
+            <iframe
+              src={embed.src}
+              width="100%"
+              height={embed.type === 'spotify' ? 80 : 160}
+              frameBorder="0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              allowFullScreen
+              style={{ borderRadius: 4, border: `1px solid ${S.border}`, display: 'block' }}
+            />
+          </div>
+        );
+      })()}
 
       {/* End early */}
       <button

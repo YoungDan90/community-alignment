@@ -6,8 +6,8 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
 const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
-  gold: '#c6a75e', dark: '#070c12', card: '#0b1118', border: '#162030',
+  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
+  gold: '#c6a75e', dark: '#0f1e2e', card: '#0a1828', border: '#1e3a52',
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
@@ -40,8 +40,8 @@ export default function LoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: S.dark,
-        backgroundImage: 'radial-gradient(ellipse at 50% 30%, #0f1e2e 0%, transparent 60%)',
+        background: '#0f1e2e',
+        backgroundImage: 'radial-gradient(ellipse at 50% 30%, #1e3a52 0%, transparent 60%)',
         padding: '24px 20px',
         fontFamily: S.font.body,
       }}

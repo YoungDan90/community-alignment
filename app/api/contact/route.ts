@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
 export async function POST(request: NextRequest) {
@@ -13,10 +13,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Save to Supabase using service role key (bypasses RLS for insert)
-    const supabase = createClient(
+    // Anon key is sufficient — RLS policy allows anon INSERT on contact_messages
+    const supabase = createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
     const { error: dbError } = await supabase.from('contact_messages').insert({

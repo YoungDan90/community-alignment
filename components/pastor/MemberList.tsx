@@ -7,13 +7,14 @@ interface Member {
   id: string;
   full_name: string | null;
   role: string;
+  church_id: string | null;
   created_at: string;
 }
 
 const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
+  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
   gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0b1118', dark: '#070c12', border: '#162030',
+  card: '#0a1828', dark: '#0f1e2e', border: '#1e3a52',
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
@@ -24,7 +25,12 @@ const ROLE_COLORS: Record<string, { bg: string; text: string; border: string }> 
   member:         { bg: 'transparent',               text: S.muted,  border: S.border },
 };
 
-const ROLES = ['member', 'prophetic_team', 'pastor', 'admin'];
+const ROLES: { value: string; label: string }[] = [
+  { value: 'member',         label: 'Member' },
+  { value: 'prophetic_team', label: 'Prophetic Team' },
+  { value: 'pastor',         label: 'Pastor' },
+  { value: 'admin',          label: 'Admin' },
+];
 
 export default function MemberList() {
   const [members, setMembers] = useState<Member[]>([]);
@@ -38,7 +44,7 @@ export default function MemberList() {
       const supabase = createClient();
       const { data } = await supabase
         .from('profiles')
-        .select('id, full_name, role, created_at')
+        .select('id, full_name, role, church_id, created_at')
         .order('created_at', { ascending: true });
       setMembers((data as Member[]) ?? []);
       setLoading(false);
@@ -92,76 +98,92 @@ export default function MemberList() {
 
   return (
     <div>
-      <p style={{ margin: '0 0 14px', fontSize: 11, color: S.muted }}>{members.length} member{members.length !== 1 ? 's' : ''}</p>
+      <p style={{ margin: '0 0 14px', fontSize: 11, color: S.muted }}>
+        {members.length} member{members.length !== 1 ? 's' : ''}
+      </p>
       {members.map((m) => {
-        const rc = ROLE_COLORS[m.role] ?? ROLE_COLORS.member;
+        const joined = new Date(m.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
         return (
           <div
             key={m.id}
             style={{
               background: S.card, border: `1px solid ${S.border}`, borderRadius: 3,
               padding: '14px 16px', marginBottom: 8,
-              display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
             }}
           >
-            {/* Avatar */}
-            <div style={{
-              width: 34, height: 34, borderRadius: '50%',
-              background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 13, color: S.gold, flexShrink: 0,
-            }}>
-              {(m.full_name ?? '?')[0].toUpperCase()}
-            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              {/* Avatar */}
+              <div style={{
+                width: 36, height: 36, borderRadius: '50%',
+                background: S.goldDim, border: `1px solid ${S.goldBorder}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 14, color: S.gold, flexShrink: 0,
+              }}>
+                {(m.full_name ?? '?')[0].toUpperCase()}
+              </div>
 
-            {/* Name + feedback */}
-            <div style={{ flex: 1, minWidth: 100 }}>
-              <p style={{ margin: 0, fontSize: 14, color: S.textLight, fontFamily: S.font.display }}>
-                {m.full_name ?? 'Unnamed member'}
-              </p>
-              {feedback[m.id] && (
-                <p style={{ margin: '2px 0 0', fontSize: 10, color: S.gold, letterSpacing: '0.08em' }}>{feedback[m.id]}</p>
-              )}
-            </div>
+              {/* Name + joined */}
+              <div style={{ flex: 1, minWidth: 100 }}>
+                <p style={{ margin: 0, fontSize: 15, color: S.textLight, fontFamily: S.font.display }}>
+                  {m.full_name ?? 'Unnamed member'}
+                </p>
+                <p style={{ margin: '2px 0 0', fontSize: 10, color: S.soft }}>
+                  Joined {joined}
+                  {!m.church_id && <span style={{ marginLeft: 8, color: '#e07070' }}>· no church linked</span>}
+                </p>
+                {feedback[m.id] && (
+                  <p style={{ margin: '2px 0 0', fontSize: 10, color: S.gold, letterSpacing: '0.08em' }}>{feedback[m.id]}</p>
+                )}
+              </div>
 
-            {/* Role badge / dropdown */}
-            <div style={{ position: 'relative' }}>
-              <select
-                value={m.role}
-                disabled={updatingRole === m.id}
-                onChange={(e) => handleRoleChange(m, e.target.value)}
+              {/* Nudge */}
+              <button
+                onClick={() => handleNudge(m)}
+                disabled={nudging === m.id}
                 style={{
-                  padding: '4px 10px', borderRadius: 20,
-                  background: rc.bg, border: `1px solid ${rc.border}`,
-                  color: rc.text, fontSize: 10, letterSpacing: '0.1em',
-                  textTransform: 'uppercase', cursor: 'pointer',
-                  fontFamily: S.font.body, outline: 'none',
-                  appearance: 'none', paddingRight: 22,
+                  padding: '6px 12px', background: 'transparent',
+                  border: `1px solid ${S.border}`, borderRadius: 2,
+                  color: S.soft, fontSize: 10, cursor: 'pointer',
+                  fontFamily: S.font.body, letterSpacing: '0.08em',
+                  whiteSpace: 'nowrap', flexShrink: 0,
                 }}
               >
-                {ROLES.map((r) => (
-                  <option key={r} value={r} style={{ background: S.dark, color: S.text, textTransform: 'none' }}>
-                    {r.replace('_', ' ')}
-                  </option>
-                ))}
-              </select>
-              <span style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', fontSize: 8, color: rc.text, pointerEvents: 'none' }}>▾</span>
+                {nudging === m.id ? '…' : 'Nudge'}
+              </button>
             </div>
 
-            {/* Nudge */}
-            <button
-              onClick={() => handleNudge(m)}
-              disabled={nudging === m.id}
-              style={{
-                padding: '5px 12px', background: 'transparent',
-                border: `1px solid ${S.border}`, borderRadius: 2,
-                color: S.soft, fontSize: 10, cursor: 'pointer',
-                fontFamily: S.font.body, letterSpacing: '0.08em',
-                whiteSpace: 'nowrap', flexShrink: 0,
-              }}
-            >
-              {nudging === m.id ? '…' : 'Send Nudge'}
-            </button>
+            {/* Team assignment row */}
+            <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft, flexShrink: 0 }}>
+                Assign to team
+              </span>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {ROLES.map((r) => {
+                  const active = m.role === r.value;
+                  const rColors = ROLE_COLORS[r.value] ?? ROLE_COLORS.member;
+                  return (
+                    <button
+                      key={r.value}
+                      onClick={() => !active && handleRoleChange(m, r.value)}
+                      disabled={updatingRole === m.id}
+                      style={{
+                        padding: '4px 12px', borderRadius: 20,
+                        background: active ? rColors.bg : 'transparent',
+                        border: `1px solid ${active ? rColors.border : S.border}`,
+                        color: active ? rColors.text : S.soft,
+                        fontSize: 10, letterSpacing: '0.08em',
+                        cursor: active ? 'default' : 'pointer',
+                        fontFamily: S.font.body,
+                        transition: 'all 0.15s',
+                        opacity: updatingRole === m.id ? 0.5 : 1,
+                      }}
+                    >
+                      {r.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         );
       })}

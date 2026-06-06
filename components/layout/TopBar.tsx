@@ -31,27 +31,58 @@ export default function TopBar() {
 
   return (
     <div
-      className="sticky top-0 z-50 border-b border-[#162030] bg-[rgba(7,12,18,0.9)] px-5 backdrop-blur-md"
-      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      style={{
+        position: 'sticky', top: 0, zIndex: 50,
+        background: 'rgba(15,30,46,0.88)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(198,167,94,0.15)',
+        paddingTop: 'env(safe-area-inset-top)',
+      }}
     >
-      <div className="mx-auto flex h-14 max-w-3xl items-center justify-between">
-        <div className="flex items-baseline gap-2.5">
-          <h1 className="font-serif text-xl font-normal tracking-wide text-[#f0e8d4]">
-            Community
-          </h1>
-          <span className="text-[10px] uppercase tracking-widest text-[#c6a75e]">
-            Alignment Church
+      <div style={{
+        maxWidth: 720, margin: '0 auto',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 1.5rem', height: 56,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+          <span style={{
+            fontFamily: 'var(--font-cormorant), Georgia, serif',
+            fontSize: '1.4rem', fontWeight: 600,
+            letterSpacing: '0.06em', color: '#c6a75e',
+          }}>
+            Alignment
+          </span>
+          <span style={{
+            fontFamily: 'var(--font-cormorant), Georgia, serif',
+            fontSize: '1.4rem', fontWeight: 300,
+            letterSpacing: '0.06em', color: '#f0e8d4',
+          }}>
+            Church
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="rounded border border-[#162030] px-2.5 py-1 text-[10px] uppercase tracking-wider text-[#6a8aaa]">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{
+            fontFamily: 'var(--font-jost), sans-serif',
+            fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase',
+            color: '#6a8aaa',
+            padding: '3px 10px',
+            border: '1px solid #1e3a52',
+            borderRadius: 2,
+          }}>
             {ROLE_LABELS[role] ?? role}
           </span>
           <button
             onClick={handleSignOut}
-            className="text-[11px] uppercase tracking-wider text-[#c6a75e] transition-colors duration-200 hover:text-[#c6a75e]"
-            style={{ minHeight: 44, padding: '0 4px' }}
+            style={{
+              fontFamily: 'var(--font-jost), sans-serif',
+              fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase',
+              color: 'rgba(198,167,94,0.7)', background: 'none', border: 'none',
+              cursor: 'pointer', minHeight: 44, padding: '0 4px',
+              transition: 'color 0.2s',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#c6a75e')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(198,167,94,0.7)')}
           >
             Sign out
           </button>

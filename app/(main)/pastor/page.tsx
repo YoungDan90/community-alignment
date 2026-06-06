@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import EngagementOverview from '@/components/pastor/EngagementOverview';
 import AssignVerse from '@/components/pastor/AssignVerse';
@@ -11,9 +12,9 @@ import PendingTestimonies from '@/components/pastor/PendingTestimonies';
 import ContactMessages from '@/components/pastor/ContactMessages';
 
 const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "Georgia, 'Times New Roman', serif" },
+  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
   gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  border: '#162030', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
+  border: '#1e3a52', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
 type Section = 'overview' | 'verse' | 'members' | 'notifications' | 'testimonies' | 'messages';
@@ -50,8 +51,6 @@ export default function PastorPage() {
 
       const { data: profile } = await supabase
         .from('profiles').select('role').eq('id', user.id).maybeSingle();
-      console.log('[pastor] profile fetch result:', profile);
-
       if (profile?.role === 'pastor' || profile?.role === 'admin') {
         setAuthorized(true);
       } else {
@@ -117,6 +116,33 @@ export default function PastorPage() {
             </button>
           );
         })}
+      </div>
+
+      {/* Quick links to full-page tools */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+        <Link href="/members" style={{ textDecoration: 'none' }}>
+          <div style={{
+            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
+            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
+          }}>
+            <span style={{ fontSize: 13, color: S.gold }}>◉</span>
+            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Member Directory</span>
+          </div>
+        </Link>
+        <div style={{
+          padding: '10px 18px', background: 'transparent', border: `1px solid ${S.border}`,
+          borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8, opacity: 0.5,
+        }}>
+          <span style={{ fontSize: 13, color: S.muted }}>📋</span>
+          <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.muted, fontFamily: S.font.body }}>Rotas <span style={{ fontSize: 9, opacity: 0.7 }}>Phase 10</span></span>
+        </div>
+        <div style={{
+          padding: '10px 18px', background: 'transparent', border: `1px solid ${S.border}`,
+          borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8, opacity: 0.5,
+        }}>
+          <span style={{ fontSize: 13, color: S.muted }}>◈</span>
+          <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.muted, fontFamily: S.font.body }}>Groups <span style={{ fontSize: 9, opacity: 0.7 }}>Phase 11</span></span>
+        </div>
       </div>
 
       {/* Section content */}
