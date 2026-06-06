@@ -32,6 +32,7 @@ export default function DashboardPage() {
   const [signingOut, setSigningOut] = useState(false);
   const [notifState, setNotifState] = useState<'unsupported' | 'denied' | 'granted' | 'default'>('default');
   const [notifLoading, setNotifLoading] = useState(false);
+  const [nextSlot, setNextSlot] = useState<{ role_name: string; service_date: string; team_name: string } | null | undefined>(undefined);
 
   useEffect(() => {
     (async () => {
@@ -41,6 +42,24 @@ export default function DashboardPage() {
       setUser({ email: u.email ?? '' });
       const { data } = await supabase.from('profiles').select('*').eq('id', u.id).maybeSingle();
       setProfile(data ?? { full_name: null, role: 'member' });
+
+      // Fetch next rota slot
+      const today = new Date().toISOString().split('T')[0];
+      const { data: slotData } = await supabase
+        .from('rota_slots')
+        .select('role_name, rota:rota_id(service_date, team:team_id(name))')
+        .eq('member_id', u.id)
+        .gte('rota.service_date', today)
+        .order('rota(service_date)', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      if (slotData) {
+        const rota = slotData.rota as unknown as { service_date: string; team: { name: string } };
+        setNextSlot({ role_name: slotData.role_name, service_date: rota.service_date, team_name: rota.team.name });
+      } else {
+        setNextSlot(null);
+      }
+
       setLoading(false);
     })();
 
@@ -141,6 +160,33 @@ export default function DashboardPage() {
           </Link>
         )}
       </div>
+
+      {/* Serving card */}
+      {nextSlot !== undefined && (
+        <Link href="/my-rota" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
+          <div style={{
+            background: S.card, border: `1px solid ${S.border}`, borderRadius: 3,
+            padding: '16px 18px', position: 'relative', overflow: 'hidden',
+            transition: 'border-color 0.2s',
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(to right, ${S.border}, transparent)` }} />
+            <p style={{ margin: '0 0 8px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.muted }}>Your Serving</p>
+            {nextSlot ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                <div>
+                  <p style={{ margin: '0 0 2px', fontSize: 15, color: S.textLight, fontFamily: S.font.display }}>{nextSlot.role_name}</p>
+                  <p style={{ margin: 0, fontSize: 12, color: S.soft }}>
+                    {nextSlot.team_name} · {new Date(nextSlot.service_date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
+                  </p>
+                </div>
+                <span style={{ fontSize: 14, color: S.muted }}>→</span>
+              </div>
+            ) : (
+              <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>No serving assignments this week.</p>
+            )}
+          </div>
+        </Link>
+      )}
 
       {/* Profile / settings */}
       <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '20px 20px', position: 'relative', overflow: 'hidden' }}>

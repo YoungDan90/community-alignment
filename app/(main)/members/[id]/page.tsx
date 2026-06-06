@@ -5,6 +5,56 @@ import { useRouter, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import EditProfileForm from '@/components/members/EditProfileForm';
 
+function ServingSection({ memberId }: { memberId: string }) {
+  const [teams, setTeams] = useState<{ id: string; name: string }[]>([]);
+  const [slots, setSlots] = useState<{ id: string; role_name: string; status: string; rota: { service_date: string; team: { name: string } } }[]>([]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.from('team_members').select('team:team_id(id, name)').eq('member_id', memberId)
+      .then(({ data }) => setTeams((data ?? []).map((d: { team: { id: string; name: string }[] | { id: string; name: string } }) => (Array.isArray(d.team) ? d.team[0] : d.team)).filter(Boolean)));
+
+    const today = new Date().toISOString().split('T')[0];
+    supabase.from('rota_slots')
+      .select('id, role_name, status, rota:rota_id(service_date, team:team_id(name))')
+      .eq('member_id', memberId)
+      .gte('rota.service_date', today)
+      .order('rota(service_date)', { ascending: true })
+      .limit(5)
+      .then(({ data }) => setSlots((data as unknown as typeof slots) ?? []));
+  }, [memberId]);
+
+  const S2 = {
+    card: '#0a1828', border: '#1e3a52', gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)',
+    goldBorder: 'rgba(198,167,94,0.25)', soft: '#6a8aaa', muted: '#c6a75e', textLight: '#f0e8d4', text: '#ddd0b8',
+    font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
+  };
+
+  return (
+    <div style={{ background: S2.card, border: `1px solid ${S2.border}`, borderRadius: 3, padding: '16px 18px', marginTop: 16 }}>
+      <p style={{ margin: '0 0 10px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S2.muted }}>Serving Teams</p>
+      {teams.length === 0
+        ? <p style={{ margin: '0 0 12px', fontSize: 13, color: S2.soft, fontStyle: 'italic' }}>Not assigned to any team.</p>
+        : <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
+            {teams.map(t => (
+              <span key={t.id} style={{ fontSize: 10, letterSpacing: '0.08em', background: S2.goldDim, color: S2.gold, border: `1px solid ${S2.goldBorder}`, padding: '3px 10px', borderRadius: 10 }}>{t.name}</span>
+            ))}
+          </div>
+      }
+      <p style={{ margin: '0 0 10px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S2.muted }}>Upcoming Rota Slots</p>
+      {slots.length === 0
+        ? <p style={{ margin: 0, fontSize: 13, color: S2.soft, fontStyle: 'italic' }}>No upcoming assignments.</p>
+        : slots.map(s => (
+            <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: `1px solid ${S2.border}` }}>
+              <span style={{ fontSize: 13, color: S2.textLight, fontFamily: S2.font.display }}>{s.role_name}</span>
+              <span style={{ fontSize: 11, color: S2.soft }}>{new Date(s.rota.service_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+            </div>
+          ))
+      }
+    </div>
+  );
+}
+
 interface Profile {
   id: string;
   full_name: string | null;
@@ -234,10 +284,7 @@ export default function MemberProfilePage() {
               Last active: {new Date(stats.lastActive).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           )}
-          <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '16px 18px', marginTop: 16 }}>
-            <p style={{ margin: '0 0 6px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.muted }}>Serving</p>
-            <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>Rota assignments coming in Phase 10.</p>
-          </div>
+          <ServingSection memberId={memberId} />
           <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '16px 18px', marginTop: 10 }}>
             <p style={{ margin: '0 0 6px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.muted }}>Groups</p>
             <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>Group assignments coming in Phase 11.</p>

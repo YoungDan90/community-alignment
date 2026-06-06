@@ -129,13 +129,15 @@ export default function PastorPage() {
             <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Member Directory</span>
           </div>
         </Link>
-        <div style={{
-          padding: '10px 18px', background: 'transparent', border: `1px solid ${S.border}`,
-          borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8, opacity: 0.5,
-        }}>
-          <span style={{ fontSize: 13, color: S.muted }}>📋</span>
-          <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.muted, fontFamily: S.font.body }}>Rotas <span style={{ fontSize: 9, opacity: 0.7 }}>Phase 10</span></span>
-        </div>
+        <Link href="/rotas" style={{ textDecoration: 'none' }}>
+          <div style={{
+            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
+            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
+          }}>
+            <span style={{ fontSize: 13, color: S.gold }}>📋</span>
+            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Rotas</span>
+          </div>
+        </Link>
         <div style={{
           padding: '10px 18px', background: 'transparent', border: `1px solid ${S.border}`,
           borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8, opacity: 0.5,
