@@ -5,10 +5,10 @@ import { usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
   { href: '/dashboard',    label: 'Home',    icon: '⌂' },
-  { href: '/selah',        label: 'Selah',   icon: '✦' },
   { href: '/word-to-walk', label: 'Word',    icon: '◈' },
+  { href: '/groups',       label: 'Groups',  icon: '◉' },
   { href: '/prayer-wall',  label: 'Prayer',  icon: '🙏' },
-  { href: '/profile',      label: 'Profile', icon: '◉' },
+  { href: '/profile',      label: 'Profile', icon: '✦' },
 ];
 
 export default function BottomNav() {

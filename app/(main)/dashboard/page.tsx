@@ -33,6 +33,7 @@ export default function DashboardPage() {
   const [notifState, setNotifState] = useState<'unsupported' | 'denied' | 'granted' | 'default'>('default');
   const [notifLoading, setNotifLoading] = useState(false);
   const [nextSlot, setNextSlot] = useState<{ role_name: string; service_date: string; team_name: string } | null | undefined>(undefined);
+  const [myGroups, setMyGroups] = useState<{ id: string; name: string; meeting_schedule: string | null }[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -58,6 +59,18 @@ export default function DashboardPage() {
         setNextSlot({ role_name: slotData.role_name, service_date: rota.service_date, team_name: rota.team.name });
       } else {
         setNextSlot(null);
+      }
+
+      // Fetch my groups (up to 2)
+      const { data: groupMemberships } = await supabase
+        .from('group_members')
+        .select('group:group_id(id, name, meeting_schedule)')
+        .eq('member_id', u.id)
+        .limit(2);
+      if (groupMemberships) {
+        setMyGroups(groupMemberships.map((gm: { group: { id: string; name: string; meeting_schedule: string | null }[] | { id: string; name: string; meeting_schedule: string | null } }) =>
+          Array.isArray(gm.group) ? gm.group[0] : gm.group
+        ).filter(Boolean));
       }
 
       setLoading(false);
@@ -187,6 +200,27 @@ export default function DashboardPage() {
           </div>
         </Link>
       )}
+
+      {/* Groups card */}
+      <Link href="/groups" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
+        <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '16px 18px', position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(to right, ${S.border}, transparent)` }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: myGroups.length > 0 ? 10 : 0 }}>
+            <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.muted }}>Your Groups</p>
+            <span style={{ fontSize: 11, color: S.soft }}>View all →</span>
+          </div>
+          {myGroups.length === 0 ? (
+            <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>You haven&rsquo;t joined any groups yet.</p>
+          ) : (
+            myGroups.map(g => (
+              <div key={g.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: `1px solid ${S.border}` }}>
+                <p style={{ margin: 0, fontSize: 14, color: S.textLight, fontFamily: S.font.display }}>{g.name}</p>
+                {g.meeting_schedule && <p style={{ margin: 0, fontSize: 11, color: S.soft }}>{g.meeting_schedule}</p>}
+              </div>
+            ))
+          )}
+        </div>
+      </Link>
 
       {/* Profile / settings */}
       <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '20px 20px', position: 'relative', overflow: 'hidden' }}>

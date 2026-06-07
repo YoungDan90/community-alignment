@@ -5,6 +5,69 @@ import { useRouter, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import EditProfileForm from '@/components/members/EditProfileForm';
 
+function GroupsSection({ memberId }: { memberId: string }) {
+  const [memberGroups, setMemberGroups] = useState<{ id: string; gmId: string; name: string }[]>([]);
+  const [allGroups, setAllGroups] = useState<{ id: string; name: string }[]>([]);
+  const [addGroupId, setAddGroupId] = useState('');
+
+  const S2 = {
+    card: '#0a1828', border: '#1e3a52', gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)',
+    goldBorder: 'rgba(198,167,94,0.25)', soft: '#6a8aaa', muted: '#c6a75e', textLight: '#f0e8d4',
+    font: { body: "var(--font-jost), 'Jost', sans-serif" },
+  };
+
+  const load = () => {
+    const supabase = createClient();
+    supabase.from('group_members').select('id, group:group_id(id, name)').eq('member_id', memberId)
+      .then(({ data }) => setMemberGroups(
+        (data ?? []).map((d: { id: string; group: { id: string; name: string }[] | { id: string; name: string } }) => {
+          const g = Array.isArray(d.group) ? d.group[0] : d.group;
+          return { id: g.id, gmId: d.id, name: g.name };
+        })
+      ));
+    supabase.from('groups').select('id, name').eq('is_active', true).order('name')
+      .then(({ data }) => setAllGroups((data as { id: string; name: string }[]) ?? []));
+  };
+
+  useEffect(() => { load(); }, [memberId]);
+
+  const handleAdd = async () => {
+    if (!addGroupId) return;
+    const supabase = createClient();
+    await supabase.from('group_members').insert({ group_id: addGroupId, member_id: memberId });
+    setAddGroupId('');
+    load();
+  };
+
+  const handleRemove = async (gmId: string) => {
+    const supabase = createClient();
+    await supabase.from('group_members').delete().eq('id', gmId);
+    setMemberGroups(prev => prev.filter(g => g.gmId !== gmId));
+  };
+
+  const notInGroup = allGroups.filter(g => !memberGroups.some(mg => mg.id === g.id));
+
+  return (
+    <div style={{ background: S2.card, border: `1px solid ${S2.border}`, borderRadius: 3, padding: '16px 18px', marginTop: 10 }}>
+      <p style={{ margin: '0 0 12px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S2.muted }}>Groups</p>
+      {memberGroups.length === 0 && <p style={{ margin: '0 0 12px', fontSize: 13, color: S2.soft, fontStyle: 'italic' }}>Not in any groups.</p>}
+      {memberGroups.map(g => (
+        <div key={g.gmId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: `1px solid ${S2.border}` }}>
+          <span style={{ fontSize: 13, color: S2.textLight }}>{g.name}</span>
+          <button onClick={() => handleRemove(g.gmId)} style={{ background: 'none', border: 'none', color: '#c47a7a', fontSize: 10, cursor: 'pointer', fontFamily: S2.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Remove</button>
+        </div>
+      ))}
+      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+        <select value={addGroupId} onChange={e => setAddGroupId(e.target.value)} style={{ flex: 1, background: '#0f1e2e', border: `1px solid ${S2.border}`, borderRadius: 2, padding: '8px 10px', color: S2.soft, fontSize: 12, fontFamily: S2.font.body, outline: 'none' }}>
+          <option value="">Add to group…</option>
+          {notInGroup.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
+        </select>
+        <button onClick={handleAdd} disabled={!addGroupId} style={{ padding: '8px 12px', background: addGroupId ? S2.goldDim : 'transparent', border: `1px solid ${addGroupId ? S2.goldBorder : S2.border}`, borderRadius: 2, color: addGroupId ? S2.gold : S2.muted, fontSize: 11, cursor: addGroupId ? 'pointer' : 'not-allowed', fontFamily: S2.font.body }}>+ Add</button>
+      </div>
+    </div>
+  );
+}
+
 function ServingSection({ memberId }: { memberId: string }) {
   const [teams, setTeams] = useState<{ id: string; name: string }[]>([]);
   const [slots, setSlots] = useState<{ id: string; role_name: string; status: string; rota: { service_date: string; team: { name: string } } }[]>([]);
@@ -285,10 +348,7 @@ export default function MemberProfilePage() {
             </p>
           )}
           <ServingSection memberId={memberId} />
-          <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '16px 18px', marginTop: 10 }}>
-            <p style={{ margin: '0 0 6px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.muted }}>Groups</p>
-            <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>Group assignments coming in Phase 11.</p>
-          </div>
+          <GroupsSection memberId={memberId} />
         </div>
       )}
 
