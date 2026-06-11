@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
 interface Profile {
@@ -258,6 +259,20 @@ export default function ProfilePage() {
           </p>
         )}
       </div>
+
+      {/* My Resources */}
+      <Link href="/documents" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
+        <div style={{
+          padding: '12px 16px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontSize: 16, color: S.gold }}>📂</span>
+            <span style={{ fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Resources & Documents</span>
+          </div>
+          <span style={{ fontSize: 13, color: S.gold }}>→</span>
+        </div>
+      </Link>
 
       {/* Sign out */}
       <button

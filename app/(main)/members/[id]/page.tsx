@@ -118,6 +118,49 @@ function ServingSection({ memberId }: { memberId: string }) {
   );
 }
 
+function DownloadsSection({ memberId }: { memberId: string }) {
+  const [downloads, setDownloads] = useState<{ id: string; downloaded_at: string; document: { title: string; category: string } | null }[]>([]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from('document_downloads')
+      .select('id, downloaded_at, document:document_id(title, category)')
+      .eq('user_id', memberId)
+      .order('downloaded_at', { ascending: false })
+      .limit(10)
+      .then(({ data }) => setDownloads((data ?? []).map((d: {
+        id: string; downloaded_at: string;
+        document: { title: string; category: string }[] | { title: string; category: string } | null;
+      }) => ({
+        ...d,
+        document: Array.isArray(d.document) ? (d.document[0] ?? null) : d.document,
+      }))));
+  }, [memberId]);
+
+  const S2 = {
+    card: '#0a1828', border: '#1e3a52', gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)',
+    goldBorder: 'rgba(198,167,94,0.25)', soft: '#6a8aaa', muted: '#c6a75e', textLight: '#f0e8d4',
+    font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
+  };
+
+  if (downloads.length === 0) return null;
+
+  return (
+    <div style={{ background: S2.card, border: `1px solid ${S2.border}`, borderRadius: 3, padding: '16px 18px', marginTop: 16 }}>
+      <p style={{ margin: '0 0 10px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S2.muted }}>Resource Downloads</p>
+      {downloads.map(d => (
+        <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: `1px solid ${S2.border}` }}>
+          <span style={{ fontSize: 13, color: S2.textLight, fontFamily: S2.font.display }}>{d.document?.title ?? 'Unknown'}</span>
+          <span style={{ fontSize: 11, color: S2.soft, flexShrink: 0, marginLeft: 8 }}>
+            {new Date(d.downloaded_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 interface Profile {
   id: string;
   full_name: string | null;
@@ -349,6 +392,7 @@ export default function MemberProfilePage() {
           )}
           <ServingSection memberId={memberId} />
           <GroupsSection memberId={memberId} />
+          <DownloadsSection memberId={memberId} />
         </div>
       )}
 

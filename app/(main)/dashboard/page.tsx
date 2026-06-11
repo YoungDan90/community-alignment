@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const [myGroups, setMyGroups] = useState<{ id: string; name: string; meeting_schedule: string | null }[]>([]);
   const [latestAnnouncements, setLatestAnnouncements] = useState<{ id: string; title: string; type: string; created_at: string; isRead: boolean }[]>([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const [featuredDocs, setFeaturedDocs] = useState<{ id: string; title: string; category: string }[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -103,6 +104,15 @@ export default function DashboardPage() {
         .eq('to_id', u.id)
         .eq('is_read', false);
       setUnreadMessages(count ?? 0);
+
+      // Fetch featured documents (up to 3)
+      const { data: docsData } = await supabase
+        .from('documents')
+        .select('id, title, category')
+        .eq('is_featured', true)
+        .order('created_at', { ascending: false })
+        .limit(3);
+      setFeaturedDocs(docsData ?? []);
 
       setLoading(false);
     })();
@@ -268,6 +278,29 @@ export default function DashboardPage() {
               <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: `1px solid ${S.border}` }}>
                 <p style={{ margin: 0, fontSize: 14, color: a.isRead ? S.text : S.textLight, fontFamily: S.font.display }}>{a.title}</p>
                 {!a.isRead && <span style={{ width: 7, height: 7, borderRadius: '50%', background: S.gold, flexShrink: 0 }} />}
+              </div>
+            ))
+          )}
+        </div>
+      </Link>
+
+      {/* Resources card */}
+      <Link href="/documents" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
+        <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '16px 18px', position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(to right, ${S.border}, transparent)` }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: featuredDocs.length > 0 ? 10 : 0 }}>
+            <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.muted }}>Resources</p>
+            <span style={{ fontSize: 11, color: S.soft }}>View all →</span>
+          </div>
+          {featuredDocs.length === 0 ? (
+            <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>No resources yet.</p>
+          ) : (
+            featuredDocs.map(d => (
+              <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: `1px solid ${S.border}` }}>
+                <p style={{ margin: 0, fontSize: 14, color: S.textLight, fontFamily: S.font.display }}>{d.title}</p>
+                <span style={{ fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '2px 8px', borderRadius: 2, background: S.goldDim, color: S.gold, border: `1px solid ${S.goldBorder}`, flexShrink: 0 }}>
+                  {d.category}
+                </span>
               </div>
             ))
           )}
