@@ -75,7 +75,7 @@ export default function ComposeMessage({ defaultToId, defaultSubject, onClose, o
         title: subject.trim() || 'New message',
         body: content.trim().slice(0, 100),
         url: '/inbox',
-        userId: toId,
+        target: toId,
       }),
     });
 

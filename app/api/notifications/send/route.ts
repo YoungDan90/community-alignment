@@ -12,25 +12,27 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
 
-    // Verify caller is pastor
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .maybeSingle();
-    if (!['pastor', 'admin'].includes(profile?.role ?? '')) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
 
     const { title, body, url = '/', target } = await request.json();
     if (!title || !body) {
       return NextResponse.json({ error: 'title and body are required' }, { status: 400 });
     }
 
-    // Fetch subscriptions
+    // Broadcasts (no target / target='all') require pastor/admin
+    if (!target || target === 'all') {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (!['pastor', 'admin'].includes(profile?.role ?? '')) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    }
+
+    // Fetch subscriptions — targeted or broadcast
     let query = supabase.from('push_subscriptions').select('subscription');
     if (target && target !== 'all') {
       query = query.eq('user_id', target) as typeof query;
