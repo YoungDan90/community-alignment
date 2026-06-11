@@ -29,7 +29,15 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/word-to-walk') ||
     pathname.startsWith('/prayer-wall') ||
     pathname.startsWith('/pastor') ||
-    pathname.startsWith('/onboarding');
+    pathname.startsWith('/onboarding') ||
+    pathname.startsWith('/rotas') ||
+    pathname.startsWith('/my-rota') ||
+    pathname.startsWith('/groups') ||
+    pathname.startsWith('/members') ||
+    pathname.startsWith('/inbox') ||
+    pathname.startsWith('/announcements') ||
+    pathname.startsWith('/documents') ||
+    pathname.startsWith('/profile');
 
   if (isMainRoute && !user) {
     const url = request.nextUrl.clone();
