@@ -87,9 +87,16 @@ export default function WorshipPage() {
             <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.gold }}>Alignment Church</p>
             <h1 style={{ margin: '4px 0 0', fontSize: 32, fontFamily: S.font.display, color: S.textLight, fontWeight: 400 }}>Worship Planning</h1>
           </div>
-          <Link href="/worship/songs" style={{ padding: '7px 14px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none' }}>
-            Song Library
-          </Link>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {isPastor && (
+              <Link href="/rotas" style={{ padding: '7px 14px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none' }}>
+                Worship Team
+              </Link>
+            )}
+            <Link href="/worship/songs" style={{ padding: '7px 14px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none' }}>
+              Song Library
+            </Link>
+          </div>
         </div>
 
         {isPastor && !showCreate && (

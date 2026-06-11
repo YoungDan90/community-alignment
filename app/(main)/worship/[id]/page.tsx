@@ -84,12 +84,11 @@ export default function ServicePlanPage({ params }: { params: Promise<{ id: stri
     const { data: profile } = await supabase.from('profiles').select('role, church_id').eq('id', user.id).maybeSingle();
     setIsPastor(['pastor', 'admin'].includes(profile?.role ?? ''));
 
-    const [planRes, songsRes, teamRes, allSongsRes, membersRes] = await Promise.allSettled([
+    const [planRes, songsRes, teamRes, allSongsRes] = await Promise.allSettled([
       supabase.from('service_plans').select('id, service_date, title, theme, youtube_playlist_url, notes, status').eq('id', id).maybeSingle(),
       supabase.from('service_plan_songs').select('id, position, key_for_service, song_notes, songs(id, title, artist, default_key, youtube_url)').eq('plan_id', id).order('position'),
       supabase.from('service_plan_team').select('id, role_in_plan, profiles(id, full_name, avatar_url)').eq('plan_id', id),
       supabase.from('songs').select('id, title, artist, default_key').order('title'),
-      supabase.from('profiles').select('id, full_name').order('full_name'),
     ]);
 
     if (planRes.status === 'fulfilled' && planRes.value.data) {
@@ -112,7 +111,27 @@ export default function ServicePlanPage({ params }: { params: Promise<{ id: stri
       })) as TeamMember[]);
     }
     if (allSongsRes.status === 'fulfilled') setAllSongs(allSongsRes.value.data ?? []);
-    if (membersRes.status === 'fulfilled') setAllMembers(membersRes.value.data ?? []);
+
+    // Load Worship Team members for the "add to plan" dropdown
+    const { data: worshipTeam } = await supabase.from('serving_teams').select('id').eq('name', 'Worship Team').maybeSingle();
+    if (worshipTeam?.id) {
+      const { data: wMembers } = await supabase
+        .from('team_members')
+        .select('profiles:member_id(id, full_name)')
+        .eq('team_id', worshipTeam.id);
+      const members = (wMembers ?? []).map((r: Record<string, unknown>) => {
+        const p = Array.isArray(r.profiles) ? (r.profiles[0] ?? null) : r.profiles;
+        return p as { id: string; full_name: string | null } | null;
+      }).filter(Boolean) as { id: string; full_name: string | null }[];
+      if (members.length > 0) {
+        setAllMembers(members);
+        setLoading(false);
+        return;
+      }
+    }
+    // Fallback: all profiles if worship team is unpopulated
+    const { data: allProfiles } = await supabase.from('profiles').select('id, full_name').order('full_name');
+    setAllMembers(allProfiles ?? []);
     setLoading(false);
   };
 
