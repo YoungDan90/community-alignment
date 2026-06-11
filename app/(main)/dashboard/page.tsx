@@ -34,6 +34,8 @@ export default function DashboardPage() {
   const [notifLoading, setNotifLoading] = useState(false);
   const [nextSlot, setNextSlot] = useState<{ role_name: string; service_date: string; team_name: string } | null | undefined>(undefined);
   const [myGroups, setMyGroups] = useState<{ id: string; name: string; meeting_schedule: string | null }[]>([]);
+  const [latestAnnouncements, setLatestAnnouncements] = useState<{ id: string; title: string; type: string; created_at: string; isRead: boolean }[]>([]);
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -72,6 +74,35 @@ export default function DashboardPage() {
           Array.isArray(gm.group) ? gm.group[0] : gm.group
         ).filter(Boolean));
       }
+
+      // Fetch latest 2 announcements with read status
+      const now = new Date().toISOString();
+      const { data: annData } = await supabase
+        .from('announcements')
+        .select('id, title, type, created_at')
+        .or(`expires_at.is.null,expires_at.gt.${now}`)
+        .order('is_pinned', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(2);
+      if (annData && annData.length > 0) {
+        const { data: reads } = await supabase
+          .from('announcement_reads')
+          .select('announcement_id')
+          .eq('user_id', u.id)
+          .in('announcement_id', annData.map((a: { id: string }) => a.id));
+        const readSet = new Set((reads ?? []).map((r: { announcement_id: string }) => r.announcement_id));
+        setLatestAnnouncements(annData.map((a: { id: string; title: string; type: string; created_at: string }) => ({
+          ...a, isRead: readSet.has(a.id),
+        })));
+      }
+
+      // Fetch unread message count
+      const { count } = await supabase
+        .from('inbox_messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('to_id', u.id)
+        .eq('is_read', false);
+      setUnreadMessages(count ?? 0);
 
       setLoading(false);
     })();
@@ -221,6 +252,45 @@ export default function DashboardPage() {
           )}
         </div>
       </Link>
+
+      {/* Announcements card */}
+      <Link href="/announcements" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
+        <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '16px 18px', position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(to right, ${S.border}, transparent)` }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: latestAnnouncements.length > 0 ? 10 : 0 }}>
+            <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.muted }}>Announcements</p>
+            <span style={{ fontSize: 11, color: S.soft }}>View all →</span>
+          </div>
+          {latestAnnouncements.length === 0 ? (
+            <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>No announcements.</p>
+          ) : (
+            latestAnnouncements.map(a => (
+              <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: `1px solid ${S.border}` }}>
+                <p style={{ margin: 0, fontSize: 14, color: a.isRead ? S.text : S.textLight, fontFamily: S.font.display }}>{a.title}</p>
+                {!a.isRead && <span style={{ width: 7, height: 7, borderRadius: '50%', background: S.gold, flexShrink: 0 }} />}
+              </div>
+            ))
+          )}
+        </div>
+      </Link>
+
+      {/* Inbox card — only show if unread messages */}
+      {unreadMessages > 0 && (
+        <Link href="/inbox" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
+          <div style={{ background: S.card, border: `1px solid ${S.goldBorder}`, borderRadius: 3, padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: 18, color: S.gold }}>✉</span>
+              <div>
+                <p style={{ margin: '0 0 2px', fontSize: 14, color: S.textLight, fontFamily: S.font.display }}>Inbox</p>
+                <p style={{ margin: 0, fontSize: 12, color: S.soft }}>
+                  {unreadMessages} unread message{unreadMessages !== 1 ? 's' : ''}
+                </p>
+              </div>
+            </div>
+            <span style={{ fontSize: 14, color: S.gold }}>→</span>
+          </div>
+        </Link>
+      )}
 
       {/* Profile / settings */}
       <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '20px 20px', position: 'relative', overflow: 'hidden' }}>
