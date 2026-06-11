@@ -37,6 +37,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/inbox') ||
     pathname.startsWith('/announcements') ||
     pathname.startsWith('/documents') ||
+    pathname.startsWith('/worship') ||
     pathname.startsWith('/profile');
 
   if (isMainRoute && !user) {

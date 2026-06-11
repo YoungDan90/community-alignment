@@ -174,6 +174,15 @@ export default function PastorPage() {
             <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Documents</span>
           </div>
         </Link>
+        <Link href="/worship" style={{ textDecoration: 'none' }}>
+          <div style={{
+            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
+            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
+          }}>
+            <span style={{ fontSize: 13, color: S.gold }}>🎵</span>
+            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Worship</span>
+          </div>
+        </Link>
       </div>
 
       {/* Section content */}
