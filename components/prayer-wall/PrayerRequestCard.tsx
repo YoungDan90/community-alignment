@@ -68,7 +68,7 @@ export default function PrayerRequestCard({
   const [savingResponse, setSavingResponse] = useState(false);
   const [localCount, setLocalCount] = useState(request.prayer_count);
   const hasPrayed = prayedIds.has(request.id);
-  const isPropheticTeam = userRole === 'prophetic_team' || userRole === 'pastor';
+  const isPropheticTeam = ['prophetic_team', 'pastor', 'admin'].includes(userRole);
 
   const handlePray = async () => {
     if (hasPrayed) return;
@@ -92,7 +92,7 @@ export default function PrayerRequestCard({
       const { data: { user } } = await supabase.auth.getUser();
       await supabase.from('prophetic_responses').insert({
         prayer_request_id: request.id,
-        responder_id: user?.id ?? null,
+        added_by: user?.id ?? null,
         response_text: responseText.trim(),
       });
       setResponseText('');

@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
                 </div>
               </div>
               <div style="padding: 16px 24px; background: #f9fafb; text-align: center;">
-                <p style="margin: 0; font-size: 12px; color: #9ca3af;">You can view all messages in the <a href="https://community.alignmentchurch.uk/pastor" style="color: #c6a75e;">Pastor Dashboard</a></p>
+                <p style="margin: 0; font-size: 12px; color: #9ca3af;">You can view all messages in the <a href="https://www.alignmentchurch.uk/pastor" style="color: #c6a75e;">Pastor Dashboard</a></p>
               </div>
             </div>
           `,

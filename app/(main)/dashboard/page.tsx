@@ -51,15 +51,16 @@ export default function DashboardPage() {
       const today = new Date().toISOString().split('T')[0];
       const { data: slotData } = await supabase
         .from('rota_slots')
-        .select('role_name, rota:rota_id(service_date, team:team_id(name))')
+        .select('role_name, rota:rota_id!inner(service_date, team:team_id(name))')
         .eq('member_id', u.id)
         .gte('rota.service_date', today)
         .order('rota(service_date)', { ascending: true })
         .limit(1)
         .maybeSingle();
-      if (slotData) {
-        const rota = slotData.rota as unknown as { service_date: string; team: { name: string } };
-        setNextSlot({ role_name: slotData.role_name, service_date: rota.service_date, team_name: rota.team.name });
+      const rota = slotData?.rota as unknown as { service_date: string; team: { name: string } | { name: string }[] } | null;
+      if (slotData && rota?.service_date) {
+        const team = Array.isArray(rota.team) ? rota.team[0] : rota.team;
+        setNextSlot({ role_name: slotData.role_name, service_date: rota.service_date, team_name: team?.name ?? '' });
       } else {
         setNextSlot(null);
       }

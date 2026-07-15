@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 const S = {
   font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
@@ -45,8 +45,9 @@ interface Song {
   default_key: string | null;
 }
 
-export default function ServicePlanPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function ServicePlanPage() {
+  const params = useParams();
+  const id = params.id as string;
   const router = useRouter();
   const [plan, setPlan] = useState<Plan | null>(null);
   const [songs, setSongs] = useState<PlanSong[]>([]);
@@ -135,7 +136,7 @@ export default function ServicePlanPage({ params }: { params: Promise<{ id: stri
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [id]);
+  useEffect(() => { load(); }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatDate = (d: string) => new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 

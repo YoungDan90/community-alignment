@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import webpush from 'web-push';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 webpush.setVapidDetails(
   `mailto:${process.env.VAPID_EMAIL}`,
@@ -22,7 +22,9 @@ const SCHEDULE: Array<{ day: number; hour: number; minute: number; title: string
 ];
 
 async function broadcastNotification(title: string, body: string, url: string) {
-  const supabase = await createClient();
+  // Cron requests carry no auth cookies, so an RLS-scoped client would see
+  // zero rows — the service-role client is required here.
+  const supabase = createAdminClient();
   const { data: rows } = await supabase.from('push_subscriptions').select('subscription');
   if (!rows?.length) return 0;
 
@@ -34,24 +36,33 @@ async function broadcastNotification(title: string, body: string, url: string) {
 }
 
 export async function GET(request: NextRequest) {
-  // Verify cron secret to prevent public triggering
-  const secret = request.headers.get('x-cron-secret');
-  if (secret !== process.env.CRON_SECRET && process.env.CRON_SECRET) {
+  // Vercel cron sends "Authorization: Bearer <CRON_SECRET>" automatically
+  // when the CRON_SECRET env var is set. Fail closed: if the secret is
+  // missing or the header doesn't match, nobody can trigger sends.
+  const cronSecret = process.env.CRON_SECRET;
+  const authHeader = request.headers.get('authorization');
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
   }
 
-  // Use UTC+1 (UK time approximation — adjust for BST/GMT in production)
+  // Real Europe/London time — DST-safe, handles BST/GMT automatically.
   const now = new Date();
-  const ukOffset = 1; // hours ahead of UTC (use 0 for GMT, 1 for BST)
-  const ukHour = (now.getUTCHours() + ukOffset) % 24;
-  const ukMinute = now.getUTCMinutes();
-  const ukDay = now.getUTCDay(); // 0=Sun, 1=Mon … 6=Sat
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false,
+    }).formatToParts(now).map((p) => [p.type, p.value]),
+  );
+  const DAY_MAP: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  const ukHour = parseInt(parts.hour, 10) % 24; // '24' at midnight → 0
+  const ukMinute = parseInt(parts.minute, 10);
+  const ukDay = DAY_MAP[parts.weekday] ?? now.getUTCDay();
 
   const matches = SCHEDULE.filter(
     (s) =>
       (s.day === -1 || s.day === ukDay) &&
       s.hour === ukHour &&
-      Math.abs(s.minute - ukMinute) < 5 // 5-minute window for cron jitter
+      Math.abs(s.minute - ukMinute) < 15 // 15-min window absorbs GitHub Actions cron jitter
   );
 
   if (!matches.length) {

@@ -53,7 +53,7 @@ export default function TeamDetail({ team, onBack, onUpdated }: Props) {
   useEffect(() => {
     loadTeamMembers();
     loadAllMembers();
-  }, [team.id]);
+  }, [team.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadTeamMembers = async () => {
     const supabase = createClient();

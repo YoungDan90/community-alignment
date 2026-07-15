@@ -29,7 +29,7 @@ function GroupsSection({ memberId }: { memberId: string }) {
       .then(({ data }) => setAllGroups((data as { id: string; name: string }[]) ?? []));
   };
 
-  useEffect(() => { load(); }, [memberId]);
+  useEffect(() => { load(); }, [memberId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAdd = async () => {
     if (!addGroupId) return;
@@ -79,12 +79,12 @@ function ServingSection({ memberId }: { memberId: string }) {
 
     const today = new Date().toISOString().split('T')[0];
     supabase.from('rota_slots')
-      .select('id, role_name, status, rota:rota_id(service_date, team:team_id(name))')
+      .select('id, role_name, status, rota:rota_id!inner(service_date, team:team_id(name))')
       .eq('member_id', memberId)
       .gte('rota.service_date', today)
       .order('rota(service_date)', { ascending: true })
       .limit(5)
-      .then(({ data }) => setSlots((data as unknown as typeof slots) ?? []));
+      .then(({ data }) => setSlots(((data as unknown as typeof slots) ?? []).filter(s => s.rota?.service_date)));
   }, [memberId]);
 
   const S2 = {

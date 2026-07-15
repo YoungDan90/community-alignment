@@ -71,7 +71,7 @@ export default function LandingPage() {
           <li><a href="#services">Services</a></li>
           <li><a href="#connect">Connect</a></li>
           <li><a href="#give">Give</a></li>
-          <li><a href="#connect" className="nav-cta">Join Us</a></li>
+          <li><Link href="/join" className="nav-cta">Join Us</Link></li>
           <li><Link href="/login" className="nav-cta">Member Login</Link></li>
         </ul>
         <Link href="/login" className="nav-cta mobile-login">Member Login</Link>

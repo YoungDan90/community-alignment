@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 export interface Testimony {
   id: string;
   content: string;
-  scripture_reference: string | null;
+  verse_reference: string | null;
   is_anonymous: boolean;
   is_featured: boolean;
   status: string;
@@ -51,8 +51,8 @@ export default function TestimonyCard({
   onStatusChange,
   onFeaturedChange,
 }: TestimonyCardProps) {
-  const isPropheticTeam = userRole === 'prophetic_team' || userRole === 'pastor';
-  const isPastor = userRole === 'pastor';
+  const isPropheticTeam = ['prophetic_team', 'pastor', 'admin'].includes(userRole);
+  const isPastor = userRole === 'pastor' || userRole === 'admin';
   const sc = STATUS_COLORS[testimony.status] ?? STATUS_COLORS.pending;
 
   const handleStatusChange = async (newStatus: string) => {
@@ -128,9 +128,9 @@ export default function TestimonyCard({
       </div>
 
       {/* Scripture */}
-      {testimony.scripture_reference && (
+      {testimony.verse_reference && (
         <p style={{ margin: '0 0 6px', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: S.gold }}>
-          {testimony.scripture_reference}
+          {testimony.verse_reference}
         </p>
       )}
 

@@ -109,7 +109,7 @@ export default function GroupManagePage() {
       await loadGroupMembers(supabase);
       setLoading(false);
     })();
-  }, [groupId, router]);
+  }, [groupId, router]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSave = async () => {
     setSaving(true);

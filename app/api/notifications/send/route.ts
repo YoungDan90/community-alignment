@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import webpush from 'web-push';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 webpush.setVapidDetails(
   `mailto:${process.env.VAPID_EMAIL}`,
@@ -32,8 +33,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Fetch subscriptions — targeted or broadcast
-    let query = supabase.from('push_subscriptions').select('subscription');
+    // Fetch subscriptions — targeted or broadcast. Uses the service-role
+    // client: RLS restricts the cookie client to the caller's own rows,
+    // which would make broadcasts only reach the sender's devices.
+    const admin = createAdminClient();
+    let query = admin.from('push_subscriptions').select('subscription');
     if (target && target !== 'all') {
       query = query.eq('user_id', target) as typeof query;
     }

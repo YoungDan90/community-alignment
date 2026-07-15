@@ -37,13 +37,13 @@ export async function POST(request: NextRequest) {
                 ${pastorName} has invited you to join the Alignment Church community platform — a space for encountering the Word, praying with the church, and walking in what God speaks.
               </p>
               <div style="text-align: center; margin: 32px 0;">
-                <a href="https://community.alignmentchurch.uk/signup?invite=true"
+                <a href="https://www.alignmentchurch.uk/signup?invite=true"
                    style="background: #c6a75e; color: #0f1e2e; text-decoration: none; padding: 14px 32px; border-radius: 2px; font-size: 14px; font-weight: bold; letter-spacing: 0.05em; display: inline-block;">
                   Create Your Account
                 </a>
               </div>
               <p style="font-size: 13px; color: #999; text-align: center; margin: 0;">
-                Or visit <a href="https://community.alignmentchurch.uk/signup?invite=true" style="color: #c6a75e;">community.alignmentchurch.uk/signup</a>
+                Or visit <a href="https://www.alignmentchurch.uk/signup?invite=true" style="color: #c6a75e;">www.alignmentchurch.uk/signup</a>
               </p>
             </div>
             <div style="padding: 16px 24px; background: #f9fafb; text-align: center;">

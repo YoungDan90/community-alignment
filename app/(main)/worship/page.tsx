@@ -94,7 +94,7 @@ export default function WorshipPage() {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAddMember = async () => {
     if (!addMemberId || !worshipTeamId) return;

@@ -1,0 +1,31 @@
+name: Scheduled Notifications
+
+# Pings the church notification endpoint, which decides (in real
+# Europe/London time) whether a scheduled push is due right now.
+#
+# GitHub Actions cron is UTC-only, so each UK time is listed twice —
+# once for BST (UTC+1) and once for GMT (UTC+0). The endpoint uses real
+# London time, so the out-of-season entry simply finds no match and
+# no-ops. No DST maintenance needed.
+
+on:
+  schedule:
+    - cron: '30 5 * * *'   # 06:30 UK (BST)
+    - cron: '30 6 * * *'   # 06:30 UK (GMT)
+    - cron: '0 6 * * *'    # 07:00 UK (BST)
+    - cron: '0 7 * * *'    # 07:00 UK (GMT)
+    - cron: '0 8 * * *'    # 09:00 UK (BST)
+    - cron: '0 9 * * *'    # 09:00 UK (GMT)
+    - cron: '0 11 * * *'   # 12:00 UK (BST)
+    - cron: '0 12 * * *'   # 12:00 UK (GMT)
+  workflow_dispatch: {}     # manual "Run workflow" button for testing
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger scheduled notifications
+        run: |
+          curl -fsS --retry 3 --retry-delay 10 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://www.alignmentchurch.uk/api/notifications/schedule

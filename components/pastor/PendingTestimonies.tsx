@@ -18,7 +18,7 @@ export default function PendingTestimonies() {
       const supabase = createClient();
       const { data } = await supabase
         .from('testimonies')
-        .select('id, content, scripture_reference, is_anonymous, is_featured, status, prophetic_note, created_at')
+        .select('id, content, verse_reference, is_anonymous, is_featured, status, prophetic_note, created_at')
         .eq('status', 'pending')
         .order('created_at', { ascending: true });
 

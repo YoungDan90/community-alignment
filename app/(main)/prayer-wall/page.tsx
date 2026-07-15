@@ -38,7 +38,7 @@ export default function PrayerWallPage() {
   const [showTestimonyModal, setShowTestimonyModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const isPropheticTeam = userRole === 'prophetic_team' || userRole === 'pastor';
+  const isPropheticTeam = ['prophetic_team', 'pastor', 'admin'].includes(userRole);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -58,7 +58,7 @@ export default function PrayerWallPage() {
           .maybeSingle();
         if (profile?.role) {
           setUserRole(profile.role);
-          isTeam = profile.role === 'prophetic_team' || profile.role === 'pastor';
+          isTeam = ['prophetic_team', 'pastor', 'admin'].includes(profile.role);
         }
 
         // Fetch prayer IDs this user has already supported

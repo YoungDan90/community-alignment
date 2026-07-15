@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   const query = searchParams.get('reference') ?? searchParams.get('query');
 
   if (!query) {
-    return NextResponse.json({ error: 'Missing required param: reference' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing required param: reference or query' }, { status: 400 });
   }
 
   const encoded = encodeURIComponent(query);

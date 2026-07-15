@@ -30,6 +30,7 @@ interface SwapRequest {
   reason: string | null;
   status: string;
   created_at: string;
+  swap_with: string | null;
   requester: { full_name: string | null };
   swap_target: { full_name: string | null } | null;
   slot: {
@@ -134,7 +135,7 @@ export default function RotasPage() {
     const { data } = await supabase
       .from('swap_requests')
       .select(`
-        id, reason, status, created_at,
+        id, reason, status, created_at, swap_with,
         requester:requested_by(full_name),
         swap_target:swap_with(full_name),
         slot:rota_slot_id(id, role_name, rota:rota_id(title, service_date, team:team_id(name)))
@@ -161,12 +162,12 @@ export default function RotasPage() {
   const handleApproveSwap = async (swap: SwapRequest) => {
     setProcessingSwap(swap.id);
     const supabase = createClient();
-    if (swap.swap_target) {
-      // Swap the member assignments
-      await supabase.from('rota_slots').update({ member_id: swap.swap_target ? swap.slot.id : null, status: 'confirmed' }).eq('id', swap.slot.id);
-    }
+    // Reassign the slot to the requested swap partner if one was named,
+    // otherwise just confirm the slot and leave reassignment to the pastor.
+    await supabase.from('rota_slots')
+      .update(swap.swap_with ? { member_id: swap.swap_with, status: 'confirmed' } : { status: 'confirmed' })
+      .eq('id', swap.slot.id);
     await supabase.from('swap_requests').update({ status: 'approved' }).eq('id', swap.id);
-    await supabase.from('rota_slots').update({ status: 'confirmed' }).eq('id', swap.slot.id);
     setSwaps(prev => prev.filter(s => s.id !== swap.id));
     showToast('Swap approved.');
     setProcessingSwap(null);

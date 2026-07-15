@@ -61,7 +61,7 @@ export default function RotaDetail({ rota, onBack }: Props) {
   useEffect(() => {
     loadSlots();
     loadMembers();
-  }, [rota.id]);
+  }, [rota.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadSlots = async () => {
     const supabase = createClient();

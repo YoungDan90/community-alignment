@@ -44,7 +44,7 @@ export default function SubmitTestimonyModal({ onClose, onSubmitted }: SubmitTes
       const { error: err } = await supabase.from('testimonies').insert({
         user_id: user?.id ?? null,
         content: content.trim(),
-        scripture_reference: scripture.trim() || null,
+        verse_reference: scripture.trim() || null,
         is_anonymous: isAnonymous,
         status: 'pending',
       });
