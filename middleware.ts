@@ -1,56 +1,35 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
+const protectedRoutes = [
+  '/dashboard', '/selah', '/word-to-walk', '/prayer-wall',
+  '/pastor', '/onboarding', '/rotas', '/my-rota', '/groups',
+  '/members', '/inbox', '/announcements', '/documents',
+  '/worship', '/profile',
+]
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return request.cookies.getAll(); },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const isProtected = protectedRoutes.some(route => pathname.startsWith(route))
+  if (!isProtected) return NextResponse.next()
 
-  const { pathname } = request.nextUrl;
-  const isMainRoute = pathname.startsWith('/dashboard') ||
-    pathname.startsWith('/selah') ||
-    pathname.startsWith('/word-to-walk') ||
-    pathname.startsWith('/prayer-wall') ||
-    pathname.startsWith('/pastor') ||
-    pathname.startsWith('/onboarding') ||
-    pathname.startsWith('/rotas') ||
-    pathname.startsWith('/my-rota') ||
-    pathname.startsWith('/groups') ||
-    pathname.startsWith('/members') ||
-    pathname.startsWith('/inbox') ||
-    pathname.startsWith('/announcements') ||
-    pathname.startsWith('/documents') ||
-    pathname.startsWith('/worship') ||
-    pathname.startsWith('/profile');
+  // Supabase stores the session as sb-<project-ref>-auth-token
+  // @supabase/ssr chunks the token: sb-<ref>-auth-token, sb-<ref>-auth-token.0, .1 …
+  const hasSession = request.cookies.getAll().some(
+    ({ name }) => name.startsWith('sb-') && name.includes('-auth-token')
+  )
 
-  if (isMainRoute && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+  if (!hasSession) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
   }
 
-  return supabaseResponse;
+  return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|icons|manifest.json|sw.js|workbox|worker|api).*)',
+    '/((?!_next/static|_next/image|favicon.ico|icons|manifest.json|sw.js|workbox|worker|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|api/).*)',
   ],
-};
+}
