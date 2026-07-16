@@ -190,35 +190,38 @@ export default function RotasPage() {
   };
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic', fontFamily: S.font.body }}>Loading…</p>
+    <div className="pf-page pf-page--wide">
+      <div className="pf-skel" style={{ height: 26, width: 200, marginBottom: 20 }} />
+      {[0, 1, 2].map((i) => <div key={i} className="pf-skel" style={{ height: 90, borderRadius: 6, marginBottom: 10 }} />)}
     </div>
   );
   if (!authorized) return null;
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 720, margin: '0 auto', fontFamily: S.font.body }}>
+    <div className="pf-page pf-page--wide">
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <button onClick={() => router.back()} style={{ background: 'none', border: 'none', color: S.soft, fontSize: 12, cursor: 'pointer', fontFamily: S.font.body, padding: 0, marginBottom: 12 }}>← Back</button>
-        <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>Pastor Dashboard</p>
-        <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>Serving Rotas</h1>
-        <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>Manage teams, publish rotas, and handle swap requests.</p>
+      <div className="pf-head">
+        <button onClick={() => router.back()} className="pf-btn pf-btn--quiet pf-btn--sm" style={{ marginBottom: 12 }}>← Back</button>
+        <p className="pf-eyebrow">Pastor Dashboard</p>
+        <h1 className="pf-title">Serving Rotas</h1>
+        <p className="pf-sub">Manage teams, publish rotas, and handle swap requests.</p>
       </div>
 
-      {toast && (
-        <div style={{ marginBottom: 16, padding: '10px 14px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, fontSize: 13, color: S.gold }}>✦ {toast}</div>
-      )}
+      {toast && <div className="pf-banner" role="status">✦ {toast}</div>}
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
+      <div className="pf-tabs" role="tablist">
         {(['teams', 'rotas', 'swaps'] as Tab[]).map(t => (
-          <button key={t} onClick={() => { setTab(t); setSelectedTeam(null); setSelectedRota(null); setShowCreateRota(false); }}
-            style={{ padding: '7px 16px', background: tab === t ? S.goldDim : 'transparent', border: `1px solid ${tab === t ? S.goldBorder : S.border}`, borderRadius: 2, color: tab === t ? S.gold : S.muted, fontSize: 10, letterSpacing: '0.1em', textTransform: 'capitalize', cursor: 'pointer', fontFamily: S.font.body, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button
+            key={t}
+            role="tab"
+            aria-selected={tab === t}
+            onClick={() => { setTab(t); setSelectedTeam(null); setSelectedRota(null); setShowCreateRota(false); }}
+            className="pf-tabbtn"
+            style={{ textTransform: 'capitalize' }}
+          >
             {t}
-            {t === 'swaps' && swaps.length > 0 && (
-              <span style={{ background: S.gold, color: S.dark, fontSize: 9, fontWeight: 'bold', padding: '1px 5px', borderRadius: 10 }}>{swaps.length}</span>
-            )}
+            {t === 'swaps' && swaps.length > 0 && <span className="pf-badge">{swaps.length}</span>}
           </button>
         ))}
       </div>

@@ -81,8 +81,9 @@ export default function MyRotaPage() {
   };
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic', fontFamily: S.font.body }}>Loading…</p>
+    <div className="pf-page">
+      <div className="pf-skel" style={{ height: 26, width: 160, marginBottom: 20 }} />
+      {[0, 1].map((i) => <div key={i} className="pf-skel" style={{ height: 120, borderRadius: 6, marginBottom: 10 }} />)}
     </div>
   );
 
@@ -129,21 +130,19 @@ export default function MyRotaPage() {
   };
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 680, margin: '0 auto', fontFamily: S.font.body }}>
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>My Serving</p>
-        <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>My Rota</h1>
-        <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>Your upcoming serving assignments.</p>
+    <div className="pf-page">
+      <div className="pf-head">
+        <p className="pf-eyebrow">My Serving</p>
+        <h1 className="pf-title">My Rota</h1>
+        <p className="pf-sub">Your upcoming serving assignments.</p>
       </div>
 
-      {toast && (
-        <div style={{ marginBottom: 16, padding: '10px 14px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, fontSize: 13, color: S.gold }}>✦ {toast}</div>
-      )}
+      {toast && <div className="pf-banner" role="status">✦ {toast}</div>}
 
       {slots.length === 0 && pastSlots.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '48px 20px' }}>
-          <p style={{ fontSize: 32, marginBottom: 12 }}>◈</p>
-          <p style={{ fontSize: 14, color: S.soft, fontStyle: 'italic' }}>You have no serving assignments yet. Your pastor will add you to a rota.</p>
+        <div className="pf-empty">
+          <span className="pf-empty-icon" aria-hidden="true">◈</span>
+          You have no serving assignments yet. Your pastor will add you to a rota.
         </div>
       )}
 

@@ -89,28 +89,29 @@ export default function SongsPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: S.dark, padding: '20px 0 80px', fontFamily: S.font.body }}>
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-          <Link href="/worship" style={{ color: S.soft, fontSize: 12, textDecoration: 'none' }}>← Worship</Link>
+    <div className="pf-page pf-page--wide">
+      <div>
+        <div style={{ marginBottom: 6 }}>
+          <Link href="/worship" style={{ color: 'var(--pf-text-soft)', fontSize: 12, textDecoration: 'none' }}>← Worship</Link>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 20 }}>
+        <div className="pf-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap' }}>
           <div>
-            <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.gold }}>Song Library</p>
-            <h1 style={{ margin: '4px 0 0', fontSize: 28, fontFamily: S.font.display, color: S.textLight, fontWeight: 400 }}>All Songs</h1>
+            <p className="pf-eyebrow">Song Library</p>
+            <h1 className="pf-title">All Songs</h1>
           </div>
           {isPastor && (
-            <button onClick={() => setShowAdd(true)} style={{ padding: '8px 16px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
-              + Add Song
-            </button>
+            <button onClick={() => setShowAdd(true)} className="pf-btn pf-btn--sm">+ Add Song</button>
           )}
         </div>
 
         <input
+          type="search"
+          aria-label="Search songs or artists"
+          className="pf-input"
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search songs or artists…"
-          style={{ ...inputStyle, width: '100%', padding: '10px 14px', fontSize: 13, marginBottom: 14, boxSizing: 'border-box' }}
+          style={{ marginBottom: 14 }}
         />
 
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 20 }}>

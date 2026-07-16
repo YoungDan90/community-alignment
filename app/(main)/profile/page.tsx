@@ -32,12 +32,6 @@ const S = {
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
-const inputStyle: React.CSSProperties = {
-  width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-  padding: '10px 14px', color: S.text, fontSize: 14, fontFamily: S.font.body,
-  outline: 'none', boxSizing: 'border-box',
-};
-
 const ROLE_LABELS: Record<string, string> = {
   member: 'Member', prophetic_team: 'Prophetic Team', pastor: 'Pastor', admin: 'Admin',
 };
@@ -133,8 +127,9 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-        <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic', fontFamily: S.font.body }}>Loading…</p>
+      <div className="pf-page">
+        <div className="pf-skel" style={{ height: 26, width: 200, marginBottom: 20 }} />
+        {[0, 1, 2].map((i) => <div key={i} className="pf-skel" style={{ height: 130, borderRadius: 6, marginBottom: 14 }} />)}
       </div>
     );
   }
@@ -142,23 +137,17 @@ export default function ProfilePage() {
   const initials = fullName.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?';
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 680, margin: '0 auto', fontFamily: S.font.body }}>
+    <div className="pf-page">
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>My Profile</p>
-        <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>
-          {profile?.full_name ?? 'Community Member'}
-        </h1>
-        <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>
+      <div className="pf-head">
+        <p className="pf-eyebrow">My Profile</p>
+        <h1 className="pf-title">{profile?.full_name ?? 'Community Member'}</h1>
+        <p className="pf-sub">
           {ROLE_LABELS[profile?.role ?? 'member']} · {profile?.member_status ?? 'attendee'}
         </p>
       </div>
 
-      {toast && (
-        <div style={{ marginBottom: 16, padding: '10px 14px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, fontSize: 13, color: S.gold, fontStyle: 'italic' }}>
-          ✦ {toast}
-        </div>
-      )}
+      {toast && <div className="pf-banner" role="status">✦ {toast}</div>}
 
       {/* Avatar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 28 }}>
@@ -177,21 +166,20 @@ export default function ProfilePage() {
       </div>
 
       {/* Personal Details */}
-      <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '20px 20px', marginBottom: 16, position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(to right, ${S.gold}, transparent)` }} />
-        <p style={{ margin: '0 0 16px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.muted }}>Personal Details</p>
+      <div className="pf-card pf-card--accent" style={{ marginBottom: 16 }}>
+        <p className="pf-card-label" style={{ marginBottom: 16 }}>Personal Details</p>
         <div style={{ display: 'grid', gap: 12 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Full Name</label>
-            <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Your name" style={inputStyle} />
+            <label className="pf-label" htmlFor="profile-name">Full Name</label>
+            <input id="profile-name" className="pf-input" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Your name" />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Phone</label>
-            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+44…" style={inputStyle} />
+            <label className="pf-label" htmlFor="profile-phone">Phone</label>
+            <input id="profile-phone" className="pf-input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+44…" />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Birthday</label>
-            <input type="date" value={birthday} onChange={e => setBirthday(e.target.value)} style={{ ...inputStyle, colorScheme: 'dark' }} />
+            <label className="pf-label" htmlFor="profile-birthday">Birthday</label>
+            <input id="profile-birthday" className="pf-input" type="date" value={birthday} onChange={e => setBirthday(e.target.value)} style={{ colorScheme: 'dark' }} />
           </div>
         </div>
       </div>
@@ -224,22 +212,15 @@ export default function ProfilePage() {
       <button
         onClick={handleSave}
         disabled={saving}
-        style={{
-          width: '100%', padding: '12px',
-          background: saving ? 'rgba(198,167,94,0.3)' : S.gold,
-          border: 'none', borderRadius: 2,
-          color: saving ? S.muted : S.dark,
-          fontSize: 13, fontWeight: 'bold', cursor: saving ? 'wait' : 'pointer',
-          fontFamily: S.font.body, letterSpacing: '0.06em', marginBottom: 20, minHeight: 44,
-        }}
+        className="pf-btn"
+        style={{ display: 'flex', width: '100%', marginBottom: 20 }}
       >
         {saving ? 'Saving…' : 'Save Changes'}
       </button>
 
       {/* Discipleship Stats */}
-      <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '20px 20px', marginBottom: 16, position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: `linear-gradient(to right, ${S.gold}, transparent)` }} />
-        <p style={{ margin: '0 0 14px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.muted }}>My Journey</p>
+      <div className="pf-card pf-card--accent" style={{ marginBottom: 16 }}>
+        <p className="pf-card-label" style={{ marginBottom: 14 }}>My Journey</p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           {[
             { label: 'Word to Walk', value: stats.wtwCompletions },
@@ -247,14 +228,14 @@ export default function ProfilePage() {
             { label: 'Prayer Requests', value: stats.prayerRequests },
             { label: 'Testimonies', value: stats.testimonies },
           ].map(({ label, value }) => (
-            <div key={label} style={{ background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2, padding: '14px 16px' }}>
-              <p style={{ margin: '0 0 4px', fontSize: 24, color: S.gold, fontFamily: S.font.display, lineHeight: 1 }}>{value}</p>
-              <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.soft }}>{label}</p>
+            <div key={label} className="pf-stat">
+              <b>{value}</b>
+              <span>{label}</span>
             </div>
           ))}
         </div>
         {stats.lastActive && (
-          <p style={{ margin: '12px 0 0', fontSize: 11, color: S.soft, fontStyle: 'italic' }}>
+          <p className="pf-sub" style={{ marginTop: 12 }}>
             Last active: {new Date(stats.lastActive).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
         )}
@@ -278,14 +259,8 @@ export default function ProfilePage() {
       <button
         onClick={handleSignOut}
         disabled={signingOut}
-        style={{
-          width: '100%', padding: '12px',
-          background: 'transparent', border: `1px solid ${S.border}`,
-          borderRadius: 2, color: S.soft,
-          fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase',
-          cursor: signingOut ? 'wait' : 'pointer', fontFamily: S.font.body,
-          minHeight: 44, transition: 'all 0.2s',
-        }}
+        className="pf-btn pf-btn--quiet"
+        style={{ display: 'flex', width: '100%' }}
       >
         {signingOut ? 'Signing out…' : 'Sign Out'}
       </button>

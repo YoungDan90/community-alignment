@@ -7,23 +7,6 @@ import TestimonyCard, { type Testimony } from '@/components/prayer-wall/Testimon
 import SubmitRequestModal from '@/components/prayer-wall/SubmitRequestModal';
 import SubmitTestimonyModal from '@/components/prayer-wall/SubmitTestimonyModal';
 
-const S = {
-  font: {
-    display: 'var(--font-cormorant), Georgia, serif',
-    body: "var(--font-jost), 'Jost', sans-serif",
-  },
-  gold: '#c6a75e',
-  goldDim: 'rgba(198,167,94,0.15)',
-  goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0a1828',
-  dark: '#0f1e2e',
-  border: '#1e3a52',
-  text: '#ddd0b8',
-  textLight: '#f0e8d4',
-  soft: '#6a8aaa',
-  muted: '#c6a75e',
-};
-
 type Tab = 'requests' | 'testimonies';
 
 export default function PrayerWallPage() {
@@ -134,57 +117,31 @@ export default function PrayerWallPage() {
   };
 
   return (
-    <div
-      style={{
-        padding: '28px 20px',
-        maxWidth: 680,
-        margin: '0 auto',
-        fontFamily: S.font.body,
-      }}
-    >
+    <div className="pf-page">
       {/* Page title */}
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>
-          Prayer Wall
-        </p>
-        <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>
-          Community Intercession
-        </h1>
-        <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>
+      <div className="pf-head">
+        <p className="pf-eyebrow">Prayer Wall</p>
+        <h1 className="pf-title">Community Intercession</h1>
+        <p className="pf-sub">
           &ldquo;Pray for one another, that you may be healed.&rdquo; &mdash; James 5:16
         </p>
       </div>
 
       {/* Success banner */}
       {successMessage && (
-        <div
-          style={{
-            background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-            borderRadius: 2, padding: '10px 14px', marginBottom: 16,
-            fontSize: 13, color: S.gold, fontStyle: 'italic',
-          }}
-        >
-          ✦ {successMessage}
-        </div>
+        <div className="pf-banner" role="status">✦ {successMessage}</div>
       )}
 
       {/* Tab bar + submit button */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <div style={{ display: 'flex', gap: 0 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 4 }}>
+        <div className="pf-tabs" role="tablist" style={{ marginBottom: 0 }}>
           {(['requests', 'testimonies'] as Tab[]).map((t) => (
             <button
               key={t}
+              role="tab"
+              aria-selected={tab === t}
               onClick={() => setTab(t)}
-              style={{
-                padding: '8px 20px',
-                background: tab === t ? S.goldDim : 'transparent',
-                border: `1px solid ${tab === t ? S.goldBorder : S.border}`,
-                borderRadius: t === 'requests' ? '2px 0 0 2px' : '0 2px 2px 0',
-                color: tab === t ? S.gold : S.muted,
-                fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase',
-                cursor: 'pointer', fontFamily: S.font.body,
-                transition: 'all 0.2s',
-              }}
+              className="pf-tabbtn"
             >
               {t === 'requests' ? 'Prayer Requests' : 'Testimonies'}
             </button>
@@ -193,12 +150,7 @@ export default function PrayerWallPage() {
 
         <button
           onClick={() => tab === 'requests' ? setShowRequestModal(true) : setShowTestimonyModal(true)}
-          style={{
-            padding: '8px 16px',
-            background: S.gold, border: 'none', borderRadius: 2,
-            color: S.dark, fontSize: 11, fontWeight: 'bold',
-            cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em',
-          }}
+          className="pf-btn pf-btn--sm"
         >
           + {tab === 'requests' ? 'Request' : 'Testimony'}
         </button>
@@ -206,31 +158,24 @@ export default function PrayerWallPage() {
 
       {/* Pending queue banner for prophetic team */}
       {isPropheticTeam && (
-        <div
-          style={{
-            background: 'rgba(106,138,170,0.08)',
-            border: '1px solid rgba(106,138,170,0.2)',
-            borderRadius: 2, padding: '8px 14px', marginBottom: 16,
-            fontSize: 11, color: S.soft, display: 'flex', alignItems: 'center', gap: 8,
-          }}
-        >
-          <span>◈</span>
+        <div className="pf-banner" style={{ marginTop: 16, fontStyle: 'normal', color: 'var(--pf-text-soft)', background: 'rgba(106,138,170,0.08)', borderColor: 'rgba(106,138,170,0.25)' }}>
+          <span aria-hidden="true">◈</span>
           <span>You are viewing all submissions including pending items. Approve or decline as needed.</span>
         </div>
       )}
 
+      <div style={{ marginTop: 16 }} />
+
       {/* Content */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '40px 0' }}>
-          <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic' }}>Loading…</p>
+        <div>
+          {[0, 1, 2].map((i) => <div key={i} className="pf-skel" style={{ height: 120, borderRadius: 6, marginBottom: 12 }} />)}
         </div>
       ) : tab === 'requests' ? (
         requests.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 20px' }}>
-            <p style={{ fontSize: 32, marginBottom: 12 }}>🙏</p>
-            <p style={{ fontSize: 14, color: S.soft, fontStyle: 'italic' }}>
-              No prayer requests yet. Be the first to ask the community to stand with you.
-            </p>
+          <div className="pf-empty">
+            <span className="pf-empty-icon" aria-hidden="true">🙏</span>
+            No prayer requests yet. Be the first to ask the community to stand with you.
           </div>
         ) : (
           requests.map((r) => (
@@ -247,11 +192,9 @@ export default function PrayerWallPage() {
         )
       ) : (
         testimonies.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 20px' }}>
-            <p style={{ fontSize: 32, marginBottom: 12 }}>✦</p>
-            <p style={{ fontSize: 14, color: S.soft, fontStyle: 'italic' }}>
-              No testimonies yet. Share what God has done — your story builds faith in others.
-            </p>
+          <div className="pf-empty">
+            <span className="pf-empty-icon" aria-hidden="true">✦</span>
+            No testimonies yet. Share what God has done — your story builds faith in others.
           </div>
         ) : (
           testimonies.map((t) => (

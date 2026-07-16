@@ -120,11 +120,6 @@ export default function UploadDocument({ onClose, onUploaded }: Props) {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-    padding: '9px 12px', color: S.text, fontSize: 13, fontFamily: S.font.body,
-    boxSizing: 'border-box', outline: 'none',
-  };
 
   return (
     <div style={{ background: S.card, border: `1px solid ${S.goldBorder}`, borderRadius: 3, padding: 20, marginBottom: 24 }}>
@@ -165,26 +160,32 @@ export default function UploadDocument({ onClose, onUploaded }: Props) {
           )}
         </div>
 
-        <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Title" style={inputStyle} />
+        <div>
+          <label className="pf-label" htmlFor="doc-title">Title</label>
+          <input id="doc-title" className="pf-input" value={title} onChange={e => setTitle(e.target.value)} placeholder="Title" />
+        </div>
 
-        <textarea
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          placeholder="Description (optional)"
-          rows={3}
-          style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
-        />
+        <div>
+          <label className="pf-label" htmlFor="doc-desc">Description <span style={{ textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
+          <textarea
+            id="doc-desc"
+            className="pf-input"
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            rows={3}
+          />
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           <div>
-            <p style={{ margin: '0 0 5px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>Category</p>
-            <select value={category} onChange={e => setCategory(e.target.value)} style={inputStyle}>
+            <label className="pf-label" htmlFor="doc-category">Category</label>
+            <select id="doc-category" className="pf-input" value={category} onChange={e => setCategory(e.target.value)}>
               {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
             </select>
           </div>
           <div>
-            <p style={{ margin: '0 0 5px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>Access</p>
-            <select value={accessLevel} onChange={e => setAccessLevel(e.target.value)} style={inputStyle}>
+            <label className="pf-label" htmlFor="doc-access">Access</label>
+            <select id="doc-access" className="pf-input" value={accessLevel} onChange={e => setAccessLevel(e.target.value)}>
               {ACCESS_LEVELS.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
             </select>
           </div>
@@ -216,31 +217,11 @@ export default function UploadDocument({ onClose, onUploaded }: Props) {
           </div>
         )}
 
-        {error && <p style={{ margin: 0, fontSize: 12, color: '#e05555' }}>{error}</p>}
+        {error && <p role="alert" style={{ margin: 0, fontSize: 12, color: 'var(--pf-danger)' }}>{error}</p>}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-          <button
-            onClick={onClose}
-            style={{
-              padding: '10px 18px', background: 'transparent', border: `1px solid ${S.border}`,
-              borderRadius: 2, color: S.soft, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase',
-              cursor: 'pointer', fontFamily: S.font.body,
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleUpload}
-            disabled={uploading || !file}
-            style={{
-              padding: '10px 24px', background: (!uploading && file) ? S.goldDim : 'transparent',
-              border: `1px solid ${(!uploading && file) ? S.goldBorder : S.border}`,
-              borderRadius: 2, color: (!uploading && file) ? S.gold : S.soft,
-              fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase',
-              cursor: (uploading || !file) ? 'not-allowed' : 'pointer', fontFamily: S.font.body,
-              opacity: uploading ? 0.6 : 1,
-            }}
-          >
+          <button onClick={onClose} className="pf-btn pf-btn--quiet">Cancel</button>
+          <button onClick={handleUpload} disabled={uploading || !file} className="pf-btn">
             {uploading ? 'Uploading…' : 'Upload'}
           </button>
         </div>

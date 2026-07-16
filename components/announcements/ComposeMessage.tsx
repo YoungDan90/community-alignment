@@ -3,13 +3,6 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
-const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
-  gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0a1828', dark: '#0f1e2e', border: '#1e3a52',
-  text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa',
-};
-
 interface Profile { id: string; full_name: string | null; role: string }
 
 interface Props {
@@ -83,75 +76,55 @@ export default function ComposeMessage({ defaultToId, defaultSubject, onClose, o
     onSent();
   };
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-    padding: '9px 12px', color: S.text, fontSize: 13, fontFamily: S.font.body,
-    boxSizing: 'border-box', outline: 'none',
-  };
-
   const isPastorMode = myRole === 'pastor' || myRole === 'admin';
 
   return (
-    <div style={{ background: S.card, border: `1px solid ${S.goldBorder}`, borderRadius: 3, padding: 20 }}>
+    <div className="pf-card pf-card--accent">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <p style={{ margin: 0, fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>
-          New Message
-        </p>
-        <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: S.soft, fontSize: 18, cursor: 'pointer', lineHeight: 1 }}>×</button>
+        <p className="pf-card-label" style={{ margin: 0 }}>New Message</p>
+        <button onClick={onClose} aria-label="Close" style={{ background: 'transparent', border: 'none', color: 'var(--pf-text-soft)', fontSize: 18, cursor: 'pointer', lineHeight: 1 }}>×</button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div>
-          <p style={{ margin: '0 0 5px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>To</p>
-          {isPastorMode ? (
-            <select value={toId} onChange={e => setToId(e.target.value)} style={inputStyle}>
-              <option value="">Select member…</option>
-              {recipients.map(r => (
-                <option key={r.id} value={r.id}>{r.full_name ?? r.id} ({r.role})</option>
-              ))}
-            </select>
-          ) : (
-            <select value={toId} onChange={e => setToId(e.target.value)} style={inputStyle}>
-              {recipients.map(r => (
-                <option key={r.id} value={r.id}>{r.full_name ?? 'Pastor'} (Pastor)</option>
-              ))}
-            </select>
-          )}
+          <label className="pf-label" htmlFor="compose-to">To</label>
+          <select id="compose-to" className="pf-input" value={toId} onChange={e => setToId(e.target.value)}>
+            {isPastorMode && <option value="">Select member…</option>}
+            {recipients.map(r => (
+              <option key={r.id} value={r.id}>
+                {isPastorMode ? `${r.full_name ?? r.id} (${r.role})` : `${r.full_name ?? 'Pastor'} (Pastor)`}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
-          <p style={{ margin: '0 0 5px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>Subject</p>
+          <label className="pf-label" htmlFor="compose-subject">Subject</label>
           <input
+            id="compose-subject"
+            className="pf-input"
             value={subject}
             onChange={e => setSubject(e.target.value)}
             placeholder="Optional subject…"
-            style={inputStyle}
           />
         </div>
 
         <div>
-          <p style={{ margin: '0 0 5px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>Message</p>
+          <label className="pf-label" htmlFor="compose-message">Message</label>
           <textarea
+            id="compose-message"
+            className="pf-input"
             value={content}
             onChange={e => setContent(e.target.value)}
             placeholder="Write your message…"
             rows={5}
-            style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
           />
         </div>
 
-        {error && <p style={{ margin: 0, fontSize: 12, color: '#e05555' }}>{error}</p>}
+        {error && <p role="alert" style={{ margin: 0, fontSize: 12, color: 'var(--pf-danger)' }}>{error}</p>}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <button
-            onClick={handleSend}
-            disabled={sending}
-            style={{
-              padding: '10px 24px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-              borderRadius: 2, color: S.gold, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase',
-              cursor: sending ? 'wait' : 'pointer', fontFamily: S.font.body, opacity: sending ? 0.6 : 1,
-            }}
-          >
+          <button onClick={handleSend} disabled={sending} className="pf-btn">
             {sending ? 'Sending…' : 'Send Message'}
           </button>
         </div>

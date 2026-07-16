@@ -201,8 +201,9 @@ export default function GroupDetailPage() {
   };
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic', fontFamily: S.font.body }}>Loading…</p>
+    <div className="pf-page">
+      <div className="pf-skel" style={{ height: 30, width: 240, marginBottom: 20 }} />
+      {[0, 1, 2].map((i) => <div key={i} className="pf-skel" style={{ height: 100, borderRadius: 6, marginBottom: 10 }} />)}
     </div>
   );
 
@@ -212,7 +213,7 @@ export default function GroupDetailPage() {
   const answeredPrayers = prayerRequests.filter(r => r.status === 'answered');
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 680, margin: '0 auto', fontFamily: S.font.body }}>
+    <div className="pf-page">
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
         <Link href="/groups" style={{ textDecoration: 'none' }}>
@@ -233,14 +234,14 @@ export default function GroupDetailPage() {
         )}
       </div>
 
-      {toast && <div style={{ marginBottom: 16, padding: '10px 14px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, fontSize: 13, color: S.gold }}>✦ {toast}</div>}
+      {toast && <div className="pf-banner" role="status">✦ {toast}</div>}
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
+      <div className="pf-tabs" role="tablist">
         {(['announcements', 'prayer', 'members'] as Tab[]).map(t => (
-          <button key={t} onClick={() => setTab(t)} style={{ padding: '7px 14px', background: tab === t ? S.goldDim : 'transparent', border: `1px solid ${tab === t ? S.goldBorder : S.border}`, borderRadius: 2, color: tab === t ? S.gold : S.muted, fontSize: 10, letterSpacing: '0.1em', textTransform: 'capitalize', cursor: 'pointer', fontFamily: S.font.body }}>
+          <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className="pf-tabbtn" style={{ textTransform: 'capitalize' }}>
             {t === 'prayer' ? 'Prayer' : t.charAt(0).toUpperCase() + t.slice(1)}
-            {t === 'members' && <span style={{ marginLeft: 4, opacity: 0.6 }}>({members.length})</span>}
+            {t === 'members' && <span style={{ opacity: 0.6 }}>({members.length})</span>}
           </button>
         ))}
       </div>

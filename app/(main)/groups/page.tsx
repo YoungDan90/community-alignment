@@ -129,12 +129,6 @@ export default function GroupsPage() {
   const myGroups = groups.filter(g => g.is_member);
   const otherGroups = groups.filter(g => !g.is_member);
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-    padding: '9px 12px', color: S.text, fontSize: 13, fontFamily: S.font.body,
-    outline: 'none', boxSizing: 'border-box',
-  };
-
   const GroupCard = ({ g }: { g: Group }) => {
     const tc = TYPE_COLORS[g.type] ?? TYPE_COLORS.general;
     return (
@@ -177,44 +171,57 @@ export default function GroupsPage() {
   };
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic', fontFamily: S.font.body }}>Loading…</p>
+    <div className="pf-page">
+      <div className="pf-skel" style={{ height: 26, width: 160, marginBottom: 20 }} />
+      {[0, 1, 2].map((i) => <div key={i} className="pf-skel" style={{ height: 120, borderRadius: 6, marginBottom: 10 }} />)}
     </div>
   );
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 680, margin: '0 auto', fontFamily: S.font.body }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, gap: 12, flexWrap: 'wrap' }}>
+    <div className="pf-page">
+      <div className="pf-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>Community</p>
-          <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>Groups</h1>
-          <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>Connect with your church family.</p>
+          <p className="pf-eyebrow">Community</p>
+          <h1 className="pf-title">Groups</h1>
+          <p className="pf-sub">Connect with your church family.</p>
         </div>
         {isPastor && (
-          <button onClick={() => setShowCreate(v => !v)} style={{ padding: '9px 20px', background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', flexShrink: 0 }}>
+          <button onClick={() => setShowCreate(v => !v)} className="pf-btn pf-btn--sm" style={{ flexShrink: 0 }}>
             + Create Group
           </button>
         )}
       </div>
 
-      {toast && <div style={{ marginBottom: 16, padding: '10px 14px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, fontSize: 13, color: S.gold }}>✦ {toast}</div>}
+      {toast && <div className="pf-banner" role="status">✦ {toast}</div>}
 
       {/* Create group form (pastor only) */}
       {showCreate && (
-        <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '18px 18px', marginBottom: 20 }}>
-          <p style={{ margin: '0 0 14px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.muted }}>New Group</p>
+        <div className="pf-card pf-card--accent" style={{ marginBottom: 20 }}>
+          <p className="pf-card-label" style={{ marginBottom: 14 }}>New Group</p>
           <div style={{ display: 'grid', gap: 10 }}>
-            <input value={newName} onChange={e => setNewName(e.target.value)} placeholder="Group name *" style={inputStyle} />
-            <textarea value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Description…" rows={2} style={{ ...inputStyle, resize: 'none' }} />
+            <div>
+              <label className="pf-label" htmlFor="group-name">Group name *</label>
+              <input id="group-name" className="pf-input" value={newName} onChange={e => setNewName(e.target.value)} placeholder="e.g. Wednesday Home Group" />
+            </div>
+            <div>
+              <label className="pf-label" htmlFor="group-desc">Description</label>
+              <textarea id="group-desc" className="pf-input" value={newDesc} onChange={e => setNewDesc(e.target.value)} rows={2} style={{ resize: 'none' }} />
+            </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-              <select value={newType} onChange={e => setNewType(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
-                {Object.entries(TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-              </select>
-              <input value={newSchedule} onChange={e => setNewSchedule(e.target.value)} placeholder="Meeting schedule" style={inputStyle} />
+              <div>
+                <label className="pf-label" htmlFor="group-type">Type</label>
+                <select id="group-type" className="pf-input" value={newType} onChange={e => setNewType(e.target.value)}>
+                  {Object.entries(TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="pf-label" htmlFor="group-schedule">Meeting schedule</label>
+                <input id="group-schedule" className="pf-input" value={newSchedule} onChange={e => setNewSchedule(e.target.value)} placeholder="e.g. Every Wednesday" />
+              </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setShowCreate(false)} style={{ flex: 1, padding: '9px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 12, cursor: 'pointer', fontFamily: S.font.body }}>Cancel</button>
-              <button onClick={handleCreate} disabled={!newName.trim() || creating} style={{ flex: 2, padding: '9px', background: newName.trim() ? S.gold : 'rgba(198,167,94,0.2)', border: 'none', borderRadius: 2, color: newName.trim() ? S.dark : S.muted, fontSize: 12, fontWeight: 'bold', cursor: newName.trim() ? 'pointer' : 'not-allowed', fontFamily: S.font.body }}>
+              <button onClick={() => setShowCreate(false)} className="pf-btn pf-btn--quiet" style={{ flex: 1 }}>Cancel</button>
+              <button onClick={handleCreate} disabled={!newName.trim() || creating} className="pf-btn" style={{ flex: 2 }}>
                 {creating ? 'Creating…' : 'Create Group'}
               </button>
             </div>

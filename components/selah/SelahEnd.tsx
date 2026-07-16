@@ -51,41 +51,24 @@ export default function SelahEnd({ onSave, saving }: SelahEndProps) {
       </p>
 
       <div style={{ width: '100%', maxWidth: 480, textAlign: 'left' }}>
-        <label style={{ display: 'block', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 10 }}>
+        <label htmlFor="selah-note" style={{ display: 'block', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 10 }}>
           What did God say? <span style={{ color: S.muted, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
         </label>
         <textarea
+          id="selah-note"
+          className="pf-input"
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="A word, an impression, a scripture that rose up…"
           rows={5}
-          style={{
-            width: '100%', background: S.card, border: `1px solid ${S.border}`, borderRadius: 2,
-            padding: '14px 16px', color: S.text, fontSize: 15, fontFamily: S.font.display,
-            fontStyle: 'italic', resize: 'none', outline: 'none', boxSizing: 'border-box', lineHeight: 1.75,
-          }}
+          style={{ fontFamily: S.font.display, fontStyle: 'italic', lineHeight: 1.75 }}
         />
 
         <div style={{ display: 'flex', gap: 10, marginTop: 14, flexWrap: 'wrap' }}>
-          <button
-            onClick={() => onSave(note)}
-            disabled={saving}
-            style={{
-              flex: 1, padding: '12px 22px', background: S.gold, border: 'none', borderRadius: 2,
-              color: '#0f1e2e', fontSize: 13, fontWeight: 'bold', cursor: saving ? 'not-allowed' : 'pointer',
-              fontFamily: S.font.body, letterSpacing: '0.06em', opacity: saving ? 0.6 : 1, transition: 'opacity 0.2s',
-            }}
-          >
+          <button onClick={() => onSave(note)} disabled={saving} className="pf-btn" style={{ flex: 1 }}>
             {saving ? 'Saving…' : 'Save & Close'}
           </button>
-          <button
-            onClick={handleCarryIntoWTW}
-            style={{
-              flex: 1, padding: '12px 22px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-              borderRadius: 2, color: S.gold, fontSize: 13, cursor: 'pointer',
-              fontFamily: S.font.body, letterSpacing: '0.06em', transition: 'all 0.2s',
-            }}
-          >
+          <button onClick={handleCarryIntoWTW} className="pf-btn pf-btn--ghost" style={{ flex: 1 }}>
             Carry into Word to Walk →
           </button>
         </div>

@@ -27,9 +27,9 @@ function weekStart() {
 
 function StatCard({ value, label, sub }: { value: number; label: string; sub?: string }) {
   return (
-    <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '18px 20px', flex: '1 1 140px' }}>
-      <p style={{ margin: '0 0 4px', fontSize: 32, fontFamily: S.font.display, color: S.gold, lineHeight: 1 }}>{value}</p>
-      <p style={{ margin: 0, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>{label}</p>
+    <div className="pf-stat" style={{ flex: '1 1 140px', padding: '18px 20px' }}>
+      <b style={{ fontSize: 32 }}>{value}</b>
+      <span>{label}</span>
       {sub && <p style={{ margin: '4px 0 0', fontSize: 11, color: S.muted, fontStyle: 'italic' }}>{sub}</p>}
     </div>
   );

@@ -115,11 +115,6 @@ export default function ComposeAnnouncement({ onClose, onPosted }: Props) {
     ? groups.find(g => g.id === groupId)?.name ?? 'Group'
     : AUDIENCE_OPTIONS.find(a => a.value === audience)?.label ?? 'All';
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-    padding: '9px 12px', color: S.text, fontSize: 13, fontFamily: S.font.body,
-    boxSizing: 'border-box', outline: 'none',
-  };
 
   return (
     <div style={{ background: S.card, border: `1px solid ${S.goldBorder}`, borderRadius: 3, padding: 20, marginBottom: 24 }}>
@@ -154,20 +149,27 @@ export default function ComposeAnnouncement({ onClose, onPosted }: Props) {
         />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <input
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Title"
-            style={inputStyle}
-          />
+          <div>
+            <label className="pf-label" htmlFor="ann-title">Title</label>
+            <input
+              id="ann-title"
+              className="pf-input"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+            />
+          </div>
 
-          <textarea
-            value={content}
-            onChange={e => setContent(e.target.value)}
-            placeholder="Write your announcement…"
-            rows={5}
-            style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
-          />
+          <div>
+            <label className="pf-label" htmlFor="ann-content">Announcement</label>
+            <textarea
+              id="ann-content"
+              className="pf-input"
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              placeholder="Write your announcement…"
+              rows={5}
+            />
+          </div>
 
           {/* Type */}
           <div>
@@ -213,9 +215,11 @@ export default function ComposeAnnouncement({ onClose, onPosted }: Props) {
             </div>
             {audience === 'specific_group' && (
               <select
+                aria-label="Select a group"
+                className="pf-input"
                 value={groupId}
                 onChange={e => setGroupId(e.target.value)}
-                style={{ ...inputStyle, marginTop: 8 }}
+                style={{ marginTop: 8 }}
               >
                 <option value="">Select a group…</option>
                 {groups.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
@@ -225,8 +229,8 @@ export default function ComposeAnnouncement({ onClose, onPosted }: Props) {
 
           {/* Expiry */}
           <div>
-            <p style={{ margin: '0 0 6px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>Expires</p>
-            <select value={expiryDays} onChange={e => setExpiryDays(e.target.value)} style={inputStyle}>
+            <label className="pf-label" htmlFor="ann-expiry">Expires</label>
+            <select id="ann-expiry" className="pf-input" value={expiryDays} onChange={e => setExpiryDays(e.target.value)}>
               {EXPIRY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
@@ -242,15 +246,7 @@ export default function ComposeAnnouncement({ onClose, onPosted }: Props) {
       )}
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
-        <button
-          onClick={handlePost}
-          disabled={posting}
-          style={{
-            padding: '10px 24px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-            borderRadius: 2, color: S.gold, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase',
-            cursor: posting ? 'wait' : 'pointer', fontFamily: S.font.body, opacity: posting ? 0.6 : 1,
-          }}
-        >
+        <button onClick={handlePost} disabled={posting} className="pf-btn">
           {posting ? 'Posting…' : 'Post Announcement'}
         </button>
       </div>

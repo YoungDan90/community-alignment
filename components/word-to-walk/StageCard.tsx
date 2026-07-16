@@ -140,6 +140,7 @@ export default function StageCard({
             {(['nkjv', 'nlt'] as const).map((t) => (
               <button
                 key={t}
+                aria-pressed={translation === t}
                 onClick={() => onTranslationChange(t)}
                 style={{
                   padding: '3px 12px',
@@ -211,26 +212,13 @@ export default function StageCard({
         {stage.prompt}
       </label>
       <textarea
+        className="pf-input"
+        aria-label={stage.prompt}
         value={primaryValue}
         onChange={(e) => onPrimaryChange(e.target.value)}
         placeholder={stage.placeholder}
         rows={stageIndex === 0 ? 3 : 4}
-        style={{
-          width: '100%',
-          background: S.dark,
-          border: `1px solid ${S.border}`,
-          borderRadius: 2,
-          padding: '12px 14px',
-          color: S.text,
-          fontSize: 15,
-          fontFamily: S.font.display,
-          fontStyle: 'italic',
-          resize: 'none',
-          outline: 'none',
-          boxSizing: 'border-box',
-          lineHeight: 1.75,
-          marginBottom: 16,
-        }}
+        style={{ fontFamily: S.font.display, fontStyle: 'italic', lineHeight: 1.75, marginBottom: 16 }}
       />
 
       {/* Secondary reflective question + textarea */}
@@ -247,26 +235,13 @@ export default function StageCard({
         {stage.secondary}
       </label>
       <textarea
+        className="pf-input"
+        aria-label={stage.secondary}
         value={secondaryValue}
         onChange={(e) => onSecondaryChange(e.target.value)}
         placeholder="Optional reflection…"
         rows={2}
-        style={{
-          width: '100%',
-          background: S.dark,
-          border: `1px solid ${S.border}`,
-          borderRadius: 2,
-          padding: '10px 14px',
-          color: S.text,
-          fontSize: 13,
-          fontFamily: S.font.display,
-          fontStyle: 'italic',
-          resize: 'none',
-          outline: 'none',
-          boxSizing: 'border-box',
-          lineHeight: 1.65,
-          opacity: 0.8,
-        }}
+        style={{ fontFamily: S.font.display, fontStyle: 'italic', fontSize: 13, lineHeight: 1.65, opacity: 0.85 }}
       />
 
       {/* Identify hint */}
@@ -300,28 +275,17 @@ export default function StageCard({
             gap: 10,
           }}
         >
-          <button
-            onClick={() => onSharedChange?.(!isShared)}
-            style={{
-              width: 18,
-              height: 18,
-              borderRadius: 3,
-              border: `1px solid ${isShared ? S.gold : S.border}`,
-              background: isShared ? S.goldDim : 'transparent',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: S.gold,
-              fontSize: 10,
-              flexShrink: 0,
-            }}
-          >
-            {isShared ? '✓' : ''}
-          </button>
-          <span style={{ fontSize: 12, color: S.soft }}>
-            Share this journey with the community (your commitment stays private)
-          </span>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={!!isShared}
+              onChange={(e) => onSharedChange?.(e.target.checked)}
+              style={{ width: 18, height: 18, accentColor: S.gold, flexShrink: 0 }}
+            />
+            <span style={{ fontSize: 12, color: S.soft }}>
+              Share this journey with the community (your commitment stays private)
+            </span>
+          </label>
         </div>
       )}
 

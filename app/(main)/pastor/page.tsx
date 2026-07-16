@@ -12,12 +12,6 @@ import PendingTestimonies from '@/components/pastor/PendingTestimonies';
 import ContactMessages from '@/components/pastor/ContactMessages';
 import JoinRequests from '@/components/pastor/JoinRequests';
 
-const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
-  gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  border: '#1e3a52', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
-};
-
 type Section = 'overview' | 'verse' | 'members' | 'notifications' | 'testimonies' | 'messages' | 'join';
 
 const SECTIONS: { id: Section; label: string; icon: string }[] = [
@@ -65,8 +59,10 @@ export default function PastorPage() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', fontFamily: S.font.body }}>
-        <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic' }}>Verifying access…</p>
+      <div className="pf-page pf-page--wide">
+        <div className="pf-skel" style={{ height: 26, width: 260, marginBottom: 20 }} />
+        <div className="pf-skel" style={{ height: 36, marginBottom: 20 }} />
+        <div className="pf-skel" style={{ height: 220, borderRadius: 6 }} />
       </div>
     );
   }
@@ -76,116 +72,49 @@ export default function PastorPage() {
   const { heading, sub } = SECTION_TITLES[section];
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 680, margin: '0 auto', fontFamily: S.font.body }}>
+    <div className="pf-page pf-page--wide">
       {/* Page header */}
-      <div style={{ marginBottom: 24 }}>
-        <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>
-          Pastor Dashboard
-        </p>
-        <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>
-          {heading}
-        </h1>
-        <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>{sub}</p>
+      <div className="pf-head">
+        <p className="pf-eyebrow">Pastor Dashboard</p>
+        <h1 className="pf-title">{heading}</h1>
+        <p className="pf-sub">{sub}</p>
       </div>
 
       {/* Section tabs — horizontal scroll on small screens */}
       <div
-        style={{
-          display: 'flex', gap: 6, marginBottom: 24,
-          overflowX: 'auto', paddingBottom: 4,
-          scrollbarWidth: 'none',
-        }}
+        className="pf-tabs"
+        role="tablist"
+        style={{ flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none', marginBottom: 24 }}
       >
-        {SECTIONS.map(({ id, label, icon }) => {
-          const active = section === id;
-          return (
-            <button
-              key={id}
-              onClick={() => setSection(id)}
-              style={{
-                padding: '7px 14px', flexShrink: 0,
-                background: active ? S.goldDim : 'transparent',
-                border: `1px solid ${active ? S.goldBorder : S.border}`,
-                borderRadius: 2,
-                color: active ? S.gold : S.muted,
-                fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase',
-                cursor: 'pointer', fontFamily: S.font.body,
-                transition: 'all 0.2s',
-                display: 'flex', alignItems: 'center', gap: 5,
-              }}
-            >
-              <span style={{ fontSize: 11 }}>{icon}</span>
-              {label}
-            </button>
-          );
-        })}
+        {SECTIONS.map(({ id, label, icon }) => (
+          <button
+            key={id}
+            role="tab"
+            aria-selected={section === id}
+            onClick={() => setSection(id)}
+            className="pf-tabbtn"
+            style={{ flexShrink: 0 }}
+          >
+            <span aria-hidden="true" style={{ fontSize: 11 }}>{icon}</span>
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* Quick links to full-page tools */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-        <Link href="/members" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
-          }}>
-            <span style={{ fontSize: 13, color: S.gold }}>◉</span>
-            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Member Directory</span>
-          </div>
-        </Link>
-        <Link href="/rotas" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
-          }}>
-            <span style={{ fontSize: 13, color: S.gold }}>📋</span>
-            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Rotas</span>
-          </div>
-        </Link>
-        <Link href="/groups" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
-          }}>
-            <span style={{ fontSize: 13, color: S.gold }}>◈</span>
-            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Groups</span>
-          </div>
-        </Link>
-        <Link href="/announcements" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
-          }}>
-            <span style={{ fontSize: 13, color: S.gold }}>📢</span>
-            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Announcements</span>
-          </div>
-        </Link>
-        <Link href="/inbox" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
-          }}>
-            <span style={{ fontSize: 13, color: S.gold }}>✉</span>
-            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Inbox</span>
-          </div>
-        </Link>
-        <Link href="/documents" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
-          }}>
-            <span style={{ fontSize: 13, color: S.gold }}>📂</span>
-            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Documents</span>
-          </div>
-        </Link>
-        <Link href="/worship" style={{ textDecoration: 'none' }}>
-          <div style={{
-            padding: '10px 18px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-            borderRadius: 2, display: 'flex', alignItems: 'center', gap: 8,
-          }}>
-            <span style={{ fontSize: 13, color: S.gold }}>🎵</span>
-            <span style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Worship</span>
-          </div>
-        </Link>
+        {[
+          { href: '/members', icon: '◉', label: 'Member Directory' },
+          { href: '/rotas', icon: '📋', label: 'Rotas' },
+          { href: '/groups', icon: '◈', label: 'Groups' },
+          { href: '/announcements', icon: '📢', label: 'Announcements' },
+          { href: '/documents', icon: '📂', label: 'Documents' },
+          { href: '/worship', icon: '🎵', label: 'Worship' },
+        ].map(({ href, icon, label }) => (
+          <Link key={href} href={href} className="pf-btn pf-btn--ghost pf-btn--sm">
+            <span aria-hidden="true">{icon}</span> {label}
+          </Link>
+        ))}
       </div>
 
       {/* Section content */}

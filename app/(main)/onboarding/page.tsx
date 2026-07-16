@@ -205,33 +205,10 @@ export default function OnboardingPage() {
       {/* Navigation */}
       <div style={{ paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {step > 1 ? (
-          <button
-            onClick={() => setStep((s) => s - 1)}
-            style={{
-              padding: '10px 20px', background: 'transparent',
-              border: `1px solid ${S.border}`, borderRadius: 2,
-              color: S.soft, fontSize: 13, cursor: 'pointer',
-              fontFamily: S.font.body, minHeight: 44,
-            }}
-          >
-            ← Back
-          </button>
+          <button onClick={() => setStep((s) => s - 1)} className="pf-btn pf-btn--quiet">← Back</button>
         ) : <div />}
 
-        <button
-          onClick={handleNext}
-          disabled={saving}
-          style={{
-            padding: '11px 28px',
-            background: saving ? 'rgba(198,167,94,0.3)' : S.gold,
-            border: 'none', borderRadius: 2,
-            color: saving ? S.muted : S.dark,
-            fontSize: 13, fontWeight: 'bold',
-            cursor: saving ? 'wait' : 'pointer',
-            fontFamily: S.font.body, letterSpacing: '0.06em', minHeight: 44,
-            transition: 'all 0.2s',
-          }}
-        >
+        <button onClick={handleNext} disabled={saving} className="pf-btn">
           {saving ? 'Saving…' : step === TOTAL_STEPS ? 'Begin Selah ✦' : 'Continue →'}
         </button>
       </div>

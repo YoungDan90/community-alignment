@@ -80,34 +80,25 @@ export default function DocumentsPage() {
   };
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', fontFamily: S.font.body }}>
-      <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic' }}>Loading resources…</p>
+    <div className="pf-page">
+      <div className="pf-skel" style={{ height: 26, width: 260, marginBottom: 20 }} />
+      {[0, 1, 2].map((i) => <div key={i} className="pf-skel" style={{ height: 110, borderRadius: 6, marginBottom: 10 }} />)}
     </div>
   );
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 680, margin: '0 auto', fontFamily: S.font.body }}>
-      <div style={{ marginBottom: 20 }}>
-        <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>
-          Church Resources
-        </p>
-        <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>
-          Documents & Resources
-        </h1>
-        <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>
-          Guides, forms, and materials for the Alignment Church community.
-        </p>
+    <div className="pf-page">
+      <div className="pf-head">
+        <p className="pf-eyebrow">Church Resources</p>
+        <h1 className="pf-title">Documents &amp; Resources</h1>
+        <p className="pf-sub">Guides, forms, and materials for the Alignment Church community.</p>
       </div>
 
       {isPastor && !showUpload && (
         <button
           onClick={() => setShowUpload(true)}
-          style={{
-            display: 'block', width: '100%', padding: '11px', marginBottom: 20,
-            background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2,
-            color: S.gold, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase',
-            cursor: 'pointer', fontFamily: S.font.body,
-          }}
+          className="pf-btn pf-btn--ghost"
+          style={{ display: 'flex', width: '100%', marginBottom: 20 }}
         >
           + Upload Document
         </button>
@@ -121,29 +112,25 @@ export default function DocumentsPage() {
       )}
 
       {/* Search */}
+      <label className="pf-label" htmlFor="doc-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>Search documents</label>
       <input
+        id="doc-search"
+        type="search"
+        className="pf-input"
         value={search}
         onChange={e => setSearch(e.target.value)}
         placeholder="Search documents…"
-        style={{
-          width: '100%', background: S.card, border: `1px solid ${S.border}`, borderRadius: 2,
-          padding: '9px 12px', color: S.text, fontSize: 13, fontFamily: S.font.body,
-          boxSizing: 'border-box', outline: 'none', marginBottom: 16,
-        }}
+        style={{ marginBottom: 16 }}
       />
 
       {/* Category tabs */}
       {availableCategories.length > 0 && (
-        <div style={{ display: 'flex', gap: 6, marginBottom: 24, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+        <div className="pf-tabs" style={{ flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
           <button
             onClick={() => setCategoryFilter('all')}
-            style={{
-              padding: '6px 14px', flexShrink: 0,
-              border: `1px solid ${categoryFilter === 'all' ? S.goldBorder : S.border}`,
-              borderRadius: 2, background: categoryFilter === 'all' ? S.goldDim : 'transparent',
-              color: categoryFilter === 'all' ? S.gold : S.soft,
-              fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: S.font.body,
-            }}
+            aria-pressed={categoryFilter === 'all'}
+            className="pf-tabbtn"
+            style={{ flexShrink: 0 }}
           >
             All
           </button>
@@ -151,13 +138,9 @@ export default function DocumentsPage() {
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
-              style={{
-                padding: '6px 14px', flexShrink: 0,
-                border: `1px solid ${categoryFilter === cat ? S.goldBorder : S.border}`,
-                borderRadius: 2, background: categoryFilter === cat ? S.goldDim : 'transparent',
-                color: categoryFilter === cat ? S.gold : S.soft,
-                fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: S.font.body,
-              }}
+              aria-pressed={categoryFilter === cat}
+              className="pf-tabbtn"
+              style={{ flexShrink: 0 }}
             >
               {CATEGORY_LABELS[cat] ?? cat}
             </button>
@@ -166,10 +149,9 @@ export default function DocumentsPage() {
       )}
 
       {filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '48px 20px' }}>
-          <p style={{ fontSize: 13, color: S.soft, fontStyle: 'italic' }}>
-            {search ? 'No documents match your search.' : 'No documents available yet.'}
-          </p>
+        <div className="pf-empty">
+          <span className="pf-empty-icon" aria-hidden="true">📂</span>
+          {search ? 'No documents match your search.' : 'No documents available yet.'}
         </div>
       ) : (
         <>

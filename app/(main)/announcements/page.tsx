@@ -132,34 +132,25 @@ export default function AnnouncementsPage() {
   const unreadCount = announcements.filter(a => !a.isRead).length;
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', fontFamily: S.font.body }}>
-      <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic' }}>Loading announcements…</p>
+    <div className="pf-page">
+      <div className="pf-skel" style={{ height: 26, width: 220, marginBottom: 20 }} />
+      {[0, 1, 2, 3].map((i) => <div key={i} className="pf-skel" style={{ height: 84, borderRadius: 6, marginBottom: 10 }} />)}
     </div>
   );
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 680, margin: '0 auto', fontFamily: S.font.body }}>
-      <div style={{ marginBottom: 20 }}>
-        <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>
-          Church Announcements
-        </p>
-        <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>
-          Announcements
-        </h1>
-        <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>
-          Stay up to date with what&rsquo;s happening.
-        </p>
+    <div className="pf-page">
+      <div className="pf-head">
+        <p className="pf-eyebrow">Church Announcements</p>
+        <h1 className="pf-title">Announcements</h1>
+        <p className="pf-sub">Stay up to date with what&rsquo;s happening.</p>
       </div>
 
       {isPastor && !showCompose && (
         <button
           onClick={() => setShowCompose(true)}
-          style={{
-            display: 'block', width: '100%', padding: '11px', marginBottom: 20,
-            background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2,
-            color: S.gold, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase',
-            cursor: 'pointer', fontFamily: S.font.body,
-          }}
+          className="pf-btn pf-btn--ghost"
+          style={{ display: 'flex', width: '100%', marginBottom: 20 }}
         >
           + Post New Announcement
         </button>
@@ -173,36 +164,27 @@ export default function AnnouncementsPage() {
       )}
 
       {/* Filter tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 20 }}>
+      <div className="pf-tabs" role="tablist">
         {(['all', 'unread', 'pinned'] as FilterTab[]).map(tab => (
           <button
             key={tab}
+            role="tab"
+            aria-selected={filterTab === tab}
             onClick={() => setFilterTab(tab)}
-            style={{
-              padding: '6px 14px', border: `1px solid ${filterTab === tab ? S.goldBorder : S.border}`,
-              borderRadius: 2, background: filterTab === tab ? S.goldDim : 'transparent',
-              color: filterTab === tab ? S.gold : S.soft,
-              fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
-              fontFamily: S.font.body, display: 'flex', alignItems: 'center', gap: 5,
-            }}
+            className="pf-tabbtn"
           >
             {tab === 'unread' ? 'Unread' : tab.charAt(0).toUpperCase() + tab.slice(1)}
             {tab === 'unread' && unreadCount > 0 && (
-              <span style={{
-                background: '#e05555', color: '#fff', borderRadius: '50%',
-                width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 9, lineHeight: 1,
-              }}>{unreadCount > 9 ? '9+' : unreadCount}</span>
+              <span className="pf-badge" style={{ background: '#e05555', color: '#fff' }}>{unreadCount > 9 ? '9+' : unreadCount}</span>
             )}
           </button>
         ))}
       </div>
 
       {filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '48px 20px' }}>
-          <p style={{ fontSize: 13, color: S.soft, fontStyle: 'italic' }}>
-            {filterTab === 'unread' ? 'All caught up!' : filterTab === 'pinned' ? 'No pinned announcements.' : 'No announcements yet.'}
-          </p>
+        <div className="pf-empty">
+          <span className="pf-empty-icon" aria-hidden="true">📢</span>
+          {filterTab === 'unread' ? 'All caught up!' : filterTab === 'pinned' ? 'No pinned announcements.' : 'No announcements yet.'}
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

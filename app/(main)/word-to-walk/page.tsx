@@ -289,42 +289,15 @@ export default function WordToWalkPage() {
 
   // ── Journey ──────────────────────────────────────────────────
   return (
-    <div
-      style={{
-        padding: '28px 20px',
-        maxWidth: 680,
-        margin: '0 auto',
-        fontFamily: S.font.body,
-      }}
-    >
+    <div className="pf-page">
       {/* Page title */}
-      <div style={{ marginBottom: 20 }}>
-        <p
-          style={{
-            margin: '0 0 2px',
-            fontSize: 10,
-            letterSpacing: '0.25em',
-            textTransform: 'uppercase',
-            color: S.gold,
-          }}
-        >
-          Word to Walk
-        </p>
-        <h1
-          style={{
-            margin: '0 0 4px',
-            fontSize: 22,
-            fontWeight: 'normal',
-            color: S.textLight,
-            fontFamily: S.font.display,
-          }}
-        >
+      <div className="pf-head" style={{ marginBottom: 20 }}>
+        <p className="pf-eyebrow">Word to Walk</p>
+        <h1 className="pf-title">
           {activeVerse?.sermon_series ?? 'Seven-Stage Meditation Journey'}
         </h1>
         {activeVerse && activeVerse.id !== 'fallback' && (
-          <p style={{ margin: 0, fontSize: 12, color: S.muted, fontStyle: 'italic' }}>
-            {activeVerse.reference}
-          </p>
+          <p className="pf-sub">{activeVerse.reference}</p>
         )}
       </div>
 
@@ -456,23 +429,7 @@ export default function WordToWalkPage() {
         }}
       >
         {stage > 0 ? (
-          <button
-            onClick={goBack}
-            style={{
-              padding: '10px 22px',
-              background: 'rgba(255,255,255,0.04)',
-              border: `1px solid ${S.border}`,
-              borderRadius: 2,
-              color: S.soft,
-              fontSize: 13,
-              cursor: 'pointer',
-              fontFamily: S.font.body,
-              letterSpacing: '0.06em',
-              transition: 'all 0.2s',
-            }}
-          >
-            ← Back
-          </button>
+          <button onClick={goBack} className="pf-btn pf-btn--quiet">← Back</button>
         ) : (
           <div />
         )}
@@ -480,20 +437,8 @@ export default function WordToWalkPage() {
         <button
           onClick={goForward}
           disabled={!canContinue}
-          style={{
-            padding: '11px 28px',
-            background: canContinue ? S.gold : 'rgba(198,167,94,0.2)',
-            border: 'none',
-            borderRadius: 2,
-            color: canContinue ? S.dark : S.muted,
-            fontSize: 13,
-            fontWeight: 'bold',
-            cursor: canContinue ? 'pointer' : 'not-allowed',
-            fontFamily: S.font.body,
-            letterSpacing: '0.06em',
-            minWidth: 140,
-            transition: 'all 0.2s',
-          }}
+          className="pf-btn"
+          style={{ minWidth: 140 }}
         >
           {stage === WTW_STAGES.length - 1 ? 'Complete ✦' : 'Continue →'}
         </button>

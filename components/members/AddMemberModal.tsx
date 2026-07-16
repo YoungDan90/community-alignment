@@ -15,11 +15,6 @@ const S = {
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
-const inputStyle: React.CSSProperties = {
-  width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-  padding: '10px 14px', color: S.text, fontSize: 14, fontFamily: S.font.body,
-  outline: 'none', boxSizing: 'border-box',
-};
 
 const STATUS_OPTIONS = ['visitor', 'attendee', 'member', 'leader'] as const;
 
@@ -104,26 +99,27 @@ export default function AddMemberModal({ onClose, onAdded }: Props) {
         ) : (
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div>
-              <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Full Name *</label>
-              <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="First and last name" style={inputStyle} required />
+              <label className="pf-label" htmlFor="add-name">Full Name *</label>
+              <input id="add-name" className="pf-input" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="First and last name" required />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Email *</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" style={inputStyle} required />
+              <label className="pf-label" htmlFor="add-email">Email *</label>
+              <input id="add-email" className="pf-input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" required />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Phone <span style={{ color: S.muted }}>(optional)</span></label>
-              <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+44…" style={inputStyle} />
+              <label className="pf-label" htmlFor="add-phone">Phone <span style={{ textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
+              <input id="add-phone" className="pf-input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+44…" />
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Member Status</label>
+              <label className="pf-label" htmlFor="add-status">Member Status</label>
               <select
+                id="add-status"
+                className="pf-input"
                 value={memberStatus}
                 onChange={e => setMemberStatus(e.target.value as typeof STATUS_OPTIONS[number])}
-                style={{ ...inputStyle, cursor: 'pointer' }}
               >
                 {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
               </select>
@@ -154,30 +150,11 @@ export default function AddMemberModal({ onClose, onAdded }: Props) {
               </button>
             </div>
 
-            {error && <p style={{ margin: 0, fontSize: 12, color: '#e07070' }}>{error}</p>}
+            {error && <p role="alert" style={{ margin: 0, fontSize: 12, color: 'var(--pf-danger)' }}>{error}</p>}
 
             <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
-              <button
-                type="button"
-                onClick={onClose}
-                style={{
-                  flex: 1, padding: '11px', background: 'transparent',
-                  border: `1px solid ${S.border}`, borderRadius: 2,
-                  color: S.soft, fontSize: 12, cursor: 'pointer', fontFamily: S.font.body,
-                }}
-              >Cancel</button>
-              <button
-                type="submit"
-                disabled={saving}
-                style={{
-                  flex: 2, padding: '11px',
-                  background: saving ? 'rgba(198,167,94,0.3)' : S.gold,
-                  border: 'none', borderRadius: 2,
-                  color: saving ? S.muted : S.dark,
-                  fontSize: 12, fontWeight: 'bold', cursor: saving ? 'wait' : 'pointer',
-                  fontFamily: S.font.body, letterSpacing: '0.06em',
-                }}
-              >
+              <button type="button" onClick={onClose} className="pf-btn pf-btn--quiet" style={{ flex: 1 }}>Cancel</button>
+              <button type="submit" disabled={saving} className="pf-btn" style={{ flex: 2 }}>
                 {saving ? 'Saving…' : sendInvite ? 'Send Invite' : 'Add Member'}
               </button>
             </div>

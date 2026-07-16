@@ -274,11 +274,23 @@ export default function ServicePlanPage() {
   };
 
   if (loading) {
-    return <div style={{ minHeight: '100vh', background: S.dark, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><p style={{ color: S.soft, fontFamily: S.font.body }}>Loading…</p></div>;
+    return (
+      <div className="pf-page pf-page--wide">
+        <div className="pf-skel" style={{ height: 30, width: 280, marginBottom: 20 }} />
+        {[0, 1, 2].map((i) => <div key={i} className="pf-skel" style={{ height: 120, borderRadius: 6, marginBottom: 14 }} />)}
+      </div>
+    );
   }
 
   if (!plan) {
-    return <div style={{ minHeight: '100vh', background: S.dark, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><p style={{ color: S.soft, fontFamily: S.font.body }}>Plan not found.</p></div>;
+    return (
+      <div className="pf-page">
+        <div className="pf-empty">
+          <span className="pf-empty-icon" aria-hidden="true">🎵</span>
+          Plan not found.
+        </div>
+      </div>
+    );
   }
 
   const playlistEmbedId = (() => {
@@ -288,8 +300,8 @@ export default function ServicePlanPage() {
   })();
 
   return (
-    <div style={{ minHeight: '100vh', background: S.dark, padding: '20px 0 80px', fontFamily: S.font.body }}>
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 16px' }}>
+    <div className="pf-page pf-page--wide">
+      <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
           <Link href="/worship" style={{ color: S.soft, fontSize: 12, textDecoration: 'none' }}>← Worship</Link>
         </div>

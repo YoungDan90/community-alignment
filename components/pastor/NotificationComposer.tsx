@@ -12,11 +12,6 @@ const S = {
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
-const inputStyle: React.CSSProperties = {
-  width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-  padding: '10px 14px', color: S.text, fontSize: 14, fontFamily: S.font.display,
-  fontStyle: 'italic', outline: 'none', boxSizing: 'border-box',
-};
 
 export default function NotificationComposer() {
   const [title, setTitle]   = useState('');
@@ -63,33 +58,30 @@ export default function NotificationComposer() {
     <div>
       <div style={{ display: 'grid', gap: 14 }}>
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Title</label>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Notification title…" style={inputStyle} />
+          <label className="pf-label" htmlFor="notif-title">Title</label>
+          <input id="notif-title" className="pf-input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Notification title…" />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Message</label>
+          <label className="pf-label" htmlFor="notif-body">Message</label>
           <textarea
+            id="notif-body"
+            className="pf-input"
             value={body}
             onChange={(e) => setBody(e.target.value)}
             placeholder="What do you want to say to the community?"
             rows={3}
-            style={{ ...inputStyle, resize: 'none' }}
           />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Deep Link URL</label>
-          <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="/word-to-walk" style={inputStyle} />
+          <label className="pf-label" htmlFor="notif-url">Deep Link URL</label>
+          <input id="notif-url" className="pf-input" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="/word-to-walk" />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Send To</label>
-          <select
-            value={target}
-            onChange={(e) => setTarget(e.target.value)}
-            style={{ ...inputStyle, fontStyle: 'normal', cursor: 'pointer' }}
-          >
+          <label className="pf-label" htmlFor="notif-target">Send To</label>
+          <select id="notif-target" className="pf-input" value={target} onChange={(e) => setTarget(e.target.value)}>
             <option value="all">All Members</option>
             {members.map((m) => (
               <option key={m.id} value={m.id}>{m.full_name ?? 'Unnamed'}</option>
@@ -107,27 +99,15 @@ export default function NotificationComposer() {
         </div>
       )}
 
-      {error && <p style={{ marginTop: 10, fontSize: 12, color: '#e07070' }}>{error}</p>}
+      {error && <p role="alert" style={{ marginTop: 10, fontSize: 12, color: 'var(--pf-danger)' }}>{error}</p>}
 
       {result && (
-        <div style={{ marginTop: 10, padding: '10px 14px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, fontSize: 13, color: S.gold }}>
+        <div className="pf-banner" role="status" style={{ marginTop: 10, marginBottom: 0 }}>
           ✦ Sent to {result.sent} of {result.total} subscriber{result.total !== 1 ? 's' : ''}.
         </div>
       )}
 
-      <button
-        onClick={handleSend}
-        disabled={!canSend || sending}
-        style={{
-          marginTop: 16, padding: '11px 28px',
-          background: canSend && !sending ? S.gold : 'rgba(198,167,94,0.2)',
-          border: 'none', borderRadius: 2,
-          color: canSend && !sending ? S.dark : S.muted,
-          fontSize: 13, fontWeight: 'bold',
-          cursor: canSend && !sending ? 'pointer' : 'not-allowed',
-          fontFamily: S.font.body, letterSpacing: '0.06em', transition: 'all 0.2s',
-        }}
-      >
+      <button onClick={handleSend} disabled={!canSend || sending} className="pf-btn" style={{ marginTop: 16 }}>
         {sending ? 'Sending…' : 'Send Notification'}
       </button>
     </div>

@@ -152,16 +152,14 @@ export default function WorshipPage() {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: S.dark, padding: '20px 0 80px', fontFamily: S.font.body }}>
-      <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 24 }}>
+    <div className="pf-page pf-page--wide">
+      <div>
+        <div className="pf-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap' }}>
           <div>
-            <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.gold }}>Alignment Church</p>
-            <h1 style={{ margin: '4px 0 0', fontSize: 32, fontFamily: S.font.display, color: S.textLight, fontWeight: 400 }}>Worship Planning</h1>
+            <p className="pf-eyebrow">Alignment Church</p>
+            <h1 className="pf-title">Worship Planning</h1>
           </div>
-          <Link href="/worship/songs" style={{ padding: '7px 14px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none' }}>
-            Song Library
-          </Link>
+          <Link href="/worship/songs" className="pf-btn pf-btn--quiet pf-btn--sm">Song Library</Link>
         </div>
 
         {/* Worship Team panel — pastor only */}
@@ -223,7 +221,7 @@ export default function WorshipPage() {
         )}
 
         {isPastor && !showCreate && (
-          <button onClick={() => setShowCreate(true)} style={{ width: '100%', padding: '12px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 3, color: S.gold, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer', marginBottom: 24 }}>
+          <button onClick={() => setShowCreate(true)} className="pf-btn pf-btn--ghost" style={{ display: 'flex', width: '100%', marginBottom: 24 }}>
             + New Service Plan
           </button>
         )}

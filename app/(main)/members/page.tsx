@@ -82,8 +82,11 @@ export default function MembersPage() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-        <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic', fontFamily: S.font.body }}>Loading…</p>
+      <div className="pf-page pf-page--wide">
+        <div className="pf-skel" style={{ height: 26, width: 240, marginBottom: 20 }} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
+          {[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="pf-skel" style={{ height: 150, borderRadius: 6 }} />)}
+        </div>
       </div>
     );
   }
@@ -91,55 +94,42 @@ export default function MembersPage() {
   if (!authorized) return null;
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 720, margin: '0 auto', fontFamily: S.font.body }}>
+    <div className="pf-page pf-page--wide">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24, gap: 12, flexWrap: 'wrap' }}>
+      <div className="pf-head" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
         <div>
-          <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>Pastor Dashboard</p>
-          <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>Member Directory</h1>
-          <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>{members.length} people on record</p>
+          <p className="pf-eyebrow">Pastor Dashboard</p>
+          <h1 className="pf-title">Member Directory</h1>
+          <p className="pf-sub">{members.length} people on record</p>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          style={{
-            padding: '9px 20px', background: S.gold, border: 'none', borderRadius: 2,
-            color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: 'pointer',
-            fontFamily: S.font.body, letterSpacing: '0.08em', flexShrink: 0,
-          }}
-        >
+        <button onClick={() => setShowAddModal(true)} className="pf-btn pf-btn--sm" style={{ flexShrink: 0 }}>
           + Add Member
         </button>
       </div>
 
       {/* Search */}
+      <label className="pf-label" htmlFor="member-search" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>Search members by name</label>
       <input
-        type="text"
+        id="member-search"
+        type="search"
+        className="pf-input"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search by name…"
-        style={{
-          width: '100%', background: S.card, border: `1px solid ${S.border}`, borderRadius: 2,
-          padding: '10px 14px', color: S.text, fontSize: 14, fontFamily: S.font.body,
-          outline: 'none', marginBottom: 14, boxSizing: 'border-box',
-        }}
+        style={{ marginBottom: 14 }}
       />
 
       {/* Status tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 20, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+      <div className="pf-tabs" style={{ flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
         {STATUS_TABS.map((t) => {
           const count = t === 'all' ? members.length : members.filter(m => m.member_status === t).length;
           return (
             <button
               key={t}
               onClick={() => setTab(t)}
-              style={{
-                padding: '6px 14px', flexShrink: 0,
-                background: tab === t ? S.goldDim : 'transparent',
-                border: `1px solid ${tab === t ? S.goldBorder : S.border}`,
-                borderRadius: 2, color: tab === t ? S.gold : S.muted,
-                fontSize: 10, letterSpacing: '0.1em', textTransform: 'capitalize',
-                cursor: 'pointer', fontFamily: S.font.body,
-              }}
+              aria-pressed={tab === t}
+              className="pf-tabbtn"
+              style={{ flexShrink: 0, textTransform: 'capitalize' }}
             >
               {t} <span style={{ opacity: 0.6 }}>({count})</span>
             </button>
@@ -149,7 +139,10 @@ export default function MembersPage() {
 
       {/* Grid */}
       {filtered.length === 0 ? (
-        <p style={{ fontSize: 13, color: S.soft, fontStyle: 'italic', textAlign: 'center', padding: '40px 0' }}>No members found.</p>
+        <div className="pf-empty">
+          <span className="pf-empty-icon" aria-hidden="true">◉</span>
+          No members found.
+        </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
           {filtered.map((m) => {

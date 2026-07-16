@@ -108,50 +108,31 @@ export default function InboxPage() {
   const unreadCount = inbox.filter(m => !m.is_read).length;
 
   if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', fontFamily: S.font.body }}>
-      <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic' }}>Loading…</p>
+    <div className="pf-page">
+      <div className="pf-skel" style={{ height: 26, width: 180, marginBottom: 20 }} />
+      {[0, 1, 2, 3].map((i) => <div key={i} className="pf-skel" style={{ height: 74, borderRadius: 6, marginBottom: 8 }} />)}
     </div>
   );
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 680, margin: '0 auto', fontFamily: S.font.body }}>
-      <div style={{ marginBottom: 20 }}>
-        <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>
-          Messages
-        </p>
-        <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>
-          Inbox
-        </h1>
-        <p style={{ margin: 0, fontSize: 13, color: S.soft, fontStyle: 'italic' }}>
-          Messages between you and the church.
-        </p>
+    <div className="pf-page">
+      <div className="pf-head">
+        <p className="pf-eyebrow">Messages</p>
+        <h1 className="pf-title">Inbox</h1>
+        <p className="pf-sub">Messages between you and the church.</p>
       </div>
 
       {/* Announcements link */}
-      <a
-        href="/announcements"
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '10px 14px', marginBottom: 16,
-          background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2,
-          textDecoration: 'none',
-        }}
-      >
-        <span style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>
-          📢 Church Announcements
-        </span>
-        <span style={{ fontSize: 12, color: S.gold }}>→</span>
+      <a href="/announcements" className="pf-banner" style={{ textDecoration: 'none', justifyContent: 'space-between', fontStyle: 'normal', letterSpacing: '0.08em', textTransform: 'uppercase', fontSize: 11 }}>
+        <span>📢 Church Announcements</span>
+        <span aria-hidden="true">→</span>
       </a>
 
       {!showCompose && !replyTo && (
         <button
           onClick={() => setShowCompose(true)}
-          style={{
-            display: 'block', width: '100%', padding: '11px', marginBottom: 16,
-            background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2,
-            color: S.soft, fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase',
-            cursor: 'pointer', fontFamily: S.font.body,
-          }}
+          className="pf-btn pf-btn--ghost"
+          style={{ display: 'flex', width: '100%', marginBottom: 16 }}
         >
           + Compose Message
         </button>
@@ -178,36 +159,27 @@ export default function InboxPage() {
       )}
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 20 }}>
+      <div className="pf-tabs" role="tablist">
         {(['inbox', 'sent'] as InboxTab[]).map(t => (
           <button
             key={t}
+            role="tab"
+            aria-selected={tab === t}
             onClick={() => setTab(t)}
-            style={{
-              padding: '6px 16px', border: `1px solid ${tab === t ? S.goldBorder : S.border}`,
-              borderRadius: 2, background: tab === t ? S.goldDim : 'transparent',
-              color: tab === t ? S.gold : S.soft,
-              fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer',
-              fontFamily: S.font.body, display: 'flex', alignItems: 'center', gap: 6,
-            }}
+            className="pf-tabbtn"
           >
             {t.charAt(0).toUpperCase() + t.slice(1)}
             {t === 'inbox' && unreadCount > 0 && (
-              <span style={{
-                background: S.gold, color: S.dark, borderRadius: '50%',
-                width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 9, lineHeight: 1, fontWeight: 600,
-              }}>{unreadCount > 9 ? '9+' : unreadCount}</span>
+              <span className="pf-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
             )}
           </button>
         ))}
       </div>
 
       {displayed.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '48px 20px' }}>
-          <p style={{ fontSize: 13, color: S.soft, fontStyle: 'italic' }}>
-            {tab === 'inbox' ? 'Your inbox is empty.' : 'No sent messages.'}
-          </p>
+        <div className="pf-empty">
+          <span className="pf-empty-icon" aria-hidden="true">✉</span>
+          {tab === 'inbox' ? 'Your inbox is empty.' : 'No sent messages.'}
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

@@ -43,17 +43,13 @@ export default function SelahSetup({ activeVerse, onBegin }: SelahSetupProps) {
   const [customVerse, setCustomVerse] = useState<{ reference: string; text: string } | null>(null);
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 600, margin: '0 auto', fontFamily: S.font.body }}>
+    <div className="pf-page" style={{ maxWidth: 600 }}>
       {/* Header */}
-      <p style={{ margin: '0 0 4px', fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: S.gold }}>
-        Selah Moments
-      </p>
-      <h2 style={{ margin: '0 0 4px', fontSize: 26, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>
-        Focused Time with God
-      </h2>
-      <p style={{ margin: '0 0 28px', fontSize: 14, color: S.soft, fontStyle: 'italic' }}>
-        &ldquo;Be still and know that I am God.&rdquo; — Psalm 46:10
-      </p>
+      <div className="pf-head" style={{ marginBottom: 28 }}>
+        <p className="pf-eyebrow">Selah Moments</p>
+        <h2 className="pf-title">Focused Time with God</h2>
+        <p className="pf-sub">&ldquo;Be still and know that I am God.&rdquo; — Psalm 46:10</p>
+      </div>
 
       {/* Verse — week's or custom */}
       {!showVerseSearch && (activeVerse || customVerse) && (
@@ -133,6 +129,7 @@ export default function SelahSetup({ activeVerse, onBegin }: SelahSetupProps) {
         {DURATIONS.map((d) => (
           <button
             key={d}
+            aria-pressed={duration === d}
             onClick={() => setDuration(d)}
             style={{
               flex: 1, padding: '14px 0', cursor: 'pointer', borderRadius: 2,
@@ -158,6 +155,7 @@ export default function SelahSetup({ activeVerse, onBegin }: SelahSetupProps) {
         {FOCUS_TYPES.map((f) => (
           <button
             key={f}
+            aria-pressed={focus === f}
             onClick={() => setFocus(f)}
             style={{
               padding: '7px 18px', cursor: 'pointer', borderRadius: 20,
@@ -180,6 +178,7 @@ export default function SelahSetup({ activeVerse, onBegin }: SelahSetupProps) {
         {(['nkjv', 'nlt'] as const).map((t) => (
           <button
             key={t}
+            aria-pressed={translation === t}
             onClick={() => setTranslation(t)}
             style={{
               padding: '8px 24px', cursor: 'pointer', borderRadius: 2,
@@ -202,24 +201,19 @@ export default function SelahSetup({ activeVerse, onBegin }: SelahSetupProps) {
         Paste a YouTube or Spotify link to play alongside your session
       </p>
       <input
+        aria-label="Worship music link"
+        className="pf-input"
         value={musicUrl}
         onChange={(e) => setMusicUrl(e.target.value)}
         placeholder="https://..."
-        style={{
-          width: '100%', background: S.card, border: `1px solid ${S.border}`, borderRadius: 2,
-          padding: '10px 14px', color: S.text, fontSize: 14, fontFamily: S.font.body,
-          outline: 'none', boxSizing: 'border-box', marginBottom: 28,
-        }}
+        style={{ marginBottom: 28 }}
       />
 
       {/* Begin */}
       <button
         onClick={() => onBegin({ duration, focus, translation, musicUrl, verseOverride: customVerse ?? undefined })}
-        style={{
-          width: '100%', padding: '15px', background: S.gold, border: 'none', borderRadius: 2,
-          color: '#0f1e2e', fontSize: 15, fontWeight: 'bold', cursor: 'pointer',
-          fontFamily: S.font.body, letterSpacing: '0.08em', transition: 'opacity 0.2s',
-        }}
+        className="pf-btn"
+        style={{ display: 'flex', width: '100%', fontSize: 15 }}
       >
         Begin Selah Moments ✦
       </button>

@@ -18,11 +18,6 @@ const S = {
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
-const inputStyle: React.CSSProperties = {
-  width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-  padding: '10px 14px', color: S.text, fontSize: 14, fontFamily: S.font.display,
-  fontStyle: 'italic', outline: 'none', boxSizing: 'border-box', lineHeight: 1.6,
-};
 
 export default function AssignVerse() {
   const [active, setActive] = useState<ActiveVerse | null>(null);
@@ -185,28 +180,27 @@ export default function AssignVerse() {
 
       <div style={{ display: 'grid', gap: 14 }}>
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Sermon Series</label>
-          <input value={series} onChange={(e) => setSeries(e.target.value)} placeholder="e.g. Rooted — A Series on the Word" style={inputStyle} />
+          <label className="pf-label" htmlFor="verse-series">Sermon Series</label>
+          <input id="verse-series" className="pf-input" value={series} onChange={(e) => setSeries(e.target.value)} placeholder="e.g. Rooted — A Series on the Word" style={{ fontFamily: 'var(--pf-serif)', fontStyle: 'italic' }} />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Verse Reference</label>
+          <label className="pf-label" htmlFor="verse-reference">Verse Reference</label>
           <div style={{ display: 'flex', gap: 8 }}>
             <input
+              id="verse-reference"
+              className="pf-input"
               value={reference}
               onChange={(e) => setReference(e.target.value)}
               onBlur={lookupVerse}
               placeholder="e.g. John 15:5"
-              style={{ ...inputStyle, flex: 1 }}
+              style={{ flex: 1, fontFamily: 'var(--pf-serif)', fontStyle: 'italic' }}
             />
             <button
               onClick={lookupVerse}
               disabled={fetching || !reference.trim()}
-              style={{
-                padding: '10px 16px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
-                borderRadius: 2, color: S.gold, fontSize: 11, cursor: 'pointer',
-                fontFamily: S.font.body, whiteSpace: 'nowrap', flexShrink: 0,
-              }}
+              className="pf-btn pf-btn--ghost pf-btn--sm"
+              style={{ flexShrink: 0, whiteSpace: 'nowrap', minHeight: 44 }}
             >
               {fetching ? '…' : 'Look up'}
             </button>
@@ -214,41 +208,29 @@ export default function AssignVerse() {
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>NKJV Text</label>
-          <textarea value={nkjvText} onChange={(e) => setNkjvText(e.target.value)} rows={3} placeholder="Verse text (NKJV)…" style={{ ...inputStyle, resize: 'none' }} />
+          <label className="pf-label" htmlFor="verse-nkjv">NKJV Text</label>
+          <textarea id="verse-nkjv" className="pf-input" value={nkjvText} onChange={(e) => setNkjvText(e.target.value)} rows={3} placeholder="Verse text (NKJV)…" style={{ fontFamily: 'var(--pf-serif)', fontStyle: 'italic', resize: 'none' }} />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>NLT Text</label>
-          <textarea value={nltText} onChange={(e) => setNltText(e.target.value)} rows={3} placeholder="Verse text (NLT)…" style={{ ...inputStyle, resize: 'none' }} />
+          <label className="pf-label" htmlFor="verse-nlt">NLT Text</label>
+          <textarea id="verse-nlt" className="pf-input" value={nltText} onChange={(e) => setNltText(e.target.value)} rows={3} placeholder="Verse text (NLT)…" style={{ fontFamily: 'var(--pf-serif)', fontStyle: 'italic', resize: 'none' }} />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Selah Playlist URL <span style={{ color: S.muted }}>(optional)</span></label>
-          <input value={playlistUrl} onChange={(e) => setPlaylistUrl(e.target.value)} placeholder="https://open.spotify.com/playlist/…" style={inputStyle} />
+          <label className="pf-label" htmlFor="verse-playlist">Selah Playlist URL <span style={{ textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
+          <input id="verse-playlist" className="pf-input" value={playlistUrl} onChange={(e) => setPlaylistUrl(e.target.value)} placeholder="https://open.spotify.com/playlist/…" />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Week Start</label>
-          <input type="date" value={weekStart} onChange={(e) => setWeekStart(e.target.value)}
-            style={{ ...inputStyle, fontStyle: 'normal', colorScheme: 'dark' }} />
+          <label className="pf-label" htmlFor="verse-week">Week Start</label>
+          <input id="verse-week" className="pf-input" type="date" value={weekStart} onChange={(e) => setWeekStart(e.target.value)} style={{ colorScheme: 'dark' }} />
         </div>
       </div>
 
-      {error && <p style={{ marginTop: 12, fontSize: 12, color: '#e07070' }}>{error}</p>}
+      {error && <p role="alert" style={{ marginTop: 12, fontSize: 12, color: 'var(--pf-danger)' }}>{error}</p>}
 
-      <button
-        onClick={handlePublish}
-        disabled={saving}
-        style={{
-          marginTop: 20, padding: '11px 28px',
-          background: saving ? 'rgba(198,167,94,0.2)' : S.gold,
-          border: 'none', borderRadius: 2,
-          color: saving ? S.muted : S.dark,
-          fontSize: 13, fontWeight: 'bold', cursor: saving ? 'wait' : 'pointer',
-          fontFamily: S.font.body, letterSpacing: '0.06em', transition: 'all 0.2s',
-        }}
-      >
+      <button onClick={handlePublish} disabled={saving} className="pf-btn" style={{ marginTop: 20 }}>
         {saving ? 'Publishing…' : 'Publish Verse ✦'}
       </button>
     </div>

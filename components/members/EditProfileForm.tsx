@@ -28,11 +28,6 @@ const S = {
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
-const inputStyle: React.CSSProperties = {
-  width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-  padding: '10px 14px', color: S.text, fontSize: 14, fontFamily: S.font.body,
-  outline: 'none', boxSizing: 'border-box',
-};
 
 const ROLES = ['member', 'prophetic_team', 'pastor', 'admin'];
 const STATUSES = ['visitor', 'attendee', 'member', 'leader'];
@@ -141,59 +136,48 @@ export default function EditProfileForm({ profile, onSaved }: Props) {
 
       <div style={{ display: 'grid', gap: 14 }}>
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Full Name</label>
-          <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="First and last name" style={inputStyle} />
+          <label className="pf-label" htmlFor="edit-name">Full Name</label>
+          <input id="edit-name" className="pf-input" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="First and last name" />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Member Status</label>
-            <select value={memberStatus} onChange={e => setMemberStatus(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+            <label className="pf-label" htmlFor="edit-status">Member Status</label>
+            <select id="edit-status" className="pf-input" value={memberStatus} onChange={e => setMemberStatus(e.target.value)}>
               {STATUSES.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
             </select>
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Platform Role</label>
-            <select value={role} onChange={e => setRole(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+            <label className="pf-label" htmlFor="edit-role">Platform Role</label>
+            <select id="edit-role" className="pf-input" value={role} onChange={e => setRole(e.target.value)}>
               {ROLES.map(r => <option key={r} value={r}>{r === 'prophetic_team' ? 'Prophetic Team' : r.charAt(0).toUpperCase() + r.slice(1)}</option>)}
             </select>
           </div>
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Phone</label>
-          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+44…" style={inputStyle} />
+          <label className="pf-label" htmlFor="edit-phone">Phone</label>
+          <input id="edit-phone" className="pf-input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+44…" />
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Address</label>
-          <input value={address} onChange={e => setAddress(e.target.value)} placeholder="Street, City, Postcode" style={inputStyle} />
+          <label className="pf-label" htmlFor="edit-address">Address</label>
+          <input id="edit-address" className="pf-input" value={address} onChange={e => setAddress(e.target.value)} placeholder="Street, City, Postcode" />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Birthday</label>
-            <input type="date" value={birthday} onChange={e => setBirthday(e.target.value)} style={{ ...inputStyle, colorScheme: 'dark' }} />
+            <label className="pf-label" htmlFor="edit-birthday">Birthday</label>
+            <input id="edit-birthday" className="pf-input" type="date" value={birthday} onChange={e => setBirthday(e.target.value)} style={{ colorScheme: 'dark' }} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Join Date</label>
-            <input type="date" value={joinDate} onChange={e => setJoinDate(e.target.value)} style={{ ...inputStyle, colorScheme: 'dark' }} />
+            <label className="pf-label" htmlFor="edit-joindate">Join Date</label>
+            <input id="edit-joindate" className="pf-input" type="date" value={joinDate} onChange={e => setJoinDate(e.target.value)} style={{ colorScheme: 'dark' }} />
           </div>
         </div>
       </div>
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        style={{
-          marginTop: 20, padding: '11px 28px',
-          background: saving ? 'rgba(198,167,94,0.3)' : S.gold,
-          border: 'none', borderRadius: 2,
-          color: saving ? S.muted : S.dark,
-          fontSize: 13, fontWeight: 'bold', cursor: saving ? 'wait' : 'pointer',
-          fontFamily: S.font.body, letterSpacing: '0.06em', transition: 'all 0.2s',
-        }}
-      >
+      <button onClick={handleSave} disabled={saving} className="pf-btn" style={{ marginTop: 20 }}>
         {saving ? 'Saving…' : 'Save Profile'}
       </button>
     </div>

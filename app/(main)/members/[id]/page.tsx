@@ -299,8 +299,9 @@ export default function MemberProfilePage() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-        <p style={{ fontSize: 13, color: S.muted, fontStyle: 'italic', fontFamily: S.font.body }}>Loading…</p>
+      <div className="pf-page">
+        <div className="pf-skel" style={{ height: 60, width: 280, marginBottom: 24, borderRadius: 30 }} />
+        {[0, 1].map((i) => <div key={i} className="pf-skel" style={{ height: 160, borderRadius: 6, marginBottom: 14 }} />)}
       </div>
     );
   }
@@ -310,12 +311,9 @@ export default function MemberProfilePage() {
   const TABS = ['details', 'discipleship', 'notes'] as const;
 
   return (
-    <div style={{ padding: '28px 20px', maxWidth: 680, margin: '0 auto', fontFamily: S.font.body }}>
+    <div className="pf-page">
       {/* Back */}
-      <button
-        onClick={() => router.back()}
-        style={{ background: 'none', border: 'none', color: S.soft, fontSize: 12, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.06em', marginBottom: 20, padding: 0 }}
-      >
+      <button onClick={() => router.back()} className="pf-btn pf-btn--quiet pf-btn--sm" style={{ marginBottom: 20 }}>
         ← Back to Directory
       </button>
 
@@ -342,19 +340,15 @@ export default function MemberProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 24 }}>
+      <div className="pf-tabs" role="tablist">
         {TABS.map(t => (
           <button
             key={t}
+            role="tab"
+            aria-selected={activeTab === t}
             onClick={() => setActiveTab(t)}
-            style={{
-              padding: '7px 16px',
-              background: activeTab === t ? S.goldDim : 'transparent',
-              border: `1px solid ${activeTab === t ? S.goldBorder : S.border}`,
-              borderRadius: 2, color: activeTab === t ? S.gold : S.muted,
-              fontSize: 10, letterSpacing: '0.1em', textTransform: 'capitalize',
-              cursor: 'pointer', fontFamily: S.font.body,
-            }}
+            className="pf-tabbtn"
+            style={{ textTransform: 'capitalize' }}
           >
             {t === 'notes' ? 'Pastoral Notes' : t.charAt(0).toUpperCase() + t.slice(1)}
           </button>

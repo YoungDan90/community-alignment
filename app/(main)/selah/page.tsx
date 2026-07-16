@@ -253,14 +253,7 @@ export default function SelahPage() {
       })()}
 
       {/* End early */}
-      <button
-        onClick={handleEndEarly}
-        style={{
-          padding: '10px 24px', background: 'rgba(255,255,255,0.04)', border: `1px solid ${S.border}`,
-          borderRadius: 2, color: S.soft, fontSize: 13, cursor: 'pointer',
-          fontFamily: S.font.body, letterSpacing: '0.06em', transition: 'all 0.2s',
-        }}
-      >
+      <button onClick={handleEndEarly} className="pf-btn pf-btn--quiet">
         End Session Early
       </button>
     </div>
