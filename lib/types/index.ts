@@ -3,6 +3,7 @@ export type Translation = 'nkjv' | 'nlt';
 export type MeditationStatus = 'in_progress' | 'completed';
 export type PrayerRequestStatus = 'pending' | 'approved' | 'held' | 'declined';
 export type TestimonyStatus = 'pending' | 'approved' | 'declined';
+export type MentorPairingStatus = 'active' | 'completed' | 'paused';
 
 export interface Church {
   id: string;
@@ -134,6 +135,74 @@ export interface NotificationPreferences {
   created_at: string;
 }
 
+export interface Track {
+  id: string;
+  slug: string;
+  title: string;
+  description: string | null;
+  order_index: number;
+  created_at: string;
+}
+
+export interface DiscipleshipModule {
+  id: string;
+  track_id: string;
+  slug: string;
+  title: string;
+  description: string | null;
+  order_index: number;
+  created_at: string;
+}
+
+export interface Lesson {
+  id: string;
+  module_id: string;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  content_md: string;
+  reflection_prompt: string;
+  further_reading: { reference: string; note: string }[];
+  order_index: number;
+  created_at: string;
+}
+
+export interface KnowledgeCheckQuestion {
+  id: string;
+  lesson_id: string;
+  prompt: string;
+  options: { id: string; text: string }[];
+  correct_option_id: string;
+  explanation: string;
+  order_index: number;
+}
+
+export interface UserProgress {
+  id: string;
+  user_id: string;
+  lesson_id: string;
+  completed_at: string | null;
+  reflection_answer: string | null;
+}
+
+export interface QuizAttempt {
+  id: string;
+  user_id: string;
+  lesson_id: string;
+  score: number;
+  passed: boolean;
+  attempted_at: string;
+}
+
+export interface MentorPairing {
+  id: string;
+  mentee_id: string;
+  mentor_id: string;
+  track_id: string | null;
+  status: MentorPairingStatus;
+  started_at: string;
+}
+
 // Supabase database type map — expand with generated types once connected
 export type Database = {
   public: {
@@ -150,6 +219,13 @@ export type Database = {
       testimonies: { Row: Testimony; Insert: Omit<Testimony, 'id' | 'created_at'>; Update: Partial<Omit<Testimony, 'id'>> };
       commitments: { Row: Commitment; Insert: Omit<Commitment, 'id' | 'created_at'>; Update: Partial<Omit<Commitment, 'id'>> };
       notification_preferences: { Row: NotificationPreferences; Insert: Omit<NotificationPreferences, 'id' | 'created_at'>; Update: Partial<Omit<NotificationPreferences, 'id'>> };
+      tracks: { Row: Track; Insert: Omit<Track, 'id' | 'created_at'>; Update: Partial<Omit<Track, 'id'>> };
+      modules: { Row: DiscipleshipModule; Insert: Omit<DiscipleshipModule, 'id' | 'created_at'>; Update: Partial<Omit<DiscipleshipModule, 'id'>> };
+      lessons: { Row: Lesson; Insert: Omit<Lesson, 'id' | 'created_at'>; Update: Partial<Omit<Lesson, 'id'>> };
+      knowledge_check_questions: { Row: KnowledgeCheckQuestion; Insert: Omit<KnowledgeCheckQuestion, 'id'>; Update: Partial<Omit<KnowledgeCheckQuestion, 'id'>> };
+      user_progress: { Row: UserProgress; Insert: Omit<UserProgress, 'id'>; Update: Partial<Omit<UserProgress, 'id'>> };
+      quiz_attempts: { Row: QuizAttempt; Insert: Omit<QuizAttempt, 'id' | 'attempted_at'>; Update: Partial<Omit<QuizAttempt, 'id'>> };
+      mentor_pairings: { Row: MentorPairing; Insert: Omit<MentorPairing, 'id' | 'started_at'>; Update: Partial<Omit<MentorPairing, 'id'>> };
     };
   };
 };

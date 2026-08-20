@@ -322,3 +322,6 @@ select.pf-input { cursor: pointer; }
 .pf-stat { background: var(--pf-bg); border: 1px solid var(--pf-border); border-radius: var(--pf-radius-sm); padding: 14px 16px; }
 .pf-stat b { display: block; font-size: 26px; color: var(--pf-gold); font-family: var(--pf-serif); font-weight: 500; line-height: 1; margin-bottom: 4px; }
 .pf-stat span { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pf-text-soft); }
+
+.pf-progress-bar { height: 6px; border-radius: 999px; background: var(--pf-border); overflow: hidden; }
+.pf-progress-bar-fill { height: 100%; background: var(--pf-gold); transition: width 0.3s ease; }

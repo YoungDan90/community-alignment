@@ -172,6 +172,7 @@ interface Profile {
   birthday: string | null;
   family_id: string | null;
   church_id: string | null;
+  avatar_url: string | null;
   created_at: string;
 }
 
