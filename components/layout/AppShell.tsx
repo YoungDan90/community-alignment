@@ -23,6 +23,7 @@ const MOBILE_TABS: NavItem[] = [
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [role, setRole] = useState('member');
+  const [status, setStatus] = useState<'pending' | 'approved' | 'declined' | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
   const [unread, setUnread] = useState({ inbox: 0, announcements: 0 });
 
@@ -34,12 +35,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       const now = new Date().toISOString();
       const [profileRes, msgRes, annRes] = await Promise.all([
-        supabase.from('profiles').select('role, full_name').eq('id', user.id).maybeSingle(),
+        supabase.from('profiles').select('role, full_name, status').eq('id', user.id).maybeSingle(),
         supabase.from('inbox_messages').select('id', { count: 'exact', head: true }).eq('to_id', user.id).eq('is_read', false),
         supabase.from('announcements').select('id').or(`expires_at.is.null,expires_at.gt.${now}`),
       ]);
 
       if (profileRes.data?.role) setRole(profileRes.data.role);
+      setStatus((profileRes.data?.status as typeof status) ?? 'approved');
       setFullName(profileRes.data?.full_name ?? null);
 
       let unreadAnn = 0;
@@ -61,6 +63,34 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
     window.location.href = '/login';
   };
+
+  // New signups start 'pending' and get no app access until a pastor/admin
+  // approves them — RLS backs this up server-side, this just keeps a
+  // pending/declined person from seeing any page while they wait.
+  if (status === 'pending' || status === 'declined') {
+    const declined = status === 'declined';
+    return (
+      <div style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 20px', textAlign: 'center', background: '#0f1e2e' }}>
+        <div style={{ maxWidth: 420 }}>
+          <p style={{ fontSize: 36, color: declined ? '#6a8aaa' : '#c6a75e', margin: '0 0 20px' }}>{declined ? '✕' : '✦'}</p>
+          <h1 style={{ fontFamily: 'var(--font-cormorant), Georgia, serif', fontWeight: 'normal', fontSize: 24, color: '#f0e8d4', margin: '0 0 12px' }}>
+            {declined ? 'Request Not Approved' : 'Your Account Is Pending Approval'}
+          </h1>
+          <p style={{ fontSize: 14, color: '#6a8aaa', fontStyle: 'italic', margin: '0 0 28px', lineHeight: 1.7 }}>
+            {declined
+              ? "Your access request wasn't approved. If you believe this is a mistake, please contact the church office directly."
+              : "Thanks for signing up" + (fullName ? `, ${fullName}` : '') + ". A pastor reviews new accounts personally — you'll get access as soon as you're approved."}
+          </p>
+          <button
+            onClick={handleSignOut}
+            style={{ padding: '10px 22px', background: 'rgba(255,255,255,0.04)', border: '1px solid #1e3a52', borderRadius: 2, color: '#6a8aaa', fontSize: 13, cursor: 'pointer', fontFamily: "var(--font-jost), 'Jost', sans-serif" }}
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const isPastor = role === 'pastor' || role === 'admin';
 

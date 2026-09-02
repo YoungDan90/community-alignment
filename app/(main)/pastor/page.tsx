@@ -11,13 +11,15 @@ import NotificationComposer from '@/components/pastor/NotificationComposer';
 import PendingTestimonies from '@/components/pastor/PendingTestimonies';
 import ContactMessages from '@/components/pastor/ContactMessages';
 import JoinRequests from '@/components/pastor/JoinRequests';
+import PendingApprovals from '@/components/pastor/PendingApprovals';
 
-type Section = 'overview' | 'verse' | 'members' | 'notifications' | 'testimonies' | 'messages' | 'join';
+type Section = 'overview' | 'verse' | 'members' | 'approvals' | 'notifications' | 'testimonies' | 'messages' | 'join';
 
 const SECTIONS: { id: Section; label: string; icon: string }[] = [
   { id: 'overview',      label: 'Overview',      icon: '◈' },
   { id: 'verse',         label: 'Assign Verse',   icon: '✦' },
   { id: 'members',       label: 'Members',        icon: '◉' },
+  { id: 'approvals',     label: 'New Accounts',   icon: '⊕' },
   { id: 'join',          label: 'Join Requests',  icon: '✚' },
   { id: 'notifications', label: 'Notifications',  icon: '◆' },
   { id: 'testimonies',   label: 'Testimonies',    icon: '↺' },
@@ -28,6 +30,7 @@ const SECTION_TITLES: Record<Section, { heading: string; sub: string }> = {
   overview:      { heading: 'This Week at a Glance',          sub: "Your community's engagement with the Word." },
   verse:         { heading: 'Assign This Week\'s Verse',       sub: 'Set the verse, series, and Selah playlist for the whole community.' },
   members:       { heading: 'Church Members',                  sub: 'Manage roles and send personal nudges.' },
+  approvals:     { heading: 'New Account Approvals',           sub: 'Signed-up accounts have no access until approved or declined here.' },
   join:          { heading: 'Join Requests',                   sub: 'People who want to join the church — triage and follow up.' },
   notifications: { heading: 'Send a Notification',            sub: 'Compose and send a custom push notification.' },
   testimonies:   { heading: 'Pending Testimonies',            sub: 'Review, approve, and feature community testimonies.' },
@@ -121,6 +124,7 @@ export default function PastorPage() {
       {section === 'overview'      && <EngagementOverview />}
       {section === 'verse'         && <AssignVerse />}
       {section === 'members'       && <MemberList />}
+      {section === 'approvals'     && <PendingApprovals />}
       {section === 'notifications' && <NotificationComposer />}
       {section === 'testimonies'   && <PendingTestimonies />}
       {section === 'messages'      && <ContactMessages />}

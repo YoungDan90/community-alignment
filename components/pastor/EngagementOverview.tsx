@@ -60,7 +60,7 @@ export default function EngagementOverview() {
       const ws = weekStart();
 
       const [members, started, completed, prayers, testimonies] = await Promise.allSettled([
-        supabase.from('profiles').select('id', { count: 'exact', head: true }),
+        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('status', 'approved'),
         supabase.from('meditations').select('id', { count: 'exact', head: true }).gte('created_at', ws),
         supabase.from('meditations').select('id', { count: 'exact', head: true }).eq('status', 'completed').gte('completed_at', ws),
         supabase.from('prayer_requests').select('id', { count: 'exact', head: true }).eq('status', 'approved'),

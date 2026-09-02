@@ -63,6 +63,7 @@ export default function MembersPage() {
     const { data } = await supabase
       .from('profiles')
       .select('id, full_name, role, member_status, join_date, created_at, church_id')
+      .eq('status', 'approved')
       .order('full_name', { ascending: true });
     setMembers((data as Member[]) ?? []);
   };
