@@ -105,6 +105,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         { href: '/selah',        label: 'Selah Moments', icon: '✦' },
         { href: '/word-to-walk', label: 'Word to Walk',  icon: '◈' },
         { href: '/discipleship', label: 'Discipleship',  icon: '🕊' },
+        { href: '/one-to-one',   label: '1:1',           icon: '🤝' },
       ],
     },
     {

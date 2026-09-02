@@ -183,6 +183,15 @@ interface PastoralNote {
   pastor: { full_name: string | null };
 }
 
+interface Goal {
+  id: string;
+  title: string;
+  description: string | null;
+  status: 'active' | 'completed' | 'paused';
+  progress: number;
+  created_at: string;
+}
+
 interface Stats {
   wtwCompletions: number;
   selahSessions: number;
@@ -219,7 +228,11 @@ export default function MemberProfilePage() {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [editingNoteText, setEditingNoteText] = useState('');
   const [pastorId, setPastorId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'details' | 'discipleship' | 'notes'>('details');
+  const [activeTab, setActiveTab] = useState<'details' | 'discipleship' | 'goals' | 'notes'>('details');
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [newGoalTitle, setNewGoalTitle] = useState('');
+  const [newGoalDescription, setNewGoalDescription] = useState('');
+  const [savingGoal, setSavingGoal] = useState(false);
 
   const loadNotes = useCallback(async (supabase: ReturnType<typeof createClient>) => {
     const { data } = await supabase
@@ -228,6 +241,15 @@ export default function MemberProfilePage() {
       .eq('member_id', memberId)
       .order('created_at', { ascending: false });
     setNotes((data as unknown as PastoralNote[]) ?? []);
+  }, [memberId]);
+
+  const loadGoals = useCallback(async (supabase: ReturnType<typeof createClient>) => {
+    const { data } = await supabase
+      .from('holistic_goals')
+      .select('id, title, description, status, progress, created_at')
+      .eq('member_id', memberId)
+      .order('created_at', { ascending: false });
+    setGoals((data as Goal[]) ?? []);
   }, [memberId]);
 
   useEffect(() => {
@@ -269,10 +291,10 @@ export default function MemberProfilePage() {
         lastActive: allDates[0] ?? null,
       });
 
-      await loadNotes(supabase);
+      await Promise.all([loadNotes(supabase), loadGoals(supabase)]);
       setLoading(false);
     })();
-  }, [memberId, router, loadNotes]);
+  }, [memberId, router, loadNotes, loadGoals]);
 
   const handleAddNote = async () => {
     if (!newNote.trim() || !pastorId) return;
@@ -298,6 +320,33 @@ export default function MemberProfilePage() {
     setEditingNoteId(null);
   };
 
+  const handleAddGoal = async () => {
+    if (!newGoalTitle.trim()) return;
+    setSavingGoal(true);
+    const supabase = createClient();
+    const { data } = await supabase
+      .from('holistic_goals')
+      .insert({ member_id: memberId, title: newGoalTitle.trim(), description: newGoalDescription.trim() || null, created_by: pastorId })
+      .select('id, title, description, status, progress, created_at')
+      .single();
+    if (data) setGoals(prev => [data as Goal, ...prev]);
+    setNewGoalTitle('');
+    setNewGoalDescription('');
+    setSavingGoal(false);
+  };
+
+  const handleGoalProgress = async (goal: Goal, progress: number) => {
+    setGoals(prev => prev.map(g => g.id === goal.id ? { ...g, progress } : g));
+    const supabase = createClient();
+    await supabase.from('holistic_goals').update({ progress }).eq('id', goal.id);
+  };
+
+  const handleGoalStatus = async (goal: Goal, status: Goal['status']) => {
+    setGoals(prev => prev.map(g => g.id === goal.id ? { ...g, status } : g));
+    const supabase = createClient();
+    await supabase.from('holistic_goals').update({ status }).eq('id', goal.id);
+  };
+
   if (loading) {
     return (
       <div className="pf-page">
@@ -309,7 +358,7 @@ export default function MemberProfilePage() {
   if (!authorized || !profile) return null;
 
   const initials = (profile.full_name ?? '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-  const TABS = ['details', 'discipleship', 'notes'] as const;
+  const TABS = ['details', 'discipleship', 'goals', 'notes'] as const;
 
   return (
     <div className="pf-page">
@@ -388,6 +437,78 @@ export default function MemberProfilePage() {
           <ServingSection memberId={memberId} />
           <GroupsSection memberId={memberId} />
           <DownloadsSection memberId={memberId} />
+        </div>
+      )}
+
+      {/* ── Holistic Goals — the shared 1:1 space with their assigned pastor ── */}
+      {activeTab === 'goals' && (
+        <div>
+          <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '16px 18px', marginBottom: 16 }}>
+            <p style={{ margin: '0 0 6px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.muted }}>Add Goal</p>
+            <input
+              value={newGoalTitle}
+              onChange={e => setNewGoalTitle(e.target.value)}
+              placeholder="Goal — e.g. Grow in consistent prayer"
+              style={{ ...inputStyle, marginBottom: 8 }}
+            />
+            <textarea
+              value={newGoalDescription}
+              onChange={e => setNewGoalDescription(e.target.value)}
+              placeholder="Any detail or context (optional)"
+              rows={3}
+              style={{ ...inputStyle, resize: 'none', marginBottom: 10 }}
+            />
+            <button
+              onClick={handleAddGoal}
+              disabled={!newGoalTitle.trim() || savingGoal}
+              style={{
+                padding: '8px 18px', background: S.gold, border: 'none', borderRadius: 2,
+                color: S.dark, fontSize: 12, fontWeight: 'bold', cursor: 'pointer',
+                fontFamily: S.font.body, opacity: (!newGoalTitle.trim() || savingGoal) ? 0.5 : 1,
+              }}
+            >
+              {savingGoal ? 'Saving…' : 'Save Goal'}
+            </button>
+          </div>
+
+          {goals.length === 0 && (
+            <p style={{ fontSize: 13, color: S.soft, fontStyle: 'italic' }}>No goals yet.</p>
+          )}
+
+          {goals.map(g => (
+            <div key={g.id} style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '14px 16px', marginBottom: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10, marginBottom: 6 }}>
+                <p style={{ margin: 0, fontSize: 15, color: S.textLight, fontFamily: S.font.display }}>{g.title}</p>
+                <select
+                  value={g.status}
+                  onChange={e => handleGoalStatus(g, e.target.value as Goal['status'])}
+                  style={{ background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 11, padding: '3px 8px', fontFamily: S.font.body }}
+                >
+                  <option value="active">Active</option>
+                  <option value="paused">Paused</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+              {g.description && (
+                <p style={{ margin: '0 0 10px', fontSize: 13, color: S.soft, lineHeight: 1.6 }}>{g.description}</p>
+              )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ flex: 1, height: 4, borderRadius: 999, background: S.border, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${g.progress}%`, background: S.gold }} />
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={5}
+                  value={g.progress}
+                  onChange={e => handleGoalProgress(g, Number(e.target.value))}
+                  style={{ width: 90 }}
+                />
+                <span style={{ fontSize: 12, color: S.gold, minWidth: 32, textAlign: 'right' }}>{g.progress}%</span>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

@@ -10,7 +10,10 @@ interface Member {
   church_id: string | null;
   created_at: string;
   secondary_roles: string[];
+  assigned_pastor_id: string | null;
 }
+
+interface PastorOption { id: string; full_name: string | null; }
 
 // Deliberately narrower than the primary ROLES list: admin already has
 // full access and doesn't need a second role, and member is the base
@@ -43,6 +46,7 @@ const ROLES: { value: string; label: string }[] = [
 
 export default function MemberList() {
   const [members, setMembers] = useState<Member[]>([]);
+  const [pastorOptions, setPastorOptions] = useState<PastorOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [nudging, setNudging] = useState<string | null>(null);
   const [updatingRole, setUpdatingRole] = useState<string | null>(null);
@@ -51,22 +55,34 @@ export default function MemberList() {
   useEffect(() => {
     (async () => {
       const supabase = createClient();
-      const [{ data }, { data: secondary }] = await Promise.all([
+      const [{ data }, { data: secondary }, { data: assignments }] = await Promise.all([
         supabase
           .from('profiles')
           .select('id, full_name, role, church_id, created_at')
           .eq('status', 'approved')
           .order('created_at', { ascending: true }),
         supabase.from('profile_secondary_roles').select('profile_id, role'),
+        supabase.from('pastoral_assignments').select('member_id, pastor_id'),
       ]);
       const secondaryByMember: Record<string, string[]> = {};
       (secondary ?? []).forEach((s: { profile_id: string; role: string }) => {
         (secondaryByMember[s.profile_id] ??= []).push(s.role);
       });
-      setMembers(((data as Omit<Member, 'secondary_roles'>[]) ?? []).map((m) => ({
+      const assignmentByMember: Record<string, string> = {};
+      (assignments ?? []).forEach((a: { member_id: string; pastor_id: string }) => {
+        assignmentByMember[a.member_id] = a.pastor_id;
+      });
+      const rows = ((data as Omit<Member, 'secondary_roles' | 'assigned_pastor_id'>[]) ?? []).map((m) => ({
         ...m,
         secondary_roles: secondaryByMember[m.id] ?? [],
-      })));
+        assigned_pastor_id: assignmentByMember[m.id] ?? null,
+      }));
+      setMembers(rows);
+      setPastorOptions(
+        rows
+          .filter((m) => m.role === 'pastor' || m.role === 'admin' || m.secondary_roles.includes('pastor'))
+          .map((m) => ({ id: m.id, full_name: m.full_name }))
+      );
       setLoading(false);
     })();
   }, []);
@@ -131,6 +147,25 @@ export default function MemberList() {
       setMsg(member.id, has ? 'Secondary role removed ✓' : 'Secondary role added ✓');
     } catch {
       setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, secondary_roles: member.secondary_roles } : m));
+      setMsg(member.id, 'Update failed — check RLS policy');
+    }
+    setUpdatingRole(null);
+  };
+
+  // Assigns (or clears, when pastorId is '') the member's 1:1 pastor —
+  // one active assignment per member, shown to them under Grow → 1:1.
+  const handleAssignPastor = async (member: Member, pastorId: string) => {
+    setUpdatingRole(member.id);
+    setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, assigned_pastor_id: pastorId || null } : m));
+    try {
+      const supabase = createClient();
+      const { error } = pastorId
+        ? await supabase.from('pastoral_assignments').upsert({ member_id: member.id, pastor_id: pastorId })
+        : await supabase.from('pastoral_assignments').delete().eq('member_id', member.id);
+      if (error) throw error;
+      setMsg(member.id, pastorId ? '1:1 pastor assigned ✓' : '1:1 pastor cleared');
+    } catch {
+      setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, assigned_pastor_id: member.assigned_pastor_id } : m));
       setMsg(member.id, 'Update failed — check RLS policy');
     }
     setUpdatingRole(null);
@@ -260,6 +295,30 @@ export default function MemberList() {
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* 1:1 pastor assignment — drives what the member sees under Grow → 1:1 */}
+            {m.role !== 'pastor' && m.role !== 'admin' && (
+              <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft, flexShrink: 0 }}>
+                  1:1 Pastor
+                </span>
+                <select
+                  value={m.assigned_pastor_id ?? ''}
+                  onChange={(e) => handleAssignPastor(m, e.target.value)}
+                  disabled={updatingRole === m.id}
+                  style={{
+                    background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
+                    color: m.assigned_pastor_id ? S.gold : S.soft, fontSize: 11, padding: '4px 8px',
+                    fontFamily: S.font.body,
+                  }}
+                >
+                  <option value="">Unassigned</option>
+                  {pastorOptions.map((p) => (
+                    <option key={p.id} value={p.id}>{p.full_name ?? 'Unnamed'}</option>
+                  ))}
+                </select>
               </div>
             )}
           </div>
