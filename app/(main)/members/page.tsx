@@ -34,7 +34,7 @@ const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }
 };
 
 const ROLE_LABELS: Record<string, string> = {
-  member: 'Member', prophetic_team: 'Prophetic', pastor: 'Pastor', admin: 'Admin',
+  member: 'Member', prophetic_team: 'Prophetic', pastor: 'Pastor', admin: 'Senior Leader',
 };
 
 export default function MembersPage() {

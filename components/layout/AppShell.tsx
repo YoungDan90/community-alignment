@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 const ROLE_LABELS: Record<string, string> = {
-  member: 'Member', prophetic_team: 'Prophetic Team', pastor: 'Pastor', admin: 'Admin',
+  member: 'Member', prophetic_team: 'Prophetic Team', pastor: 'Pastor', admin: 'Senior Leader',
 };
 
 interface NavItem { href: string; label: string; icon: string; badge?: number }

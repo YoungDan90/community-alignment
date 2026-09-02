@@ -29,7 +29,7 @@ const ROLES: { value: string; label: string }[] = [
   { value: 'member',         label: 'Member' },
   { value: 'prophetic_team', label: 'Prophetic Team' },
   { value: 'pastor',         label: 'Pastor' },
-  { value: 'admin',          label: 'Admin' },
+  { value: 'admin',          label: 'Senior Leader' },
 ];
 
 export default function MemberList() {

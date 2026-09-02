@@ -33,7 +33,7 @@ const S = {
 };
 
 const ROLE_LABELS: Record<string, string> = {
-  member: 'Member', prophetic_team: 'Prophetic Team', pastor: 'Pastor', admin: 'Admin',
+  member: 'Member', prophetic_team: 'Prophetic Team', pastor: 'Pastor', admin: 'Senior Leader',
 };
 
 export default function ProfilePage() {
