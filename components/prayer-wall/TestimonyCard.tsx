@@ -15,7 +15,7 @@ export interface Testimony {
 
 interface TestimonyCardProps {
   testimony: Testimony;
-  userRole: string;
+  userRoles: string[];
   onStatusChange: (id: string, status: string, note?: string) => void;
   onFeaturedChange: (id: string, featured: boolean) => void;
 }
@@ -47,12 +47,12 @@ const STATUS_COLORS: Record<string, { bg: string; border: string; text: string }
 
 export default function TestimonyCard({
   testimony,
-  userRole,
+  userRoles,
   onStatusChange,
   onFeaturedChange,
 }: TestimonyCardProps) {
-  const isPropheticTeam = ['prophetic_team', 'pastor', 'admin'].includes(userRole);
-  const isPastor = userRole === 'pastor' || userRole === 'admin';
+  const isPropheticTeam = userRoles.some(r => r === 'prophetic_team' || r === 'pastor' || r === 'admin');
+  const isPastor = userRoles.some(r => r === 'pastor' || r === 'admin');
   const sc = STATUS_COLORS[testimony.status] ?? STATUS_COLORS.pending;
 
   const handleStatusChange = async (newStatus: string) => {

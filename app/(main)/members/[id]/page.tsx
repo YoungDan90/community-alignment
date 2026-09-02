@@ -236,8 +236,8 @@ export default function MemberProfilePage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.replace('/dashboard'); return; }
 
-      const { data: myProfile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-      if (!['pastor', 'admin'].includes(myProfile?.role ?? '')) { router.replace('/dashboard'); return; }
+      const { data: myRoles } = await supabase.rpc('get_my_roles');
+      if (!(myRoles ?? []).some((r: string) => r === 'pastor' || r === 'admin')) { router.replace('/dashboard'); return; }
       setAuthorized(true);
       setPastorId(user.id);
 

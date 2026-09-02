@@ -17,7 +17,7 @@ export default function ComposeMessage({ defaultToId, defaultSubject, onClose, o
   const [subject, setSubject] = useState(defaultSubject ?? '');
   const [content, setContent] = useState('');
   const [recipients, setRecipients] = useState<Profile[]>([]);
-  const [myRole, setMyRole] = useState('member');
+  const [myRoles, setMyRoles] = useState<string[]>(['member']);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,11 +26,11 @@ export default function ComposeMessage({ defaultToId, defaultSubject, onClose, o
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-      const role = profile?.role ?? 'member';
-      setMyRole(role);
+      const { data: roles } = await supabase.rpc('get_my_roles');
+      const myRolesResolved = (roles as string[] | null) ?? ['member'];
+      setMyRoles(myRolesResolved);
 
-      if (role === 'pastor' || role === 'admin') {
+      if (myRolesResolved.some(r => r === 'pastor' || r === 'admin')) {
         const { data } = await supabase.from('profiles').select('id, full_name, role').neq('id', user.id).order('full_name');
         setRecipients(data ?? []);
       } else {
@@ -76,7 +76,7 @@ export default function ComposeMessage({ defaultToId, defaultSubject, onClose, o
     onSent();
   };
 
-  const isPastorMode = myRole === 'pastor' || myRole === 'admin';
+  const isPastorMode = myRoles.some(r => r === 'pastor' || r === 'admin');
 
   return (
     <div className="pf-card pf-card--accent">

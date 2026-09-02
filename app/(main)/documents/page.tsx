@@ -52,8 +52,8 @@ export default function DocumentsPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.replace('/login'); return; }
-      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-      setIsPastor(['pastor', 'admin'].includes(profile?.role ?? ''));
+      const { data: roles } = await supabase.rpc('get_my_roles');
+      setIsPastor((roles ?? []).some((r: string) => r === 'pastor' || r === 'admin'));
       await loadDocuments();
       setLoading(false);
     })();

@@ -23,6 +23,7 @@ const MOBILE_TABS: NavItem[] = [
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [role, setRole] = useState('member');
+  const [roles, setRoles] = useState<string[]>(['member']);
   const [status, setStatus] = useState<'pending' | 'approved' | 'declined' | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
   const [unread, setUnread] = useState({ inbox: 0, announcements: 0 });
@@ -34,13 +35,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       if (!user) return;
 
       const now = new Date().toISOString();
-      const [profileRes, msgRes, annRes] = await Promise.all([
+      const [profileRes, rolesRes, msgRes, annRes] = await Promise.all([
         supabase.from('profiles').select('role, full_name, status').eq('id', user.id).maybeSingle(),
+        supabase.rpc('get_my_roles'),
         supabase.from('inbox_messages').select('id', { count: 'exact', head: true }).eq('to_id', user.id).eq('is_read', false),
         supabase.from('announcements').select('id').or(`expires_at.is.null,expires_at.gt.${now}`),
       ]);
 
       if (profileRes.data?.role) setRole(profileRes.data.role);
+      if (rolesRes.data) setRoles(rolesRes.data as string[]);
       setStatus((profileRes.data?.status as typeof status) ?? 'approved');
       setFullName(profileRes.data?.full_name ?? null);
 
@@ -92,7 +95,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     );
   }
 
-  const isPastor = role === 'pastor' || role === 'admin';
+  const isPastor = roles.some(r => r === 'pastor' || r === 'admin');
 
   const groups: NavGroup[] = [
     { items: [{ href: '/dashboard', label: 'Home', icon: '⌂' }] },

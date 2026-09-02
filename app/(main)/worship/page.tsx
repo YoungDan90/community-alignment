@@ -73,8 +73,8 @@ export default function WorshipPage() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-    const pastor = ['pastor', 'admin'].includes(profile?.role ?? '');
+    const { data: roles } = await supabase.rpc('get_my_roles');
+    const pastor = (roles ?? []).some((r: string) => r === 'pastor' || r === 'admin');
     setIsPastor(pastor);
 
     const today = new Date().toISOString().split('T')[0];

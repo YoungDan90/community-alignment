@@ -66,7 +66,7 @@ export default function GroupDetailPage() {
   const [loading, setLoading] = useState(true);
   const [group, setGroup] = useState<Group | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [userRole, setUserRole] = useState('member');
+  const [userRoles, setUserRoles] = useState<string[]>(['member']);
   const [, setIsMember] = useState(false);
   const [tab, setTab] = useState<Tab>('announcements');
 
@@ -125,17 +125,17 @@ export default function GroupDetailPage() {
       if (!user) { router.push('/login'); return; }
       setUserId(user.id);
 
-      const [profileRes, groupRes, membershipRes] = await Promise.allSettled([
-        supabase.from('profiles').select('role').eq('id', user.id).maybeSingle(),
+      const [rolesRes, groupRes, membershipRes] = await Promise.allSettled([
+        supabase.rpc('get_my_roles'),
         supabase.from('groups').select('id, name, description, type, leader_id, meeting_schedule, meeting_location').eq('id', groupId).maybeSingle(),
         supabase.from('group_members').select('id').eq('group_id', groupId).eq('member_id', user.id).maybeSingle(),
       ]);
 
-      const role = profileRes.status === 'fulfilled' ? profileRes.value.data?.role ?? 'member' : 'member';
-      setUserRole(role);
+      const roles = rolesRes.status === 'fulfilled' ? (rolesRes.value.data as string[] | null) ?? ['member'] : ['member'];
+      setUserRoles(roles);
 
       if (groupRes.status === 'fulfilled') setGroup(groupRes.value.data as Group);
-      const isPastor = ['pastor', 'admin'].includes(role);
+      const isPastor = roles.some(r => r === 'pastor' || r === 'admin');
       const member = membershipRes.status === 'fulfilled' && !!membershipRes.value.data;
       setIsMember(member || isPastor);
 
@@ -146,7 +146,7 @@ export default function GroupDetailPage() {
     })();
   }, [groupId, router, loadAnnouncements, loadPrayerRequests, loadMembers]);
 
-  const isPastor = ['pastor', 'admin'].includes(userRole);
+  const isPastor = userRoles.some(r => r === 'pastor' || r === 'admin');
   const isLeader = group?.leader_id === userId || isPastor;
 
   const handlePostAnnouncement = async () => {

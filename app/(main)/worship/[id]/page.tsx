@@ -82,8 +82,8 @@ export default function ServicePlanPage() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { data: profile } = await supabase.from('profiles').select('role, church_id').eq('id', user.id).maybeSingle();
-    setIsPastor(['pastor', 'admin'].includes(profile?.role ?? ''));
+    const { data: roles } = await supabase.rpc('get_my_roles');
+    setIsPastor((roles ?? []).some((r: string) => r === 'pastor' || r === 'admin'));
 
     const [planRes, songsRes, teamRes, allSongsRes] = await Promise.allSettled([
       supabase.from('service_plans').select('id, service_date, title, theme, youtube_playlist_url, notes, status').eq('id', id).maybeSingle(),

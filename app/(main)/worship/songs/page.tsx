@@ -40,8 +40,8 @@ export default function SongsPage() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-    setIsPastor(['pastor', 'admin'].includes(profile?.role ?? ''));
+    const { data: roles } = await supabase.rpc('get_my_roles');
+    setIsPastor((roles ?? []).some((r: string) => r === 'pastor' || r === 'admin'));
     const { data } = await supabase.from('songs').select('*').order('title');
     setSongs(data ?? []);
     setLoading(false);

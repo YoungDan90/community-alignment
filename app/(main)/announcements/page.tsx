@@ -99,8 +99,8 @@ export default function AnnouncementsPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.replace('/login'); return; }
       setUserId(user.id);
-      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-      setIsPastor(['pastor', 'admin'].includes(profile?.role ?? ''));
+      const { data: roles } = await supabase.rpc('get_my_roles');
+      setIsPastor((roles ?? []).some((r: string) => r === 'pastor' || r === 'admin'));
       await loadAnnouncements(user.id);
       setLoading(false);
     })();

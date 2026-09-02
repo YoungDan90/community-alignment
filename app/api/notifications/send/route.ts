@@ -23,12 +23,8 @@ export async function POST(request: NextRequest) {
 
     // Broadcasts (no target / target='all') require pastor/admin
     if (!target || target === 'all') {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .maybeSingle();
-      if (!['pastor', 'admin'].includes(profile?.role ?? '')) {
+      const { data: roles } = await supabase.rpc('get_my_roles');
+      if (!(roles ?? []).some((r: string) => r === 'pastor' || r === 'admin')) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
     }

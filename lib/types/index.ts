@@ -1,4 +1,12 @@
 export type UserRole = 'member' | 'prophetic_team' | 'pastor' | 'admin';
+// Secondary roles a profile can additionally hold on top of its primary
+// role (see profile_secondary_roles + get_my_roles() in the schema).
+// Deliberately narrower than UserRole: 'admin' already has full access
+// and 'member' is the base everyone already has via the primary role.
+export type SecondaryRole = 'pastor' | 'prophetic_team';
+
+export const hasAnyRole = (roles: string[], check: string[]): boolean =>
+  check.some((r) => roles.includes(r));
 export type Translation = 'nkjv' | 'nlt';
 export type MeditationStatus = 'in_progress' | 'completed';
 export type PrayerRequestStatus = 'pending' | 'approved' | 'held' | 'declined';

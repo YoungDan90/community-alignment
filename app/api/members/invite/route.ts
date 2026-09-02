@@ -8,8 +8,11 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
 
-    const { data: profile } = await supabase.from('profiles').select('role, full_name, church_id').eq('id', user.id).maybeSingle();
-    if (!['pastor', 'admin'].includes(profile?.role ?? '')) {
+    const [{ data: profile }, { data: roles }] = await Promise.all([
+      supabase.from('profiles').select('full_name, church_id').eq('id', user.id).maybeSingle(),
+      supabase.rpc('get_my_roles'),
+    ]);
+    if (!(roles ?? []).some((r: string) => r === 'pastor' || r === 'admin')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

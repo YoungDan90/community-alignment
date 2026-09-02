@@ -45,7 +45,7 @@ export default function GroupsPage() {
   const [loading, setLoading] = useState(true);
   const [groups, setGroups] = useState<Group[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
-  const [userRole, setUserRole] = useState('member');
+  const [userRoles, setUserRoles] = useState<string[]>(['member']);
   const [joining, setJoining] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');
@@ -64,8 +64,8 @@ export default function GroupsPage() {
       if (!user) { router.push('/login'); return; }
       setUserId(user.id);
 
-      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-      setUserRole(profile?.role ?? 'member');
+      const { data: roles } = await supabase.rpc('get_my_roles');
+      setUserRoles(roles ?? ['member']);
 
       await loadGroups(supabase, user.id);
       setLoading(false);
@@ -125,7 +125,7 @@ export default function GroupsPage() {
     setCreating(false);
   };
 
-  const isPastor = ['pastor', 'admin'].includes(userRole);
+  const isPastor = userRoles.some(r => r === 'pastor' || r === 'admin');
   const myGroups = groups.filter(g => g.is_member);
   const otherGroups = groups.filter(g => !g.is_member);
 

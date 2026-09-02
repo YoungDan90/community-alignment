@@ -49,9 +49,8 @@ export default function PastorPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.replace('/dashboard'); return; }
 
-      const { data: profile } = await supabase
-        .from('profiles').select('role').eq('id', user.id).maybeSingle();
-      if (profile?.role === 'pastor' || profile?.role === 'admin') {
+      const { data: roles } = await supabase.rpc('get_my_roles');
+      if ((roles ?? []).some((r: string) => r === 'pastor' || r === 'admin')) {
         setAuthorized(true);
       } else {
         router.replace('/dashboard');

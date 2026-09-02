@@ -68,7 +68,7 @@ export default function PendingTestimonies() {
         <TestimonyCard
           key={t.id}
           testimony={t}
-          userRole="pastor"
+          userRoles={['pastor']}
           onStatusChange={handleStatusChange}
           onFeaturedChange={handleFeaturedChange}
         />

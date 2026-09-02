@@ -9,7 +9,16 @@ interface Member {
   role: string;
   church_id: string | null;
   created_at: string;
+  secondary_roles: string[];
 }
+
+// Deliberately narrower than the primary ROLES list: admin already has
+// full access and doesn't need a second role, and member is the base
+// everyone already has via the primary role.
+const SECONDARY_ROLES: { value: 'pastor' | 'prophetic_team'; label: string }[] = [
+  { value: 'pastor', label: 'Pastor' },
+  { value: 'prophetic_team', label: 'Prophetic Team' },
+];
 
 const S = {
   font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
@@ -42,12 +51,22 @@ export default function MemberList() {
   useEffect(() => {
     (async () => {
       const supabase = createClient();
-      const { data } = await supabase
-        .from('profiles')
-        .select('id, full_name, role, church_id, created_at')
-        .eq('status', 'approved')
-        .order('created_at', { ascending: true });
-      setMembers((data as Member[]) ?? []);
+      const [{ data }, { data: secondary }] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('id, full_name, role, church_id, created_at')
+          .eq('status', 'approved')
+          .order('created_at', { ascending: true }),
+        supabase.from('profile_secondary_roles').select('profile_id, role'),
+      ]);
+      const secondaryByMember: Record<string, string[]> = {};
+      (secondary ?? []).forEach((s: { profile_id: string; role: string }) => {
+        (secondaryByMember[s.profile_id] ??= []).push(s.role);
+      });
+      setMembers(((data as Omit<Member, 'secondary_roles'>[]) ?? []).map((m) => ({
+        ...m,
+        secondary_roles: secondaryByMember[m.id] ?? [],
+      })));
       setLoading(false);
     })();
   }, []);
@@ -89,6 +108,29 @@ export default function MemberList() {
     } catch {
       // Revert optimistic update
       setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, role: member.role } : m));
+      setMsg(member.id, 'Update failed — check RLS policy');
+    }
+    setUpdatingRole(null);
+  };
+
+  // Toggles a secondary role on top of the member's primary role — e.g. a
+  // pastor who also needs prophetic-team access, without changing their
+  // primary role. Backed by profile_secondary_roles, not profiles.role.
+  const handleSecondaryRoleToggle = async (member: Member, role: 'pastor' | 'prophetic_team') => {
+    const has = member.secondary_roles.includes(role);
+    setUpdatingRole(member.id);
+    setMembers((prev) => prev.map((m) => m.id === member.id
+      ? { ...m, secondary_roles: has ? m.secondary_roles.filter(r => r !== role) : [...m.secondary_roles, role] }
+      : m));
+    try {
+      const supabase = createClient();
+      const { error } = has
+        ? await supabase.from('profile_secondary_roles').delete().eq('profile_id', member.id).eq('role', role)
+        : await supabase.from('profile_secondary_roles').insert({ profile_id: member.id, role });
+      if (error) throw error;
+      setMsg(member.id, has ? 'Secondary role removed ✓' : 'Secondary role added ✓');
+    } catch {
+      setMembers((prev) => prev.map((m) => m.id === member.id ? { ...m, secondary_roles: member.secondary_roles } : m));
       setMsg(member.id, 'Update failed — check RLS policy');
     }
     setUpdatingRole(null);
@@ -185,6 +227,41 @@ export default function MemberList() {
                 })}
               </div>
             </div>
+
+            {/* Secondary role — additional access on top of the primary role */}
+            {m.role !== 'admin' && (
+              <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft, flexShrink: 0 }}>
+                  + Also
+                </span>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {SECONDARY_ROLES.filter(r => r.value !== m.role).map((r) => {
+                    const active = m.secondary_roles.includes(r.value);
+                    const rColors = ROLE_COLORS[r.value] ?? ROLE_COLORS.member;
+                    return (
+                      <button
+                        key={r.value}
+                        onClick={() => handleSecondaryRoleToggle(m, r.value)}
+                        disabled={updatingRole === m.id}
+                        style={{
+                          padding: '4px 12px', borderRadius: 20,
+                          background: active ? rColors.bg : 'transparent',
+                          border: `1px dashed ${active ? rColors.border : S.border}`,
+                          color: active ? rColors.text : S.soft,
+                          fontSize: 10, letterSpacing: '0.08em',
+                          cursor: 'pointer',
+                          fontFamily: S.font.body,
+                          transition: 'all 0.15s',
+                          opacity: updatingRole === m.id ? 0.5 : 1,
+                        }}
+                      >
+                        {active ? '✓ ' : ''}{r.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         );
       })}

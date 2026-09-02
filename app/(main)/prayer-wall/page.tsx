@@ -13,7 +13,7 @@ export default function PrayerWallPage() {
   const [tab, setTab] = useState<Tab>('requests');
   const [requests, setRequests] = useState<PrayerRequest[]>([]);
   const [testimonies, setTestimonies] = useState<Testimony[]>([]);
-  const [userRole, setUserRole] = useState<string>('member');
+  const [userRoles, setUserRoles] = useState<string[]>(['member']);
   const [userId, setUserId] = useState<string | null>(null);
   const [prayedIds, setPrayedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,7 @@ export default function PrayerWallPage() {
   const [showTestimonyModal, setShowTestimonyModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const isPropheticTeam = ['prophetic_team', 'pastor', 'admin'].includes(userRole);
+  const isPropheticTeam = userRoles.some(r => r === 'prophetic_team' || r === 'pastor' || r === 'admin');
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -34,14 +34,10 @@ export default function PrayerWallPage() {
 
       let isTeam = false;
       if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .maybeSingle();
-        if (profile?.role) {
-          setUserRole(profile.role);
-          isTeam = ['prophetic_team', 'pastor', 'admin'].includes(profile.role);
+        const { data: roles } = await supabase.rpc('get_my_roles');
+        if (roles) {
+          setUserRoles(roles);
+          isTeam = (roles as string[]).some(r => r === 'prophetic_team' || r === 'pastor' || r === 'admin');
         }
 
         // Fetch prayer IDs this user has already supported
@@ -182,7 +178,7 @@ export default function PrayerWallPage() {
             <PrayerRequestCard
               key={r.id}
               request={r}
-              userRole={userRole}
+              userRoles={userRoles}
               userId={userId}
               prayedIds={prayedIds}
               onPrayed={handlePrayed}
@@ -201,7 +197,7 @@ export default function PrayerWallPage() {
             <TestimonyCard
               key={t.id}
               testimony={t}
-              userRole={userRole}
+              userRoles={userRoles}
               onStatusChange={handleTestimonyStatusChange}
               onFeaturedChange={handleTestimonyFeaturedChange}
             />

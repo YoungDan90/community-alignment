@@ -81,8 +81,8 @@ export default function RotasPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.replace('/dashboard'); return; }
-      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-      if (!['pastor', 'admin'].includes(profile?.role ?? '')) { router.replace('/dashboard'); return; }
+      const { data: roles } = await supabase.rpc('get_my_roles');
+      if (!(roles ?? []).some((r: string) => r === 'pastor' || r === 'admin')) { router.replace('/dashboard'); return; }
       setAuthorized(true);
       await Promise.all([loadTeams(supabase), loadRotas(supabase), loadSwaps(supabase)]);
       setLoading(false);

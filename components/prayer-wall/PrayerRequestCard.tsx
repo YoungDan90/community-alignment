@@ -22,7 +22,7 @@ export interface PrayerRequest {
 
 interface PrayerRequestCardProps {
   request: PrayerRequest;
-  userRole: string;
+  userRoles: string[];
   userId: string | null;
   prayedIds: Set<string>;
   onPrayed: (id: string) => void;
@@ -57,7 +57,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function PrayerRequestCard({
   request,
-  userRole,
+  userRoles,
   userId,
   prayedIds,
   onPrayed,
@@ -68,7 +68,7 @@ export default function PrayerRequestCard({
   const [savingResponse, setSavingResponse] = useState(false);
   const [localCount, setLocalCount] = useState(request.prayer_count);
   const hasPrayed = prayedIds.has(request.id);
-  const isPropheticTeam = ['prophetic_team', 'pastor', 'admin'].includes(userRole);
+  const isPropheticTeam = userRoles.some(r => r === 'prophetic_team' || r === 'pastor' || r === 'admin');
 
   const handlePray = async () => {
     if (hasPrayed) return;
