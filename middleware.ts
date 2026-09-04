@@ -4,7 +4,7 @@ const protectedRoutes = [
   '/dashboard', '/selah', '/word-to-walk', '/prayer-wall',
   '/pastor', '/onboarding', '/rotas', '/my-rota', '/groups',
   '/members', '/inbox', '/announcements', '/documents',
-  '/worship', '/profile', '/discipleship', '/one-to-one',
+  '/worship', '/profile', '/discipleship', '/one-to-one', '/calendar',
 ]
 
 export function middleware(request: NextRequest) {

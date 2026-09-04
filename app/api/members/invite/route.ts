@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { Resend } from 'resend';
 
 export async function POST(request: NextRequest) {
@@ -21,8 +22,34 @@ export async function POST(request: NextRequest) {
 
     const pastorName = profile?.full_name ?? 'Pastor Daniel';
 
+    // Real invite: creates an actual auth.users row. handle_new_user()
+    // then creates the profiles row automatically — with status='approved'
+    // (not the usual 'pending') because invited_by is set below, since a
+    // pastor personally inviting someone shouldn't also have to approve
+    // them separately afterward.
+    const admin = createAdminClient();
+    const { data: invited, error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email, {
+      data: { full_name: name, invited_by: user.id },
+      redirectTo: 'https://www.alignmentchurch.uk/reset-password',
+    });
+    if (inviteErr) {
+      return NextResponse.json({ error: inviteErr.message }, { status: 400 });
+    }
+
+    // phone/member_status aren't part of handle_new_user's insert — set
+    // them separately now that a real profile row exists to update.
+    if (invited.user && (phone || memberStatus)) {
+      await admin.from('profiles').update({
+        ...(phone ? { phone } : {}),
+        ...(memberStatus ? { member_status: memberStatus } : {}),
+      }).eq('id', invited.user.id);
+    }
+
     if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 'your-resend-api-key-here') {
       const resend = new Resend(process.env.RESEND_API_KEY);
+      // Heads-up only — the actual invite link is in Supabase's own email
+      // sent by inviteUserByEmail above, since that's the only email that
+      // carries a working magic link for setting up the account.
       await resend.emails.send({
         from: 'Alignment Church <noreply@alignmentchurch.uk>',
         to: email,
@@ -39,14 +66,8 @@ export async function POST(request: NextRequest) {
               <p style="font-size: 15px; color: #555; line-height: 1.7; margin: 0 0 24px;">
                 ${pastorName} has invited you to join the Alignment Church community platform — a space for encountering the Word, praying with the church, and walking in what God speaks.
               </p>
-              <div style="text-align: center; margin: 32px 0;">
-                <a href="https://www.alignmentchurch.uk/signup?invite=true"
-                   style="background: #c6a75e; color: #0f1e2e; text-decoration: none; padding: 14px 32px; border-radius: 2px; font-size: 14px; font-weight: bold; letter-spacing: 0.05em; display: inline-block;">
-                  Create Your Account
-                </a>
-              </div>
-              <p style="font-size: 13px; color: #999; text-align: center; margin: 0;">
-                Or visit <a href="https://www.alignmentchurch.uk/signup?invite=true" style="color: #c6a75e;">www.alignmentchurch.uk/signup</a>
+              <p style="font-size: 14px; color: #555; line-height: 1.7; margin: 0;">
+                You'll receive a separate email with a link to set up your account — look out for it, and check your spam folder if it doesn't arrive shortly.
               </p>
             </div>
             <div style="padding: 16px 24px; background: #f9fafb; text-align: center;">
@@ -56,19 +77,6 @@ export async function POST(request: NextRequest) {
         `,
       });
     }
-
-    // Log the pending invite in profiles for tracking (no auth account yet)
-    const serviceSupabase = await import('@supabase/supabase-js').then(({ createClient: sc }) =>
-      sc(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-    );
-    await serviceSupabase.from('profiles').insert({
-      full_name: name,
-      role: 'member',
-      member_status: memberStatus ?? 'attendee',
-      church_id: profile?.church_id ?? null,
-      phone: phone ?? null,
-      join_date: new Date().toISOString().split('T')[0],
-    }).then(() => {}); // best-effort, no auth.uid() match needed — invite placeholder
 
     return NextResponse.json({ success: true });
   } catch (err) {

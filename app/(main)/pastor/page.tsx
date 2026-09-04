@@ -12,12 +12,14 @@ import PendingTestimonies from '@/components/pastor/PendingTestimonies';
 import ContactMessages from '@/components/pastor/ContactMessages';
 import JoinRequests from '@/components/pastor/JoinRequests';
 import PendingApprovals from '@/components/pastor/PendingApprovals';
+import ManageEvents from '@/components/pastor/ManageEvents';
 
-type Section = 'overview' | 'verse' | 'members' | 'approvals' | 'notifications' | 'testimonies' | 'messages' | 'join';
+type Section = 'overview' | 'verse' | 'events' | 'members' | 'approvals' | 'notifications' | 'testimonies' | 'messages' | 'join';
 
 const SECTIONS: { id: Section; label: string; icon: string }[] = [
   { id: 'overview',      label: 'Overview',      icon: '◈' },
   { id: 'verse',         label: 'Assign Verse',   icon: '✦' },
+  { id: 'events',        label: 'Events',         icon: '📅' },
   { id: 'members',       label: 'Members',        icon: '◉' },
   { id: 'approvals',     label: 'New Accounts',   icon: '⊕' },
   { id: 'join',          label: 'Join Requests',  icon: '✚' },
@@ -29,6 +31,7 @@ const SECTIONS: { id: Section; label: string; icon: string }[] = [
 const SECTION_TITLES: Record<Section, { heading: string; sub: string }> = {
   overview:      { heading: 'This Week at a Glance',          sub: "Your community's engagement with the Word." },
   verse:         { heading: 'Assign This Week\'s Verse',       sub: 'Set the verse, series, and Selah playlist for the whole community.' },
+  events:        { heading: 'Church Calendar',                 sub: 'Create and manage events members see on their calendar.' },
   members:       { heading: 'Church Members',                  sub: 'Manage roles and send personal nudges.' },
   approvals:     { heading: 'New Account Approvals',           sub: 'Signed-up accounts have no access until approved or declined here.' },
   join:          { heading: 'Join Requests',                   sub: 'People who want to join the church — triage and follow up.' },
@@ -122,6 +125,7 @@ export default function PastorPage() {
       {/* Section content */}
       {section === 'overview'      && <EngagementOverview />}
       {section === 'verse'         && <AssignVerse />}
+      {section === 'events'        && <ManageEvents />}
       {section === 'members'       && <MemberList />}
       {section === 'approvals'     && <PendingApprovals />}
       {section === 'notifications' && <NotificationComposer />}

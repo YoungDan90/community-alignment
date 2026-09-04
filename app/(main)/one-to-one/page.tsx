@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import GoalComments from '@/components/goals/GoalComments';
 
 interface Goal {
   id: string;
@@ -181,6 +182,7 @@ export default function OneToOnePage() {
               />
               <span style={{ fontSize: 12, color: 'var(--pf-gold)', minWidth: 32, textAlign: 'right' }}>{g.progress}%</span>
             </div>
+            {userId && <GoalComments goalId={g.id} currentUserId={userId} />}
           </div>
         ))}
       </div>

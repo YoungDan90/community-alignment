@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import EditProfileForm from '@/components/members/EditProfileForm';
+import GoalComments from '@/components/goals/GoalComments';
 
 function GroupsSection({ memberId }: { memberId: string }) {
   const [memberGroups, setMemberGroups] = useState<{ id: string; gmId: string; name: string }[]>([]);
@@ -507,6 +508,7 @@ export default function MemberProfilePage() {
                 />
                 <span style={{ fontSize: 12, color: S.gold, minWidth: 32, textAlign: 'right' }}>{g.progress}%</span>
               </div>
+              {pastorId && <GoalComments goalId={g.id} currentUserId={pastorId} />}
             </div>
           ))}
         </div>

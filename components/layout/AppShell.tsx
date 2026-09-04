@@ -111,6 +111,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     {
       label: 'Community',
       items: [
+        { href: '/calendar',      label: 'Calendar',      icon: '📅' },
         { href: '/prayer-wall',   label: 'Prayer Wall',   icon: '🙏' },
         { href: '/groups',        label: 'Groups',        icon: '◉' },
         { href: '/announcements', label: 'Announcements', icon: '📢', badge: unread.announcements },
