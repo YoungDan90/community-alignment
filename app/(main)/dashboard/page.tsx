@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import NotificationPrompt from '@/components/notifications/NotificationPrompt';
-import { subscribeUser, unsubscribeUser } from '@/lib/notifications/push';
+import { subscribeUser, unsubscribeUser, needsIOSInstallForPush } from '@/lib/notifications/push';
 
 const serif = 'var(--pf-serif)';
 
@@ -29,7 +29,7 @@ export default function DashboardPage() {
   const [latestAnnouncements, setLatestAnnouncements] = useState<{ id: string; title: string; isRead: boolean }[]>([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [featuredDocs, setFeaturedDocs] = useState<{ id: string; title: string; category: string }[]>([]);
-  const [notifState, setNotifState] = useState<'unsupported' | 'denied' | 'granted' | 'default'>('default');
+  const [notifState, setNotifState] = useState<'unsupported' | 'denied' | 'granted' | 'default' | 'needs_ios_install'>('default');
   const [notifLoading, setNotifLoading] = useState(false);
 
   useEffect(() => {
@@ -100,7 +100,8 @@ export default function DashboardPage() {
     })();
 
     if (typeof window !== 'undefined') {
-      if (!('Notification' in window) || !('serviceWorker' in navigator)) setNotifState('unsupported');
+      if (needsIOSInstallForPush()) setNotifState('needs_ios_install');
+      else if (!('Notification' in window) || !('serviceWorker' in navigator)) setNotifState('unsupported');
       else setNotifState(Notification.permission as 'denied' | 'granted' | 'default');
     }
   }, [router]);
@@ -297,12 +298,13 @@ export default function DashboardPage() {
             <p className="pf-sub">
               {notifState === 'granted' ? 'You will receive updates from the church' :
                notifState === 'denied' ? 'Blocked — enable in browser settings' :
+               notifState === 'needs_ios_install' ? 'Add this to your Home Screen first (Share → Add to Home Screen)' :
                'Tap to receive church updates'}
             </p>
           </div>
           <button
             onClick={handleToggleNotifications}
-            disabled={notifLoading || notifState === 'denied'}
+            disabled={notifLoading || notifState === 'denied' || notifState === 'needs_ios_install'}
             role="switch"
             aria-checked={notifState === 'granted'}
             aria-label="Push notifications"
@@ -310,7 +312,7 @@ export default function DashboardPage() {
               position: 'relative', width: 44, height: 24, flexShrink: 0,
               background: notifState === 'granted' ? 'var(--pf-gold)' : 'var(--pf-border)',
               border: 'none', borderRadius: 12,
-              cursor: notifState === 'denied' ? 'not-allowed' : 'pointer',
+              cursor: (notifState === 'denied' || notifState === 'needs_ios_install') ? 'not-allowed' : 'pointer',
               transition: 'background 0.25s', opacity: notifLoading ? 0.6 : 1,
             }}
           >

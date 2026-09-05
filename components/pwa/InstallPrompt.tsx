@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { isIOS, isStandalone } from '@/lib/notifications/push';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -12,13 +13,21 @@ const DISMISSED_KEY = 'pwa_install_dismissed';
 export default function InstallPrompt() {
   const [visible, setVisible] = useState(false);
   const [installing, setInstalling] = useState(false);
+  const [iosInstructions, setIosInstructions] = useState(false);
   const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (sessionStorage.getItem(DISMISSED_KEY)) return;
-    // Already installed (standalone mode)
-    if (window.matchMedia('(display-mode: standalone)').matches) return;
+    if (isStandalone()) return;
+
+    // Safari never fires beforeinstallprompt — it has no programmatic
+    // install API at all. The only way to "prompt" is to tell the
+    // person the manual Share → Add to Home Screen steps themselves.
+    if (isIOS()) {
+      const timer = setTimeout(() => setIosInstructions(true), 30000);
+      return () => clearTimeout(timer);
+    }
 
     const handler = (e: Event) => {
       e.preventDefault();
@@ -46,9 +55,10 @@ export default function InstallPrompt() {
   const handleDismiss = () => {
     sessionStorage.setItem(DISMISSED_KEY, '1');
     setVisible(false);
+    setIosInstructions(false);
   };
 
-  if (!visible) return null;
+  if (!visible && !iosInstructions) return null;
 
   return (
     <div
@@ -81,23 +91,27 @@ export default function InstallPrompt() {
           <p style={{ margin: '0 0 2px', fontSize: 15, color: '#f0e8d4', fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
             Add Community to your home screen
           </p>
-          <p style={{ margin: '0 0 14px', fontSize: 12, color: '#6a8aaa', fontStyle: 'italic' }}>
-            Stay connected to the Word — offline-ready, always at hand.
+          <p style={{ margin: '0 0 14px', fontSize: 12, color: '#6a8aaa', fontStyle: iosInstructions ? 'normal' : 'italic', lineHeight: 1.6 }}>
+            {iosInstructions
+              ? <>Tap the <strong style={{ color: '#c6a75e' }}>Share</strong> icon below, then <strong style={{ color: '#c6a75e' }}>&ldquo;Add to Home Screen.&rdquo;</strong> This also turns on notifications.</>
+              : 'Stay connected to the Word — offline-ready, always at hand.'}
           </p>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button
-              onClick={handleInstall}
-              disabled={installing}
-              style={{
-                padding: '9px 18px', background: '#c6a75e', border: 'none',
-                borderRadius: 2, color: '#0f1e2e', fontSize: 12, fontWeight: 'bold',
-                cursor: installing ? 'wait' : 'pointer',
-                fontFamily: "var(--font-jost), 'Jost', sans-serif", letterSpacing: '0.06em',
-                minHeight: 44,
-              }}
-            >
-              {installing ? 'Installing…' : 'Install App'}
-            </button>
+            {!iosInstructions && (
+              <button
+                onClick={handleInstall}
+                disabled={installing}
+                style={{
+                  padding: '9px 18px', background: '#c6a75e', border: 'none',
+                  borderRadius: 2, color: '#0f1e2e', fontSize: 12, fontWeight: 'bold',
+                  cursor: installing ? 'wait' : 'pointer',
+                  fontFamily: "var(--font-jost), 'Jost', sans-serif", letterSpacing: '0.06em',
+                  minHeight: 44,
+                }}
+              >
+                {installing ? 'Installing…' : 'Install App'}
+              </button>
+            )}
             <button
               onClick={handleDismiss}
               style={{

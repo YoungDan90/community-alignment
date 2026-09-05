@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { requestPermission, subscribeUser } from '@/lib/notifications/push';
+import { requestPermission, subscribeUser, needsIOSInstallForPush } from '@/lib/notifications/push';
 
 const S = {
   font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
@@ -23,7 +23,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [translation, setTranslation] = useState<'nkjv' | 'nlt'>('nkjv');
-  const [notifState, setNotifState] = useState<'idle' | 'loading' | 'done' | 'denied'>('idle');
+  const [notifState, setNotifState] = useState<'idle' | 'loading' | 'done' | 'denied' | 'needs_ios_install'>('idle');
   const [saving, setSaving] = useState(false);
 
   const savePreferences = async () => {
@@ -49,6 +49,14 @@ export default function OnboardingPage() {
   };
 
   const handleEnableNotifications = async () => {
+    // On iOS Safari, the Notification API doesn't exist at all until the
+    // site has been added to the home screen — requestPermission() would
+    // just report "denied" here, which is misleading. Catch that case
+    // first and show the real instructions instead.
+    if (needsIOSInstallForPush()) {
+      setNotifState('needs_ios_install');
+      return;
+    }
     setNotifState('loading');
     const permission = await requestPermission();
     if (permission === 'granted') {
@@ -154,6 +162,15 @@ export default function OnboardingPage() {
               <div style={{ background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 3, padding: '16px 18px' }}>
                 <p style={{ margin: 0, fontSize: 14, color: S.gold, fontFamily: S.font.display, fontStyle: 'italic' }}>
                   ✦ Notifications enabled. You&rsquo;ll hear from us when it matters.
+                </p>
+              </div>
+            ) : notifState === 'needs_ios_install' ? (
+              <div style={{ background: S.card, border: `1px solid ${S.goldBorder}`, borderRadius: 3, padding: '16px 18px' }}>
+                <p style={{ margin: '0 0 8px', fontSize: 13, color: S.text, lineHeight: 1.6 }}>
+                  On iPhone, notifications only work once this is added to your Home Screen:
+                </p>
+                <p style={{ margin: 0, fontSize: 13, color: S.soft, lineHeight: 1.7 }}>
+                  Tap the <strong style={{ color: S.gold }}>Share</strong> icon in Safari, then <strong style={{ color: S.gold }}>&ldquo;Add to Home Screen.&rdquo;</strong> Open it from there and come back to this step to enable notifications.
                 </p>
               </div>
             ) : notifState === 'denied' ? (

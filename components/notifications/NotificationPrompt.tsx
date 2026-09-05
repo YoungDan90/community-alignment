@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { requestPermission, subscribeUser } from '@/lib/notifications/push';
+import { requestPermission, subscribeUser, needsIOSInstallForPush } from '@/lib/notifications/push';
 
 const S = {
   font: {
@@ -26,12 +26,19 @@ export default function NotificationPrompt() {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [needsIOSInstall, setNeedsIOSInstall] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (localStorage.getItem(DISMISSED_KEY)) return;
+
+    if (needsIOSInstallForPush()) {
+      setNeedsIOSInstall(true);
+      setVisible(true);
+      return;
+    }
     if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
     if (Notification.permission !== 'default') return;
-    if (localStorage.getItem(DISMISSED_KEY)) return;
     setVisible(true);
   }, []);
 
@@ -85,6 +92,26 @@ export default function NotificationPrompt() {
           <p style={{ margin: 0, fontSize: 14, color: S.gold, fontFamily: S.font.display, fontStyle: 'italic' }}>
             Notifications enabled. You&rsquo;ll be notified when it matters.
           </p>
+        ) : needsIOSInstall ? (
+          <>
+            <p style={{ margin: '0 0 2px', fontSize: 14, color: S.textLight, fontFamily: S.font.display }}>
+              Stay connected to the Word
+            </p>
+            <p style={{ margin: '0 0 12px', fontSize: 12, color: S.soft, lineHeight: 1.6 }}>
+              On iPhone, notifications only work once this is added to your Home Screen. Tap the <strong style={{ color: S.gold }}>Share</strong> icon in Safari, then <strong style={{ color: S.gold }}>&ldquo;Add to Home Screen.&rdquo;</strong>
+            </p>
+            <button
+              onClick={handleDismiss}
+              style={{
+                padding: '7px 14px',
+                background: 'transparent', border: `1px solid ${S.border}`,
+                borderRadius: 2, color: S.muted, fontSize: 11,
+                cursor: 'pointer', fontFamily: S.font.body,
+              }}
+            >
+              Got it
+            </button>
+          </>
         ) : (
           <>
             <p style={{ margin: '0 0 2px', fontSize: 14, color: S.textLight, fontFamily: S.font.display }}>
