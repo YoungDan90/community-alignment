@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import webpush from 'web-push';
 import { createAdminClient } from '@/lib/supabase/admin';
-
-webpush.setVapidDetails(
-  `mailto:${process.env.VAPID_EMAIL}`,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-);
+import { sendToSubscriptions } from '@/lib/notifications/send';
 
 // Map of [dayOfWeek (0=Sun), hour] → notification. -1 day = any day.
 const SCHEDULE: Array<{ day: number; hour: number; minute: number; title: string; body: string; url: string }> = [
@@ -25,14 +19,9 @@ async function broadcastNotification(title: string, body: string, url: string) {
   // Cron requests carry no auth cookies, so an RLS-scoped client would see
   // zero rows — the service-role client is required here.
   const supabase = createAdminClient();
-  const { data: rows } = await supabase.from('push_subscriptions').select('subscription');
+  const { data: rows } = await supabase.from('push_subscriptions').select('platform, subscription, fcm_token');
   if (!rows?.length) return 0;
-
-  const payload = JSON.stringify({ title, body, url });
-  const results = await Promise.allSettled(
-    rows.map((row) => webpush.sendNotification(row.subscription, payload))
-  );
-  return results.filter((r) => r.status === 'fulfilled').length;
+  return sendToSubscriptions(rows, title, body, url);
 }
 
 export async function GET(request: NextRequest) {

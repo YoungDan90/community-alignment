@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import webpush from 'web-push';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-
-webpush.setVapidDetails(
-  `mailto:${process.env.VAPID_EMAIL}`,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-);
+import { sendToSubscriptions } from '@/lib/notifications/send';
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,7 +27,7 @@ export async function POST(request: NextRequest) {
     // client: RLS restricts the cookie client to the caller's own rows,
     // which would make broadcasts only reach the sender's devices.
     const admin = createAdminClient();
-    let query = admin.from('push_subscriptions').select('subscription');
+    let query = admin.from('push_subscriptions').select('platform, subscription, fcm_token');
     if (target && target !== 'all') {
       query = query.eq('user_id', target) as typeof query;
     }
@@ -42,12 +36,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ sent: 0 });
     }
 
-    const payload = JSON.stringify({ title, body, url });
-    const results = await Promise.allSettled(
-      rows.map((row) => webpush.sendNotification(row.subscription, payload))
-    );
-
-    const sent = results.filter((r) => r.status === 'fulfilled').length;
+    const sent = await sendToSubscriptions(rows, title, body, url);
     return NextResponse.json({ sent, total: rows.length });
   } catch {
     return NextResponse.json({ error: 'Failed to send notifications' }, { status: 500 });
