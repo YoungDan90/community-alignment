@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "554122302370",
+    "project_id": "alignment-church-community",
+    "storage_bucket": "alignment-church-community.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554122302370:android:eac957ed5686bf6583d8fb",
+        "android_client_info": {
+          "package_name": "uk.alignmentchurch.community"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzgXllHpAYyLOPpKby4XTz28-BUAUOtnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

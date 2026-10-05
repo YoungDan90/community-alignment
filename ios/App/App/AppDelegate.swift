@@ -34,9 +34,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // MARK: - Push Notifications (required by @capacitor/push-notifications)
-    // These forward the standard APNs callbacks into Capacitor's plugin
-    // bridge, which is what resolves the 'registration' / 'registrationError'
-    // JS listeners set up in lib/notifications/push.ts.
+    // Forwards the APNs registration callbacks into Capacitor's plugin —
+    // PushNotificationsPlugin.load() observes exactly these two
+    // notification names and reads the token/error back out of `object`.
+    // Incoming notification display/tap handling is wired automatically
+    // by the Capacitor bridge itself (notificationRouter) and needs no
+    // AppDelegate code — there's no didReceiveRemoteNotification override
+    // in this version of the plugin.
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
@@ -44,11 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
-    }
-
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        NotificationCenter.default.post(name: .capacitorDidReceiveRemoteNotification, object: userInfo, userInfo: userInfo as? [AnyHashable: Any])
-        completionHandler(.newData)
     }
 
     func application(_ application: UIApplication,
