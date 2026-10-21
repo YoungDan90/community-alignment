@@ -202,12 +202,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* ── main column ── */}
       <div className={`pf-main${hasOwnHeader ? ' pf-main--no-topbar' : ''}`}>
-        {/* mobile top bar */}
+        {/* mobile top bar — a compact wayfinding bar (back-to-home +
+            role), not a repeated brand mark; the brand only needs to
+            appear once, on the home screen's own scene header. */}
         <header className="pf-topbar">
           <div className="pf-topbar-inner">
-            <Link href="/dashboard" className="pf-brand" style={{ padding: 0 }}>
-              <b style={{ fontSize: '1.2rem' }}>Alignment</b>
-              <span style={{ fontSize: '1.2rem' }}>Church</span>
+            <Link href="/dashboard" className="pf-scene-iconbtn" aria-label="Home" style={{ width: 34, height: 34 }}>
+              ⌂
             </Link>
             <span className="pf-chip">{ROLE_LABELS[role] ?? role}</span>
           </div>
