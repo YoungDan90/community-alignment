@@ -6,13 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import CreateServicePlan from '@/components/worship/CreateServicePlan';
 
-const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
-  gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0a1828', dark: '#0f1e2e', border: '#1e3a52',
-  text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa',
-};
-
 interface Plan {
   id: string;
   service_date: string;
@@ -119,36 +112,26 @@ export default function WorshipPage() {
 
   const notOnTeam = allMembers.filter(m => !worshipMembers.some(wm => wm.memberId === m.id));
 
-  const inputStyle: React.CSSProperties = {
-    background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-    padding: '8px 12px', color: S.text, fontSize: 13, fontFamily: S.font.body,
-    outline: 'none', flex: 1,
-  };
-
   const PlanCard = ({ plan }: { plan: Plan }) => (
-    <div
+    <button
       onClick={() => router.push(`/worship/${plan.id}`)}
-      style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '14px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+      className="pf-card"
+      style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', textAlign: 'left', border: '1px solid var(--pf-border)', font: 'inherit' }}
     >
       <div>
-        <p style={{ margin: 0, fontSize: 13, color: S.textLight, fontWeight: 500 }}>{plan.title ?? formatDate(plan.service_date)}</p>
+        <p style={{ margin: 0, fontSize: 13, color: 'var(--pf-text-bright)', fontWeight: 500 }}>{plan.title ?? formatDate(plan.service_date)}</p>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 4 }}>
-          <p style={{ margin: 0, fontSize: 11, color: S.soft }}>{formatDate(plan.service_date)}</p>
-          {plan.theme && <p style={{ margin: 0, fontSize: 11, color: S.gold, fontStyle: 'italic' }}>&ldquo;{plan.theme}&rdquo;</p>}
+          <p style={{ margin: 0, fontSize: 11, color: 'var(--pf-text-soft)' }}>{formatDate(plan.service_date)}</p>
+          {plan.theme && <p style={{ margin: 0, fontSize: 11, color: 'var(--pf-gold)', fontStyle: 'italic' }}>&ldquo;{plan.theme}&rdquo;</p>}
         </div>
       </div>
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <span style={{
-          padding: '2px 8px', borderRadius: 2, fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase',
-          background: plan.status === 'published' ? 'rgba(72,160,110,0.15)' : S.goldDim,
-          border: `1px solid ${plan.status === 'published' ? 'rgba(72,160,110,0.3)' : S.goldBorder}`,
-          color: plan.status === 'published' ? '#48a06e' : S.gold,
-        }}>
+        <span className="pf-chip" style={plan.status === 'published' ? { background: 'rgba(72,160,110,0.15)', borderColor: 'rgba(72,160,110,0.3)', color: '#48a06e' } : undefined}>
           {plan.status}
         </span>
-        <span style={{ color: S.soft, fontSize: 16 }}>›</span>
+        <span style={{ color: 'var(--pf-text-soft)', fontSize: 16 }}>›</span>
       </div>
-    </div>
+    </button>
   );
 
   return (
@@ -156,7 +139,7 @@ export default function WorshipPage() {
       <div>
         <div className="pf-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap' }}>
           <div>
-            <p className="pf-eyebrow">Alignment Church</p>
+            <p className="pf-eyebrow">Serve</p>
             <h1 className="pf-title">Worship Planning</h1>
           </div>
           <Link href="/worship/songs" className="pf-btn pf-btn--quiet pf-btn--sm">Song Library</Link>
@@ -167,50 +150,46 @@ export default function WorshipPage() {
           <div style={{ marginBottom: 20 }}>
             <button
               onClick={() => setShowTeamPanel(p => !p)}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '12px 16px', cursor: 'pointer', textAlign: 'left' }}
+              className="pf-card"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', cursor: 'pointer', textAlign: 'left', font: 'inherit', borderRadius: showTeamPanel ? '6px 6px 0 0' : undefined }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 11, color: S.gold }}>◉</span>
-                <span style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>
-                  Worship Team
-                </span>
-                <span style={{ fontSize: 11, color: S.soft }}>
+                <span style={{ fontSize: 11, color: 'var(--pf-gold)' }}>◉</span>
+                <span className="pf-card-label" style={{ margin: 0 }}>Worship Team</span>
+                <span className="pf-sub">
                   {worshipMembers.length === 0 ? 'No members yet' : `${worshipMembers.length} member${worshipMembers.length !== 1 ? 's' : ''}`}
                 </span>
               </div>
-              <span style={{ color: S.soft, fontSize: 14, transform: showTeamPanel ? 'rotate(90deg)' : 'none', display: 'inline-block', transition: 'transform 0.2s' }}>›</span>
+              <span style={{ color: 'var(--pf-text-soft)', fontSize: 14, transform: showTeamPanel ? 'rotate(90deg)' : 'none', display: 'inline-block', transition: 'transform 0.2s' }}>›</span>
             </button>
 
             {showTeamPanel && (
-              <div style={{ background: S.card, border: `1px solid ${S.border}`, borderTop: 'none', borderRadius: '0 0 3px 3px', padding: '16px' }}>
-                {teamToast && (
-                  <div style={{ marginBottom: 12, padding: '7px 12px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, fontSize: 12, color: S.gold }}>
-                    ✦ {teamToast}
-                  </div>
-                )}
+              <div style={{ background: 'var(--pf-bg-raised)', border: '1px solid var(--pf-border)', borderTop: 'none', borderRadius: '0 0 6px 6px', padding: '16px' }}>
+                {teamToast && <div className="pf-banner">✦ {teamToast}</div>}
 
                 {worshipMembers.length === 0 ? (
-                  <p style={{ margin: '0 0 14px', fontSize: 13, color: S.soft, fontStyle: 'italic' }}>No members on the Worship Team yet. Add members below.</p>
+                  <p className="pf-sub" style={{ marginBottom: 14 }}>No members on the Worship Team yet. Add members below.</p>
                 ) : (
                   <div style={{ marginBottom: 14 }}>
                     {worshipMembers.map(m => (
-                      <div key={m.tmId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0 0 2px', borderBottom: `1px solid ${S.border}` }}>
-                        <p style={{ margin: 0, fontSize: 13, color: S.text }}>{m.fullName ?? 'Unknown'}</p>
-                        <button onClick={() => handleRemoveMember(m.tmId)} style={{ background: 'none', border: 'none', color: '#e05555', fontSize: 11, cursor: 'pointer', padding: '13px 10px', minHeight: 44, minWidth: 44 }}>Remove</button>
+                      <div key={m.tmId} className="pf-row">
+                        <p style={{ margin: 0, fontSize: 13, color: 'var(--pf-text)' }}>{m.fullName ?? 'Unknown'}</p>
+                        <button onClick={() => handleRemoveMember(m.tmId)} style={{ background: 'none', border: 'none', color: 'var(--pf-danger)', fontSize: 11, cursor: 'pointer', padding: '13px 10px', minHeight: 44, minWidth: 44 }}>Remove</button>
                       </div>
                     ))}
                   </div>
                 )}
 
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <select value={addMemberId} onChange={e => setAddMemberId(e.target.value)} style={inputStyle}>
+                  <select value={addMemberId} onChange={e => setAddMemberId(e.target.value)} className="pf-input" style={{ flex: 1 }}>
                     <option value="">Add a member…</option>
                     {notOnTeam.map(m => <option key={m.id} value={m.id}>{m.full_name ?? 'Unnamed'}</option>)}
                   </select>
                   <button
                     onClick={handleAddMember}
                     disabled={!addMemberId || addingMember}
-                    style={{ padding: '8px 16px', minHeight: 44, background: addMemberId ? S.goldDim : 'transparent', border: `1px solid ${addMemberId ? S.goldBorder : S.border}`, borderRadius: 2, color: addMemberId ? S.gold : S.soft, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: addMemberId ? 'pointer' : 'not-allowed', fontFamily: S.font.body, flexShrink: 0 }}
+                    className={`pf-btn pf-btn--sm${addMemberId ? '' : ' pf-btn--quiet'}`}
+                    style={{ flexShrink: 0 }}
                   >
                     {addingMember ? '…' : '+ Add'}
                   </button>
@@ -234,12 +213,13 @@ export default function WorshipPage() {
         )}
 
         <div style={{ marginBottom: 8 }}>
-          <p style={{ margin: '0 0 12px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.gold }}>Upcoming Services</p>
+          <p className="pf-card-label">Upcoming Services</p>
           {loading ? (
-            <p style={{ color: S.soft, fontSize: 13 }}>Loading…</p>
+            <p className="pf-sub">Loading…</p>
           ) : upcoming.length === 0 ? (
-            <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '20px', textAlign: 'center' }}>
-              <p style={{ margin: 0, fontSize: 13, color: S.soft }}>No upcoming services planned.</p>
+            <div className="pf-empty">
+              <span className="pf-empty-icon">✦</span>
+              No upcoming services planned.
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -254,8 +234,8 @@ export default function WorshipPage() {
               onClick={() => setShowPast(p => !p)}
               style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '12px 0', marginBottom: 2, minHeight: 44 }}
             >
-              <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.soft }}>Past Services ({past.length})</p>
-              <span style={{ color: S.soft, fontSize: 14, transform: showPast ? 'rotate(90deg)' : 'none', display: 'inline-block', transition: 'transform 0.2s' }}>›</span>
+              <p className="pf-card-label" style={{ margin: 0, color: 'var(--pf-text-soft)' }}>Past Services ({past.length})</p>
+              <span style={{ color: 'var(--pf-text-soft)', fontSize: 14, transform: showPast ? 'rotate(90deg)' : 'none', display: 'inline-block', transition: 'transform 0.2s' }}>›</span>
             </button>
             {showPast && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
