@@ -235,7 +235,7 @@ export default function InboxPage() {
                               setExpandedId(null);
                             }}
                             style={{
-                              padding: '7px 16px', background: S.goldDim, border: `1px solid ${S.goldBorder}`,
+                              padding: '7px 16px', minHeight: 44, background: S.goldDim, border: `1px solid ${S.goldBorder}`,
                               borderRadius: 2, color: S.gold, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase',
                               cursor: 'pointer', fontFamily: S.font.body,
                             }}

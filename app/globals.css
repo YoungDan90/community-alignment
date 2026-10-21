@@ -219,7 +219,7 @@ input, textarea, select {
   border-color: var(--pf-border);
 }
 .pf-btn--quiet:hover { background: var(--pf-bg-hover); color: var(--pf-text-bright); }
-.pf-btn--sm { padding: 8px 16px; min-height: 36px; font-size: 11px; }
+.pf-btn--sm { padding: 9px 16px; min-height: 40px; font-size: 11px; }
 
 /* ── chips ────────────────────────────────────────────────────── */
 .pf-chip {
@@ -303,21 +303,53 @@ select.pf-input { cursor: pointer; }
 @media (min-width: 1024px) { .pf-toast { bottom: 32px; } }
 @keyframes pf-toast-in { from { opacity: 0; transform: translate(-50%, 8px); } }
 
+/* Below 780px this is a bottom sheet (pinned to the viewport's bottom
+   edge, slides up, rounded top corners only) — centered desktop dialogs
+   read as a website popup on a phone. At 780px+ it's a conventional
+   centered modal. */
 .pf-modal-overlay {
   position: fixed; inset: 0; z-index: 100;
   background: rgba(7, 12, 18, 0.85); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center; padding: 20px;
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: pf-sheet-overlay-in 0.2s ease;
 }
 .pf-modal {
-  background: var(--pf-bg-raised); border: 1px solid var(--pf-border); border-radius: var(--pf-radius);
-  padding: 28px 26px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+  background: var(--pf-bg-raised); border: 1px solid var(--pf-border); border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  padding: 10px 22px calc(26px + env(safe-area-inset-bottom));
+  width: 100%; max-width: 560px; max-height: 86vh; overflow-y: auto;
   position: relative;
+  animation: pf-sheet-in 0.25s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .pf-modal::before {
-  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(to right, var(--pf-gold), transparent);
+  /* sheet drag-handle affordance, replaces the old top accent line below 780px */
+  content: ""; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  width: 36px; height: 4px; border-radius: 999px;
+  background: var(--pf-border);
 }
-.pf-modal-title { margin: 0 0 4px; font-family: var(--pf-serif); font-weight: 400; font-size: 22px; color: var(--pf-text-bright); }
+.pf-modal-title { margin: 20px 0 4px; font-family: var(--pf-serif); font-weight: 400; font-size: 22px; color: var(--pf-text-bright); }
+
+@keyframes pf-sheet-in { from { transform: translateY(100%); } }
+@keyframes pf-sheet-overlay-in { from { opacity: 0; } }
+
+@media (min-width: 780px) {
+  .pf-modal-overlay { align-items: center; padding: 20px; animation: none; }
+  .pf-modal {
+    border: 1px solid var(--pf-border); border-radius: var(--pf-radius);
+    padding: 28px 26px; max-width: 480px; max-height: 90vh;
+    animation: none;
+  }
+  .pf-modal::before {
+    top: 0; left: 0; right: 0; transform: none;
+    width: auto; height: 2px; border-radius: 0;
+    background: linear-gradient(to right, var(--pf-gold), transparent);
+  }
+  .pf-modal-title { margin: 0 0 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-modal-overlay, .pf-modal { animation: none !important; }
+}
 
 .pf-stat { background: var(--pf-bg); border: 1px solid var(--pf-border); border-radius: var(--pf-radius-sm); padding: 14px 16px; }
 .pf-stat b { display: block; font-size: 26px; color: var(--pf-gold); font-family: var(--pf-serif); font-weight: 500; line-height: 1; margin-bottom: 4px; }

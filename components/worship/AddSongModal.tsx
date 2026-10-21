@@ -26,12 +26,6 @@ export default function AddSongModal({ onClose, onSaved }: Props) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-    padding: '9px 12px', color: S.text, fontSize: 13, fontFamily: S.font.body,
-    boxSizing: 'border-box', outline: 'none',
-  };
-
   const handleSave = async () => {
     if (!title.trim()) { setError('Title is required.'); return; }
     setSaving(true);
@@ -58,37 +52,44 @@ export default function AddSongModal({ onClose, onSaved }: Props) {
   };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-      <div style={{ background: S.card, border: `1px solid ${S.goldBorder}`, borderRadius: 4, padding: 24, width: '100%', maxWidth: 480, maxHeight: '90vh', overflowY: 'auto' }}>
+    <div className="pf-modal-overlay" onClick={onClose}>
+      <div
+        className="pf-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-song-title"
+        onClick={e => e.stopPropagation()}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <p style={{ margin: 0, fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.gold, fontFamily: S.font.body }}>Add Song to Library</p>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: S.soft, fontSize: 20, cursor: 'pointer', lineHeight: 1 }}>×</button>
+          <h2 className="pf-modal-title" id="add-song-title" style={{ fontSize: 18 }}>Add Song to Library</h2>
+          <button onClick={onClose} aria-label="Close" style={{ background: 'none', border: 'none', color: S.soft, fontSize: 22, cursor: 'pointer', padding: 8, minWidth: 40, minHeight: 40 }}>×</button>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div>
-            <p style={{ margin: '0 0 5px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>Title *</p>
-            <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Song title…" style={inputStyle} />
+          <div className="pf-field" style={{ margin: 0 }}>
+            <label className="pf-label" htmlFor="song-title">Title *</label>
+            <input id="song-title" className="pf-input" value={title} onChange={e => setTitle(e.target.value)} placeholder="Song title…" />
+          </div>
+
+          <div className="pf-field" style={{ margin: 0 }}>
+            <label className="pf-label" htmlFor="song-artist">Artist</label>
+            <input id="song-artist" className="pf-input" value={artist} onChange={e => setArtist(e.target.value)} placeholder="Artist or band…" />
           </div>
 
           <div>
-            <p style={{ margin: '0 0 5px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>Artist</p>
-            <input value={artist} onChange={e => setArtist(e.target.value)} placeholder="Artist or band…" style={inputStyle} />
-          </div>
-
-          <div>
-            <p style={{ margin: '0 0 8px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>Default Key</p>
+            <p className="pf-label">Default Key</p>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {KEYS.map(k => (
                 <button
                   key={k}
                   onClick={() => setDefaultKey(defaultKey === k ? '' : k)}
                   style={{
-                    padding: '5px 12px', border: `1px solid ${defaultKey === k ? S.goldBorder : S.border}`,
+                    padding: '8px 12px', minWidth: 40, minHeight: 40,
+                    border: `1px solid ${defaultKey === k ? S.goldBorder : S.border}`,
                     borderRadius: 2, background: defaultKey === k ? S.goldDim : 'transparent',
                     color: defaultKey === k ? S.gold : S.soft,
                     fontSize: 12, cursor: 'pointer', fontFamily: S.font.body, fontWeight: defaultKey === k ? 600 : 400,
-                    minWidth: 36, textAlign: 'center',
+                    textAlign: 'center',
                   }}
                 >
                   {k}
@@ -97,21 +98,21 @@ export default function AddSongModal({ onClose, onSaved }: Props) {
             </div>
           </div>
 
-          <div>
-            <p style={{ margin: '0 0 5px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>YouTube URL</p>
-            <input value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} placeholder="https://youtube.com/watch?v=…" style={inputStyle} />
+          <div className="pf-field" style={{ margin: 0 }}>
+            <label className="pf-label" htmlFor="song-youtube">YouTube URL</label>
+            <input id="song-youtube" className="pf-input" value={youtubeUrl} onChange={e => setYoutubeUrl(e.target.value)} placeholder="https://youtube.com/watch?v=…" />
           </div>
 
-          <div>
-            <p style={{ margin: '0 0 5px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.soft }}>Tags <span style={{ color: S.border, fontWeight: 300 }}>(comma-separated)</span></p>
-            <input value={tagsInput} onChange={e => setTagsInput(e.target.value)} placeholder="communion, upbeat, reflective, opener…" style={inputStyle} />
+          <div className="pf-field" style={{ margin: 0 }}>
+            <label className="pf-label" htmlFor="song-tags">Tags <span style={{ color: S.border, fontWeight: 300, textTransform: 'none', letterSpacing: 0 }}>(comma-separated)</span></label>
+            <input id="song-tags" className="pf-input" value={tagsInput} onChange={e => setTagsInput(e.target.value)} placeholder="communion, upbeat, reflective, opener…" />
           </div>
 
-          {error && <p style={{ margin: 0, fontSize: 12, color: '#e05555' }}>{error}</p>}
+          {error && <p role="alert" style={{ margin: 0, fontSize: 12, color: 'var(--pf-danger)' }}>{error}</p>}
 
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 4 }}>
-            <button onClick={onClose} style={{ padding: '10px 18px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: S.font.body }}>Cancel</button>
-            <button onClick={handleSave} disabled={saving} style={{ padding: '10px 24px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: saving ? 'wait' : 'pointer', fontFamily: S.font.body, opacity: saving ? 0.6 : 1 }}>
+          <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+            <button onClick={onClose} className="pf-btn pf-btn--quiet" style={{ flex: 1 }}>Cancel</button>
+            <button onClick={handleSave} disabled={saving} className="pf-btn" style={{ flex: 2 }}>
               {saving ? 'Saving…' : 'Save Song'}
             </button>
           </div>

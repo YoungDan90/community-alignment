@@ -221,7 +221,7 @@ export default function SelahPage() {
             key={t}
             onClick={() => handleTranslationSwap(t)}
             style={{
-              padding: '5px 16px', cursor: 'pointer', borderRadius: 20,
+              padding: '5px 16px', minHeight: 44, minWidth: 64, cursor: 'pointer', borderRadius: 20,
               background: sessionTranslation === t ? 'rgba(198,167,94,0.15)' : 'transparent',
               border: `1px solid ${sessionTranslation === t ? S.goldBorder : S.border}`,
               color: sessionTranslation === t ? S.gold : S.muted,

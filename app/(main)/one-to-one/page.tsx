@@ -155,7 +155,7 @@ export default function OneToOnePage() {
               <p style={{ margin: 0, fontSize: 15, color: 'var(--pf-text-bright)', fontFamily: 'var(--pf-serif)' }}>{g.title}</p>
               <select
                 className="pf-input"
-                style={{ width: 'auto', padding: '4px 8px', fontSize: 11, minHeight: 'auto' }}
+                style={{ width: 'auto', padding: '4px 8px', fontSize: 13, minHeight: 40 }}
                 value={g.status}
                 onChange={(e) => handleStatusChange(g, e.target.value as Goal['status'])}
               >

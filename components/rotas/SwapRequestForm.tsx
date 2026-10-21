@@ -27,12 +27,6 @@ const S = {
   text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
 };
 
-const inputStyle: React.CSSProperties = {
-  width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-  padding: '10px 14px', color: S.text, fontSize: 14, fontFamily: S.font.body,
-  outline: 'none', boxSizing: 'border-box',
-};
-
 export default function SwapRequestForm({ slot, onClose, onSubmitted }: Props) {
   const [reason, setReason] = useState('');
   const [swapWithId, setSwapWithId] = useState('');
@@ -80,22 +74,17 @@ export default function SwapRequestForm({ slot, onClose, onSubmitted }: Props) {
   const dateStr = new Date(slot.rota.service_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 100,
-      background: 'rgba(7,12,18,0.85)', backdropFilter: 'blur(4px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
-    }}
-      onClick={e => e.target === e.currentTarget && onClose()}
-    >
-      <div style={{
-        background: S.card, border: `1px solid ${S.border}`, borderRadius: 3,
-        padding: '28px 24px', width: '100%', maxWidth: 420, position: 'relative',
-      }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(to right, ${S.gold}, transparent)`, borderRadius: '3px 3px 0 0' }} />
-
+    <div className="pf-modal-overlay" onClick={onClose}>
+      <div
+        className="pf-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="swap-request-title"
+        onClick={e => e.stopPropagation()}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>Request a Swap</h2>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: S.soft, fontSize: 18, cursor: 'pointer', padding: 4 }}>✕</button>
+          <h2 className="pf-modal-title" id="swap-request-title">Request a Swap</h2>
+          <button onClick={onClose} aria-label="Close" style={{ background: 'none', border: 'none', color: S.soft, fontSize: 20, cursor: 'pointer', padding: 8, minWidth: 40, minHeight: 40 }}>✕</button>
         </div>
 
         <div style={{ background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2, padding: '10px 14px', marginBottom: 18 }}>
@@ -105,30 +94,32 @@ export default function SwapRequestForm({ slot, onClose, onSubmitted }: Props) {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div>
-            <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Reason</label>
+          <div className="pf-field" style={{ margin: 0 }}>
+            <label className="pf-label" htmlFor="swap-reason">Reason</label>
             <textarea
+              id="swap-reason"
+              className="pf-input"
               value={reason}
               onChange={e => setReason(e.target.value)}
               placeholder="Why do you need a swap?"
               rows={3}
-              style={{ ...inputStyle, resize: 'none', fontStyle: 'italic' }}
+              style={{ fontStyle: 'italic' }}
             />
           </div>
-          <div>
-            <label style={{ display: 'block', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.soft, marginBottom: 6 }}>Swap with <span style={{ color: S.muted, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
-            <select value={swapWithId} onChange={e => setSwapWithId(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
+          <div className="pf-field" style={{ margin: 0 }}>
+            <label className="pf-label" htmlFor="swap-with">Swap with <span style={{ color: S.muted, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
+            <select id="swap-with" className="pf-input" value={swapWithId} onChange={e => setSwapWithId(e.target.value)}>
               <option value="">Let pastor decide</option>
               {teamMembers.map(m => <option key={m.id} value={m.id}>{m.full_name ?? 'Unnamed'}</option>)}
             </select>
           </div>
         </div>
 
-        {error && <p style={{ marginTop: 10, fontSize: 12, color: '#e07070' }}>{error}</p>}
+        {error && <p role="alert" style={{ marginTop: 10, fontSize: 12, color: 'var(--pf-danger)' }}>{error}</p>}
 
         <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-          <button onClick={onClose} style={{ flex: 1, padding: '11px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 12, cursor: 'pointer', fontFamily: S.font.body }}>Cancel</button>
-          <button onClick={handleSubmit} disabled={saving} style={{ flex: 2, padding: '11px', background: saving ? 'rgba(198,167,94,0.3)' : S.gold, border: 'none', borderRadius: 2, color: saving ? S.muted : S.dark, fontSize: 12, fontWeight: 'bold', cursor: saving ? 'wait' : 'pointer', fontFamily: S.font.body, letterSpacing: '0.06em' }}>
+          <button onClick={onClose} className="pf-btn pf-btn--quiet" style={{ flex: 1 }}>Cancel</button>
+          <button onClick={handleSubmit} disabled={saving} className="pf-btn" style={{ flex: 2 }}>
             {saving ? 'Submitting…' : 'Submit Request'}
           </button>
         </div>

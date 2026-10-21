@@ -346,7 +346,7 @@ export default function WordToWalkPage() {
               </div>
               <button
                 onClick={() => setShowVerseSearch(true)}
-                style={{ background: 'none', border: 'none', color: S.soft, fontSize: 12, cursor: 'pointer', padding: 0, fontFamily: S.font.body, letterSpacing: '0.04em' }}
+                style={{ background: 'none', border: 'none', color: S.soft, fontSize: 12, cursor: 'pointer', padding: '12px 0', minHeight: 44, fontFamily: S.font.body, letterSpacing: '0.04em' }}
               >
                 Choose a different verse →
               </button>
@@ -372,7 +372,7 @@ export default function WordToWalkPage() {
                     updateResponse('primary', text ?? '');
                   }
                 }}
-                style={{ background: 'none', border: 'none', color: S.soft, fontSize: 12, cursor: 'pointer', padding: '8px 0 0', fontFamily: S.font.body }}
+                style={{ background: 'none', border: 'none', color: S.soft, fontSize: 12, cursor: 'pointer', padding: '12px 0 8px', minHeight: 44, fontFamily: S.font.body }}
               >
                 ← Use week&apos;s verse
               </button>

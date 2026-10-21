@@ -194,9 +194,9 @@ export default function WorshipPage() {
                 ) : (
                   <div style={{ marginBottom: 14 }}>
                     {worshipMembers.map(m => (
-                      <div key={m.tmId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: `1px solid ${S.border}` }}>
+                      <div key={m.tmId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0 0 2px', borderBottom: `1px solid ${S.border}` }}>
                         <p style={{ margin: 0, fontSize: 13, color: S.text }}>{m.fullName ?? 'Unknown'}</p>
-                        <button onClick={() => handleRemoveMember(m.tmId)} style={{ background: 'none', border: 'none', color: '#e05555', fontSize: 11, cursor: 'pointer', padding: '2px 6px' }}>Remove</button>
+                        <button onClick={() => handleRemoveMember(m.tmId)} style={{ background: 'none', border: 'none', color: '#e05555', fontSize: 11, cursor: 'pointer', padding: '13px 10px', minHeight: 44, minWidth: 44 }}>Remove</button>
                       </div>
                     ))}
                   </div>
@@ -210,7 +210,7 @@ export default function WorshipPage() {
                   <button
                     onClick={handleAddMember}
                     disabled={!addMemberId || addingMember}
-                    style={{ padding: '8px 16px', background: addMemberId ? S.goldDim : 'transparent', border: `1px solid ${addMemberId ? S.goldBorder : S.border}`, borderRadius: 2, color: addMemberId ? S.gold : S.soft, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: addMemberId ? 'pointer' : 'not-allowed', fontFamily: S.font.body, flexShrink: 0 }}
+                    style={{ padding: '8px 16px', minHeight: 44, background: addMemberId ? S.goldDim : 'transparent', border: `1px solid ${addMemberId ? S.goldBorder : S.border}`, borderRadius: 2, color: addMemberId ? S.gold : S.soft, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: addMemberId ? 'pointer' : 'not-allowed', fontFamily: S.font.body, flexShrink: 0 }}
                   >
                     {addingMember ? '…' : '+ Add'}
                   </button>
@@ -252,7 +252,7 @@ export default function WorshipPage() {
           <div style={{ marginTop: 28 }}>
             <button
               onClick={() => setShowPast(p => !p)}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: 12 }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '12px 0', marginBottom: 2, minHeight: 44 }}
             >
               <p style={{ margin: 0, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.soft }}>Past Services ({past.length})</p>
               <span style={{ color: S.soft, fontSize: 14, transform: showPast ? 'rotate(90deg)' : 'none', display: 'inline-block', transition: 'transform 0.2s' }}>›</span>

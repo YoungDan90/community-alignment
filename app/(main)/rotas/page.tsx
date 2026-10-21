@@ -237,7 +237,7 @@ export default function RotasPage() {
         ) : (
           <div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-              <button onClick={() => setShowCreateTeam(v => !v)} style={{ padding: '8px 18px', background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em' }}>
+              <button onClick={() => setShowCreateTeam(v => !v)} style={{ padding: '8px 18px', minHeight: 44, background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em' }}>
                 + Create Team
               </button>
             </div>
@@ -249,8 +249,8 @@ export default function RotasPage() {
                   <input value={newTeamName} onChange={e => setNewTeamName(e.target.value)} placeholder="Team name…" style={inputStyle} />
                   <input value={newTeamDesc} onChange={e => setNewTeamDesc(e.target.value)} placeholder="Description (optional)…" style={inputStyle} />
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <button onClick={() => setShowCreateTeam(false)} style={{ flex: 1, padding: '9px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 12, cursor: 'pointer', fontFamily: S.font.body }}>Cancel</button>
-                    <button onClick={handleCreateTeam} disabled={!newTeamName.trim() || creatingTeam} style={{ flex: 2, padding: '9px', background: newTeamName.trim() ? S.gold : 'rgba(198,167,94,0.2)', border: 'none', borderRadius: 2, color: newTeamName.trim() ? S.dark : S.muted, fontSize: 12, fontWeight: 'bold', cursor: newTeamName.trim() ? 'pointer' : 'not-allowed', fontFamily: S.font.body }}>
+                    <button onClick={() => setShowCreateTeam(false)} style={{ flex: 1, padding: '9px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 12, cursor: 'pointer', fontFamily: S.font.body }}>Cancel</button>
+                    <button onClick={handleCreateTeam} disabled={!newTeamName.trim() || creatingTeam} style={{ flex: 2, padding: '9px', minHeight: 44, background: newTeamName.trim() ? S.gold : 'rgba(198,167,94,0.2)', border: 'none', borderRadius: 2, color: newTeamName.trim() ? S.dark : S.muted, fontSize: 12, fontWeight: 'bold', cursor: newTeamName.trim() ? 'pointer' : 'not-allowed', fontFamily: S.font.body }}>
                       {creatingTeam ? 'Creating…' : 'Create Team'}
                     </button>
                   </div>
@@ -293,11 +293,11 @@ export default function RotasPage() {
         ) : (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 10 }}>
-              <select value={rotaTeamFilter} onChange={e => setRotaTeamFilter(e.target.value)} style={{ background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2, padding: '8px 12px', color: S.text, fontSize: 12, fontFamily: S.font.body, outline: 'none', flex: 1 }}>
+              <select value={rotaTeamFilter} onChange={e => setRotaTeamFilter(e.target.value)} style={{ background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2, padding: '8px 12px', minHeight: 44, color: S.text, fontSize: 15, fontFamily: S.font.body, outline: 'none', flex: 1 }}>
                 <option value="">All teams</option>
                 {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
-              <button onClick={() => setShowCreateRota(true)} style={{ padding: '8px 18px', background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', flexShrink: 0 }}>
+              <button onClick={() => setShowCreateRota(true)} style={{ padding: '8px 18px', minHeight: 44, background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', flexShrink: 0 }}>
                 + Create Rota
               </button>
             </div>
@@ -359,16 +359,16 @@ export default function RotasPage() {
                   </div>
                   <span style={{ fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.gold, background: S.goldDim, border: `1px solid ${S.goldBorder}`, padding: '2px 8px', borderRadius: 10, flexShrink: 0 }}>Pending</span>
                 </div>
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 12 }}>
                   <button
                     onClick={() => handleApproveSwap(swap)}
                     disabled={processingSwap === swap.id}
-                    style={{ flex: 1, padding: '8px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
+                    style={{ flex: 1, padding: '8px', minHeight: 44, background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
                   >Approve</button>
                   <button
                     onClick={() => handleDeclineSwap(swap.id, swap.slot.id)}
                     disabled={processingSwap === swap.id}
-                    style={{ flex: 1, padding: '8px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: '#c47a7a', fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
+                    style={{ flex: 1, padding: '8px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: '#c47a7a', fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
                   >Decline</button>
                 </div>
               </div>

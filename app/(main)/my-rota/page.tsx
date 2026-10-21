@@ -109,20 +109,20 @@ export default function MyRotaPage() {
             <button
               onClick={() => handleConfirm(slot.id)}
               disabled={confirming === slot.id}
-              style={{ flex: 1, padding: '8px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
+              style={{ flex: 1, padding: '8px', minHeight: 44, background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
             >
               {confirming === slot.id ? '…' : 'Confirm'}
             </button>
             <button
               onClick={() => setSwapSlot(slot)}
-              style={{ flex: 1, padding: '8px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
+              style={{ flex: 1, padding: '8px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
             >Request Swap</button>
           </div>
         )}
         {showActions && slot.status === 'confirmed' && (
           <button
             onClick={() => setSwapSlot(slot)}
-            style={{ padding: '7px 16px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
+            style={{ padding: '7px 16px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
           >Request Swap</button>
         )}
       </div>

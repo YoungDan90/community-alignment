@@ -70,26 +70,17 @@ export default function AddMemberModal({ onClose, onAdded }: Props) {
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed', inset: 0, zIndex: 100,
-        background: 'rgba(7,12,18,0.85)', backdropFilter: 'blur(4px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '20px',
-      }}
-      onClick={e => e.target === e.currentTarget && onClose()}
-    >
-      <div style={{
-        background: S.card, border: `1px solid ${S.border}`, borderRadius: 3,
-        padding: '28px 24px', width: '100%', maxWidth: 440,
-        maxHeight: '90vh', overflowY: 'auto',
-        position: 'relative',
-      }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(to right, ${S.gold}, transparent)`, borderRadius: '3px 3px 0 0' }} />
-
+    <div className="pf-modal-overlay" onClick={onClose}>
+      <div
+        className="pf-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-member-title"
+        onClick={e => e.stopPropagation()}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 'normal', color: S.textLight, fontFamily: S.font.display }}>Add Member</h2>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: S.soft, fontSize: 18, cursor: 'pointer', padding: 4 }}>✕</button>
+          <h2 className="pf-modal-title" id="add-member-title">Add Member</h2>
+          <button onClick={onClose} aria-label="Close" style={{ background: 'none', border: 'none', color: S.soft, fontSize: 20, cursor: 'pointer', padding: 8, minWidth: 40, minHeight: 40 }}>✕</button>
         </div>
 
         {success ? (

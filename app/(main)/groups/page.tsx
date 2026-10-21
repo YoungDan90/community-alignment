@@ -152,17 +152,17 @@ export default function GroupsPage() {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
           {g.is_member && (
             <Link href={`/groups/${g.id}`} style={{ textDecoration: 'none' }}>
-              <button style={{ padding: '7px 16px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>View Group</button>
+              <button style={{ padding: '7px 16px', minHeight: 44, background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>View Group</button>
             </Link>
           )}
           {!g.is_member && (
-            <button onClick={() => handleJoin(g.id)} disabled={joining === g.id} style={{ padding: '7px 16px', background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: joining === g.id ? 'wait' : 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <button onClick={() => handleJoin(g.id)} disabled={joining === g.id} style={{ padding: '7px 16px', minHeight: 44, background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: joining === g.id ? 'wait' : 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
               {joining === g.id ? '…' : 'Join'}
             </button>
           )}
           {isPastor && (
             <Link href={`/groups/${g.id}/manage`} style={{ textDecoration: 'none' }}>
-              <button style={{ padding: '7px 16px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Manage</button>
+              <button style={{ padding: '7px 16px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Manage</button>
             </Link>
           )}
         </div>

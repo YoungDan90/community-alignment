@@ -166,8 +166,8 @@ export default function DocumentCard({ doc, isPastor, onDeleted, onUpdated }: Pr
             <span style={{ fontSize: 11, color: S.text }}>Featured</span>
           </div>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-            <button onClick={() => setEditing(false)} style={{ padding: '6px 14px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, cursor: 'pointer', fontFamily: S.font.body }}>Cancel</button>
-            <button onClick={handleSaveEdit} disabled={saving} style={{ padding: '6px 14px', background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 10, cursor: 'pointer', fontFamily: S.font.body }}>
+            <button onClick={() => setEditing(false)} style={{ padding: '6px 14px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, cursor: 'pointer', fontFamily: S.font.body }}>Cancel</button>
+            <button onClick={handleSaveEdit} disabled={saving} style={{ padding: '6px 14px', minHeight: 44, background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 10, cursor: 'pointer', fontFamily: S.font.body }}>
               {saving ? 'Saving…' : 'Save'}
             </button>
           </div>
@@ -224,7 +224,7 @@ export default function DocumentCard({ doc, isPastor, onDeleted, onUpdated }: Pr
               onClick={handleDownload}
               disabled={downloading || isPlaceholder}
               style={{
-                padding: '7px 16px', background: isPlaceholder ? 'transparent' : S.goldDim,
+                padding: '7px 16px', minHeight: 44, background: isPlaceholder ? 'transparent' : S.goldDim,
                 border: `1px solid ${isPlaceholder ? S.border : S.goldBorder}`,
                 borderRadius: 2, color: isPlaceholder ? S.soft : S.gold,
                 fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase',
@@ -239,22 +239,22 @@ export default function DocumentCard({ doc, isPastor, onDeleted, onUpdated }: Pr
               <>
                 <button
                   onClick={() => setEditing(true)}
-                  style={{ padding: '7px 14px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: S.font.body }}
+                  style={{ padding: '7px 14px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: S.font.body }}
                 >
                   Edit
                 </button>
                 {!confirmDelete ? (
                   <button
                     onClick={() => setConfirmDelete(true)}
-                    style={{ padding: '7px 14px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: '#c47a7a', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: S.font.body }}
+                    style={{ padding: '7px 14px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: '#c47a7a', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', fontFamily: S.font.body }}
                   >
                     Delete
                   </button>
                 ) : (
                   <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                     <span style={{ fontSize: 11, color: '#c47a7a' }}>Confirm?</span>
-                    <button onClick={handleDelete} style={{ padding: '5px 12px', background: 'rgba(224,85,85,0.15)', border: '1px solid rgba(224,85,85,0.3)', borderRadius: 2, color: '#e05555', fontSize: 10, cursor: 'pointer', fontFamily: S.font.body }}>Yes</button>
-                    <button onClick={() => setConfirmDelete(false)} style={{ padding: '5px 10px', background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, cursor: 'pointer', fontFamily: S.font.body }}>No</button>
+                    <button onClick={handleDelete} style={{ padding: '5px 12px', minHeight: 44, background: 'rgba(224,85,85,0.15)', border: '1px solid rgba(224,85,85,0.3)', borderRadius: 2, color: '#e05555', fontSize: 10, cursor: 'pointer', fontFamily: S.font.body }}>Yes</button>
+                    <button onClick={() => setConfirmDelete(false)} style={{ padding: '5px 10px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 10, cursor: 'pointer', fontFamily: S.font.body }}>No</button>
                   </div>
                 )}
               </>
