@@ -7,8 +7,6 @@ import { createClient } from '@/lib/supabase/client';
 import NotificationPrompt from '@/components/notifications/NotificationPrompt';
 import { subscribeUser, unsubscribeUser, needsIOSInstallForPush } from '@/lib/notifications/push';
 
-const serif = 'var(--pf-serif)';
-
 interface ActiveVerse {
   reference: string;
   nkjv_text: string | null;
@@ -145,148 +143,124 @@ export default function DashboardPage() {
     );
   }
 
+  const hasServing = !!nextSlot;
+  const hasGroup = myGroups.length > 0;
+  const hasAnnouncement = latestAnnouncements.length > 0;
+
   return (
     <div className="pf-page pf-page--wide">
 
-      {/* ── greeting ── */}
-      <div style={{ marginBottom: 22, display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-        <div>
-          <p className="pf-eyebrow">Welcome back</p>
-          <h1 className="pf-title">{greeting()}{firstName ? `, ${firstName}` : ''}</h1>
+      {/* ── scene header ── */}
+      <div className="pf-scene-head">
+        <div className="pf-scene-row">
+          <span className="pf-scene-brand"><span style={{ color: 'var(--pf-gold)' }}>✦</span> Alignment Church</span>
+          <Link href="/announcements" className="pf-scene-iconbtn" aria-label="Announcements">
+            🔔
+            {unreadMessages > 0 && <span className="pf-badge pf-badge--dot" aria-hidden="true">{unreadMessages > 9 ? '9+' : unreadMessages}</span>}
+          </Link>
         </div>
-        <p className="pf-sub" style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
-        </p>
+        <h1 className="pf-scene-greeting">{greeting()}{firstName ? `, ${firstName}.` : '.'}</h1>
       </div>
 
       <NotificationPrompt />
 
-      {/* ── weekly verse hero ── */}
-      <section className="pf-card pf-card--accent" style={{ padding: '26px 26px 22px', marginBottom: 14 }} aria-labelledby="verse-heading">
-        <p className="pf-card-label" id="verse-heading">
-          This Week&rsquo;s Verse{verse?.sermon_series ? ` · ${verse.sermon_series}` : ''}
+      {/* ── hero: today's verse, one focused action ── */}
+      <section className="pf-hero" style={{ marginBottom: 24 }} aria-labelledby="verse-heading">
+        <p className="pf-hero-label" id="verse-heading">
+          ✦ Today&rsquo;s Verse{verse?.sermon_series ? ` · ${verse.sermon_series}` : ''}
         </p>
         {verse && verseText ? (
           <>
-            <blockquote style={{ margin: '0 0 10px', fontFamily: serif, fontStyle: 'italic', fontSize: 'clamp(17px, 2.4vw, 21px)', lineHeight: 1.75, color: 'var(--pf-text)', maxWidth: '62ch' }}>
-              &ldquo;{verseText}&rdquo;
-            </blockquote>
-            <p style={{ margin: '0 0 18px', fontSize: 12, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--pf-gold)' }}>
-              {verse.reference} · {translation.toUpperCase()}
-            </p>
+            <p className="pf-hero-quote">&ldquo;{verseText}&rdquo;</p>
+            <p className="pf-hero-meta">{verse.reference.toUpperCase()} · {translation.toUpperCase()}</p>
           </>
         ) : (
-          <p style={{ margin: '0 0 18px', fontStyle: 'italic', color: 'var(--pf-text-soft)' }}>
-            No verse assigned this week yet — begin with your own passage.
-          </p>
+          <p className="pf-hero-quote" style={{ fontSize: 15 }}>No verse assigned this week yet — begin with your own passage.</p>
         )}
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <Link href="/selah" className="pf-btn">✦ Begin Selah</Link>
-          <Link href="/word-to-walk" className="pf-btn pf-btn--ghost">
-            {journeyInProgress ? '◈ Continue your journey' : '◈ Word to Walk'}
+        <Link href="/selah" className="pf-btn">Begin Today&rsquo;s Selah</Link>
+        <div style={{ marginTop: 10 }}>
+          <Link href="/word-to-walk" className="pf-section-action" style={{ display: 'inline-block' }}>
+            {journeyInProgress ? '◈ Continue your Word to Walk journey →' : '◈ Word to Walk →'}
           </Link>
         </div>
-        {journeyInProgress && (
-          <p className="pf-sub" style={{ marginTop: 12 }}>
-            You have a meditation in progress — pick up where you left off.
-          </p>
-        )}
       </section>
 
-      {/* ── unread inbox strip ── */}
-      {unreadMessages > 0 && (
-        <Link href="/inbox" className="pf-card pf-card--link" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, borderColor: 'var(--pf-gold-border)' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14 }}>
-            <span aria-hidden="true" style={{ color: 'var(--pf-gold)' }}>✉</span>
-            {unreadMessages} unread message{unreadMessages !== 1 ? 's' : ''} in your inbox
-          </span>
-          <span aria-hidden="true" style={{ color: 'var(--pf-gold)' }}>→</span>
-        </Link>
-      )}
-
-      {/* ── secondary grid ── */}
-      <div className="pf-grid2" style={{ marginBottom: 14 }}>
-
-        <Link href="/my-rota" className="pf-card pf-card--link">
-          <p className="pf-card-label">Your Serving</p>
-          {nextSlot ? (
-            <div className="pf-row" style={{ border: 'none', padding: 0 }}>
-              <div>
-                <p style={{ margin: '0 0 2px', fontSize: 15, color: 'var(--pf-text-bright)', fontFamily: serif }}>{nextSlot.role_name}</p>
-                <p style={{ margin: 0, fontSize: 12, color: 'var(--pf-text-soft)' }}>
-                  {nextSlot.team_name} · {new Date(nextSlot.service_date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
-                </p>
-              </div>
-              <span aria-hidden="true" style={{ color: 'var(--pf-gold)' }}>→</span>
-            </div>
+      {/* ── this week: horizontal carousel ── */}
+      <div className="pf-section-head" style={{ padding: '0 4px' }}>
+        <p className="pf-section-label">This Week</p>
+      </div>
+      <div className="pf-carousel" style={{ marginBottom: 24 }}>
+        <Link href="/my-rota" className="pf-carousel-card">
+          <p className="pf-carousel-card-icon">◆</p>
+          <p className="pf-carousel-card-title">Serving</p>
+          {hasServing ? (
+            <p className="pf-carousel-card-sub">
+              {nextSlot!.role_name}<br />
+              {new Date(nextSlot!.service_date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
+            </p>
           ) : (
-            <p className="pf-sub">No upcoming serving assignments.</p>
+            <p className="pf-carousel-card-sub">No upcoming slots</p>
           )}
         </Link>
 
-        <Link href="/groups" className="pf-card pf-card--link">
-          <p className="pf-card-label">Your Groups</p>
-          {myGroups.length === 0 ? (
-            <p className="pf-sub">You haven&rsquo;t joined any groups yet — explore them.</p>
-          ) : (
-            myGroups.map((g) => (
-              <div className="pf-row" key={g.id}>
-                <span style={{ fontSize: 14, color: 'var(--pf-text-bright)', fontFamily: serif }}>{g.name}</span>
-                {g.meeting_schedule && <span style={{ fontSize: 11, color: 'var(--pf-text-soft)' }}>{g.meeting_schedule}</span>}
-              </div>
-            ))
-          )}
+        <Link href="/groups" className="pf-carousel-card">
+          <p className="pf-carousel-card-icon">◉</p>
+          <p className="pf-carousel-card-title">{hasGroup ? myGroups[0].name : 'Groups'}</p>
+          <p className="pf-carousel-card-sub">
+            {hasGroup ? (myGroups[0].meeting_schedule ?? 'Your group') : 'Explore and join one'}
+          </p>
         </Link>
 
-        <Link href="/announcements" className="pf-card pf-card--link">
-          <p className="pf-card-label">Announcements</p>
-          {latestAnnouncements.length === 0 ? (
-            <p className="pf-sub">No announcements.</p>
-          ) : (
-            latestAnnouncements.map((a) => (
-              <div className="pf-row" key={a.id}>
-                <span style={{ fontSize: 14, color: a.isRead ? 'var(--pf-text)' : 'var(--pf-text-bright)', fontFamily: serif, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.title}</span>
-                {!a.isRead && <span className="pf-badge" aria-label="unread">•</span>}
-              </div>
-            ))
-          )}
+        <Link href="/inbox" className={`pf-carousel-card${unreadMessages > 0 ? ' pf-carousel-card--accent' : ''}`}>
+          <p className="pf-carousel-card-icon">✉</p>
+          <p className="pf-carousel-card-title">Inbox</p>
+          <p className="pf-carousel-card-sub" style={unreadMessages > 0 ? { color: 'var(--pf-gold)' } : undefined}>
+            {unreadMessages > 0 ? `${unreadMessages} new message${unreadMessages !== 1 ? 's' : ''}` : 'No new messages'}
+          </p>
         </Link>
 
-        <Link href="/documents" className="pf-card pf-card--link">
-          <p className="pf-card-label">Resources</p>
-          {featuredDocs.length === 0 ? (
-            <p className="pf-sub">No resources yet.</p>
-          ) : (
-            featuredDocs.map((d) => (
-              <div className="pf-row" key={d.id}>
-                <span style={{ fontSize: 14, color: 'var(--pf-text-bright)', fontFamily: serif, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.title}</span>
-                <span className="pf-chip">{d.category}</span>
-              </div>
-            ))
-          )}
+        <Link href="/documents" className="pf-carousel-card">
+          <p className="pf-carousel-card-icon">📂</p>
+          <p className="pf-carousel-card-title">Resources</p>
+          <p className="pf-carousel-card-sub">
+            {featuredDocs.length > 0 ? featuredDocs[0].title : 'Browse the library'}
+          </p>
         </Link>
       </div>
 
-      {/* ── prayer wall invitation ── */}
-      <Link href="/prayer-wall" className="pf-card pf-card--link" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span aria-hidden="true" style={{ fontSize: 18 }}>🙏</span>
-          <span>
-            <span style={{ display: 'block', fontSize: 15, fontFamily: serif, color: 'var(--pf-text-bright)' }}>Prayer Wall</span>
-            <span className="pf-sub">Stand with your church family in intercession.</span>
-          </span>
-        </span>
-        <span aria-hidden="true" style={{ color: 'var(--pf-gold)' }}>→</span>
-      </Link>
+      {/* ── explore: icon-grid shortcuts ── */}
+      <p className="pf-section-label" style={{ padding: '0 4px', marginBottom: 10 }}>Explore</p>
+      <nav className="pf-explore" aria-label="Explore" style={{ marginBottom: 22 }}>
+        <Link href="/prayer-wall" className="pf-explore-item">
+          <span className="pf-explore-icon" aria-hidden="true">🙏</span>
+          <span className="pf-explore-label">Prayer<br />Wall</span>
+        </Link>
+        <Link href="/documents" className="pf-explore-item">
+          <span className="pf-explore-icon" aria-hidden="true">📂</span>
+          <span className="pf-explore-label">Resources</span>
+        </Link>
+        <Link href="/calendar" className="pf-explore-item">
+          <span className="pf-explore-icon" aria-hidden="true">📅</span>
+          <span className="pf-explore-label">Calendar</span>
+        </Link>
+        <Link href="/my-rota" className="pf-explore-item">
+          <span className="pf-explore-icon" aria-hidden="true">◆</span>
+          <span className="pf-explore-label">My Rota</span>
+        </Link>
+        {(role === 'pastor' || role === 'admin') && (
+          <Link href="/pastor" className="pf-explore-item">
+            <span className="pf-explore-icon" aria-hidden="true">◈</span>
+            <span className="pf-explore-label">Pastor<br />Dashboard</span>
+          </Link>
+        )}
+      </nav>
 
-      {/* ── pastor shortcut ── */}
-      {(role === 'pastor' || role === 'admin') && (
-        <Link href="/pastor" className="pf-card pf-card--link pf-card--accent" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <span>
-            <span style={{ display: 'block', fontSize: 15, fontFamily: serif, color: 'var(--pf-gold)' }}>◆ Pastor Dashboard</span>
-            <span className="pf-sub">Verse, members, join requests &amp; notifications.</span>
-          </span>
-          <span aria-hidden="true" style={{ color: 'var(--pf-gold)' }}>→</span>
+      {/* ── latest announcement strip ── */}
+      {hasAnnouncement && (
+        <Link href="/announcements" className="pf-notice-strip" style={{ marginBottom: 14 }}>
+          <span aria-hidden="true" style={{ fontSize: 14 }}>📢</span>
+          <span className="pf-notice-strip-text">{latestAnnouncements[0].title}</span>
+          {!latestAnnouncements[0].isRead && <span className="pf-badge" aria-label="unread">•</span>}
         </Link>
       )}
 

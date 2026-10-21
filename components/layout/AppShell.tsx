@@ -21,6 +21,10 @@ const MOBILE_TABS: NavItem[] = [
   { href: '/profile',      label: 'Profile', icon: '✦' },
 ];
 
+// Pages that build their own mobile header (a .pf-scene-head — see
+// globals.css) instead of using the shared .pf-topbar.
+const OWN_HEADER_ROUTES = ['/dashboard'];
+
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [role, setRole] = useState('member');
@@ -145,6 +149,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const tabBadge = (href: string) =>
     href === '/inbox' ? unread.inbox + unread.announcements : 0;
 
+  const hasOwnHeader = OWN_HEADER_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
+
   return (
     <div className="pf-shell">
       {/* ── desktop sidebar ── */}
@@ -195,7 +201,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* ── main column ── */}
-      <div className="pf-main">
+      <div className={`pf-main${hasOwnHeader ? ' pf-main--no-topbar' : ''}`}>
         {/* mobile top bar */}
         <header className="pf-topbar">
           <div className="pf-topbar-inner">
