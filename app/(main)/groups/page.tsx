@@ -19,13 +19,6 @@ interface Group {
   is_member: boolean;
 }
 
-const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
-  gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0a1828', dark: '#0f1e2e', border: '#1e3a52',
-  text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
-};
-
 const TYPE_LABELS: Record<string, string> = {
   home_group: 'Home Group', mens: "Men's", womens: "Women's",
   bible_study: 'Bible Study', fellowship: 'Fellowship', general: 'General',
@@ -132,38 +125,30 @@ export default function GroupsPage() {
   const GroupCard = ({ g }: { g: Group }) => {
     const tc = TYPE_COLORS[g.type] ?? TYPE_COLORS.general;
     return (
-      <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '18px 18px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10, marginBottom: 8 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
-              <p style={{ margin: 0, fontSize: 16, color: S.textLight, fontFamily: S.font.display }}>{g.name}</p>
-              <span style={{ fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: tc.text, background: tc.bg, border: `1px solid ${tc.border}`, padding: '2px 8px', borderRadius: 10 }}>
-                {TYPE_LABELS[g.type] ?? g.type}
-              </span>
-            </div>
-            {g.description && <p style={{ margin: '0 0 6px', fontSize: 12, color: S.soft, fontStyle: 'italic', lineHeight: 1.5 }}>{g.description}</p>}
-            <p style={{ margin: 0, fontSize: 11, color: S.muted }}>
-              {g.member_count} member{g.member_count !== 1 ? 's' : ''}
-              {g.leader && <span style={{ color: S.soft }}> · Led by {g.leader.full_name}</span>}
-              {g.meeting_schedule && <span style={{ color: S.soft }}> · {g.meeting_schedule}</span>}
-            </p>
-          </div>
+      <div className="pf-card">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+          <p style={{ margin: 0, fontSize: 16, color: 'var(--pf-text-bright)', fontFamily: 'var(--pf-serif)' }}>{g.name}</p>
+          <span style={{ fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: tc.text, background: tc.bg, border: `1px solid ${tc.border}`, padding: '2px 8px', borderRadius: 10 }}>
+            {TYPE_LABELS[g.type] ?? g.type}
+          </span>
         </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
+        {g.description && <p style={{ margin: '0 0 6px', fontSize: 12, color: 'var(--pf-text-soft)', fontStyle: 'italic', lineHeight: 1.5 }}>{g.description}</p>}
+        <p style={{ margin: 0, fontSize: 11, color: 'var(--pf-gold)' }}>
+          {g.member_count} member{g.member_count !== 1 ? 's' : ''}
+          {g.leader && <span style={{ color: 'var(--pf-text-soft)' }}> · Led by {g.leader.full_name}</span>}
+          {g.meeting_schedule && <span style={{ color: 'var(--pf-text-soft)' }}> · {g.meeting_schedule}</span>}
+        </p>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 14 }}>
           {g.is_member && (
-            <Link href={`/groups/${g.id}`} style={{ textDecoration: 'none' }}>
-              <button style={{ padding: '7px 16px', minHeight: 44, background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>View Group</button>
-            </Link>
+            <Link href={`/groups/${g.id}`} className="pf-btn pf-btn--ghost pf-btn--sm">View Group</Link>
           )}
           {!g.is_member && (
-            <button onClick={() => handleJoin(g.id)} disabled={joining === g.id} style={{ padding: '7px 16px', minHeight: 44, background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: joining === g.id ? 'wait' : 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <button onClick={() => handleJoin(g.id)} disabled={joining === g.id} className="pf-btn pf-btn--sm">
               {joining === g.id ? '…' : 'Join'}
             </button>
           )}
           {isPastor && (
-            <Link href={`/groups/${g.id}/manage`} style={{ textDecoration: 'none' }}>
-              <button style={{ padding: '7px 16px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Manage</button>
-            </Link>
+            <Link href={`/groups/${g.id}/manage`} className="pf-btn pf-btn--quiet pf-btn--sm">Manage</Link>
           )}
         </div>
       </div>
@@ -232,7 +217,7 @@ export default function GroupsPage() {
       {/* My Groups */}
       {myGroups.length > 0 && (
         <div style={{ marginBottom: 28 }}>
-          <p style={{ margin: '0 0 12px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.muted }}>My Groups ({myGroups.length})</p>
+          <p className="pf-card-label">My Groups ({myGroups.length})</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {myGroups.map(g => <GroupCard key={g.id} g={g} />)}
           </div>
@@ -241,14 +226,17 @@ export default function GroupsPage() {
 
       {/* All Groups */}
       <div>
-        <p style={{ margin: '0 0 12px', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: S.muted }}>
+        <p className="pf-card-label">
           {myGroups.length > 0 ? 'Other Groups' : 'All Groups'} ({otherGroups.length})
         </p>
         {otherGroups.length === 0 && myGroups.length === 0 && (
-          <p style={{ fontSize: 13, color: S.soft, fontStyle: 'italic', textAlign: 'center', padding: '40px 0' }}>No groups yet.</p>
+          <div className="pf-empty">
+            <span className="pf-empty-icon">✦</span>
+            No groups yet.
+          </div>
         )}
         {otherGroups.length === 0 && myGroups.length > 0 && (
-          <p style={{ fontSize: 13, color: S.soft, fontStyle: 'italic' }}>You are a member of all available groups.</p>
+          <p className="pf-sub">You are a member of all available groups.</p>
         )}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {otherGroups.map(g => <GroupCard key={g.id} g={g} />)}
