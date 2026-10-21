@@ -219,7 +219,6 @@
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
-				0EEAD688308930BD0064AD69 /* MainViewController.swift */,
 				0E8138E33073F3BC002F6143 /* Capacitor */,
 				958DCC722DB07C7200EA8C5F /* debug.xcconfig */,
 				504EC3061FED79650016851F /* App */,
@@ -238,6 +237,7 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				0EEAD688308930BD0064AD69 /* MainViewController.swift */,
 				0E81389A3073F279002F6143 /* App.entitlements */,
 				9582B6822FE993A50072D4E8 /* SceneDelegate.swift */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
