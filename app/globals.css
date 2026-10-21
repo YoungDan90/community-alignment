@@ -11,7 +11,11 @@ html {
   /* Prevent content from sitting under iOS notch / home bar */
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
+  /* Scrollbars read as "website" on a touch device — the native app
+     shell has no mouse to drag one with. Scrolling itself is untouched. */
+  scrollbar-width: none;
 }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 
 body {
   color: var(--foreground);
@@ -80,6 +84,18 @@ input, textarea, select {
   outline: 2px solid var(--pf-gold);
   outline-offset: 2px;
   border-radius: var(--pf-radius-sm);
+}
+
+/* A long-press selecting nav labels/button text reads as "web page" —
+   suppress it on UI chrome, but never on inputs or on the body text users
+   actually read and might want to copy (scripture, messages, prayers). */
+.pf-shell :is(a, button, nav, [role="tab"], [role="button"]) {
+  -webkit-user-select: none;
+  user-select: none;
+}
+.pf-shell :is(input, textarea, select) {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 /* ── shell layout ─────────────────────────────────────────────── */

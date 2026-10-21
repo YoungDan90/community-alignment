@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { tapSelection } from '@/lib/haptics';
 
 const ROLE_LABELS: Record<string, string> = {
   member: 'Member', prophetic_team: 'Prophetic Team', pastor: 'Pastor', admin: 'Senior Leader',
@@ -220,6 +221,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 href={item.href}
                 className="pf-tab"
                 aria-current={isActive(item.href) ? 'page' : undefined}
+                onClick={() => { if (!isActive(item.href)) tapSelection(); }}
               >
                 <span className="pf-tab-icon" aria-hidden="true">
                   {item.icon}
