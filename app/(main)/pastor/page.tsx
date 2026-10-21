@@ -107,20 +107,21 @@ export default function PastorPage() {
       </div>
 
       {/* Quick links to full-page tools */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+      <nav className="pf-explore" aria-label="Pastor tools" style={{ marginBottom: 24 }}>
         {[
-          { href: '/members', icon: '◉', label: 'Member Directory' },
+          { href: '/members', icon: '◉', label: 'Members' },
           { href: '/rotas', icon: '📋', label: 'Rotas' },
           { href: '/groups', icon: '◈', label: 'Groups' },
           { href: '/announcements', icon: '📢', label: 'Announcements' },
           { href: '/documents', icon: '📂', label: 'Documents' },
           { href: '/worship', icon: '🎵', label: 'Worship' },
         ].map(({ href, icon, label }) => (
-          <Link key={href} href={href} className="pf-btn pf-btn--ghost pf-btn--sm">
-            <span aria-hidden="true">{icon}</span> {label}
+          <Link key={href} href={href} className="pf-explore-item">
+            <span className="pf-explore-icon" aria-hidden="true">{icon}</span>
+            <span className="pf-explore-label">{label}</span>
           </Link>
         ))}
-      </div>
+      </nav>
 
       {/* Section content */}
       {section === 'overview'      && <EngagementOverview />}
