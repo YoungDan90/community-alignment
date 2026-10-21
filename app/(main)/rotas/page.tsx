@@ -42,13 +42,6 @@ interface SwapRequest {
 
 type Tab = 'teams' | 'rotas' | 'swaps';
 
-const S = {
-  font: { display: 'var(--font-cormorant), Georgia, serif', body: "var(--font-jost), 'Jost', sans-serif" },
-  gold: '#c6a75e', goldDim: 'rgba(198,167,94,0.15)', goldBorder: 'rgba(198,167,94,0.25)',
-  card: '#0a1828', dark: '#0f1e2e', border: '#1e3a52',
-  text: '#ddd0b8', textLight: '#f0e8d4', soft: '#6a8aaa', muted: '#c6a75e',
-};
-
 export default function RotasPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -183,12 +176,6 @@ export default function RotasPage() {
     setProcessingSwap(null);
   };
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%', background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2,
-    padding: '9px 12px', color: S.text, fontSize: 13, fontFamily: S.font.body,
-    outline: 'none', boxSizing: 'border-box',
-  };
-
   if (loading) return (
     <div className="pf-page pf-page--wide">
       <div className="pf-skel" style={{ height: 26, width: 200, marginBottom: 20 }} />
@@ -202,7 +189,7 @@ export default function RotasPage() {
       {/* Header */}
       <div className="pf-head">
         <button onClick={() => router.back()} className="pf-btn pf-btn--quiet pf-btn--sm" style={{ marginBottom: 12 }}>← Back</button>
-        <p className="pf-eyebrow">Pastor Dashboard</p>
+        <p className="pf-eyebrow">Serve</p>
         <h1 className="pf-title">Serving Rotas</h1>
         <p className="pf-sub">Manage teams, publish rotas, and handle swap requests.</p>
       </div>
@@ -237,20 +224,20 @@ export default function RotasPage() {
         ) : (
           <div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
-              <button onClick={() => setShowCreateTeam(v => !v)} style={{ padding: '8px 18px', minHeight: 44, background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em' }}>
+              <button onClick={() => setShowCreateTeam(v => !v)} className="pf-btn pf-btn--sm">
                 + Create Team
               </button>
             </div>
 
             {showCreateTeam && (
-              <div style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '16px 18px', marginBottom: 16 }}>
-                <p style={{ margin: '0 0 12px', fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: S.muted }}>New Team</p>
+              <div className="pf-card pf-card--accent" style={{ marginBottom: 16 }}>
+                <p className="pf-card-label">New Team</p>
                 <div style={{ display: 'grid', gap: 10 }}>
-                  <input value={newTeamName} onChange={e => setNewTeamName(e.target.value)} placeholder="Team name…" style={inputStyle} />
-                  <input value={newTeamDesc} onChange={e => setNewTeamDesc(e.target.value)} placeholder="Description (optional)…" style={inputStyle} />
+                  <input className="pf-input" value={newTeamName} onChange={e => setNewTeamName(e.target.value)} placeholder="Team name…" />
+                  <input className="pf-input" value={newTeamDesc} onChange={e => setNewTeamDesc(e.target.value)} placeholder="Description (optional)…" />
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <button onClick={() => setShowCreateTeam(false)} style={{ flex: 1, padding: '9px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: S.soft, fontSize: 12, cursor: 'pointer', fontFamily: S.font.body }}>Cancel</button>
-                    <button onClick={handleCreateTeam} disabled={!newTeamName.trim() || creatingTeam} style={{ flex: 2, padding: '9px', minHeight: 44, background: newTeamName.trim() ? S.gold : 'rgba(198,167,94,0.2)', border: 'none', borderRadius: 2, color: newTeamName.trim() ? S.dark : S.muted, fontSize: 12, fontWeight: 'bold', cursor: newTeamName.trim() ? 'pointer' : 'not-allowed', fontFamily: S.font.body }}>
+                    <button onClick={() => setShowCreateTeam(false)} className="pf-btn pf-btn--quiet" style={{ flex: 1 }}>Cancel</button>
+                    <button onClick={handleCreateTeam} disabled={!newTeamName.trim() || creatingTeam} className="pf-btn" style={{ flex: 2 }}>
                       {creatingTeam ? 'Creating…' : 'Create Team'}
                     </button>
                   </div>
@@ -260,24 +247,23 @@ export default function RotasPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {teams.map(t => (
-                <div key={t.id}
+                <button key={t.id}
                   onClick={() => setSelectedTeam(t)}
-                  style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '16px 18px', cursor: 'pointer', transition: 'border-color 0.2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = S.goldBorder)}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = S.border)}
+                  className="pf-card pf-card--link"
+                  style={{ width: '100%', textAlign: 'left', font: 'inherit', cursor: 'pointer' }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                      <p style={{ margin: '0 0 4px', fontSize: 16, color: S.textLight, fontFamily: S.font.display }}>{t.name}</p>
-                      {t.description && <p style={{ margin: '0 0 6px', fontSize: 12, color: S.soft, fontStyle: 'italic' }}>{t.description}</p>}
-                      <p style={{ margin: 0, fontSize: 11, color: S.muted }}>
+                      <p style={{ margin: '0 0 4px', fontSize: 16, color: 'var(--pf-text-bright)', fontFamily: 'var(--pf-serif)' }}>{t.name}</p>
+                      {t.description && <p style={{ margin: '0 0 6px', fontSize: 12, color: 'var(--pf-text-soft)', fontStyle: 'italic' }}>{t.description}</p>}
+                      <p style={{ margin: 0, fontSize: 11, color: 'var(--pf-gold)' }}>
                         {t.member_count} member{t.member_count !== 1 ? 's' : ''}
-                        {t.leader && <span style={{ color: S.soft }}> · Led by {t.leader.full_name}</span>}
+                        {t.leader && <span style={{ color: 'var(--pf-text-soft)' }}> · Led by {t.leader.full_name}</span>}
                       </p>
                     </div>
-                    <span style={{ color: S.soft, fontSize: 14, flexShrink: 0 }}>→</span>
+                    <span style={{ color: 'var(--pf-text-soft)', fontSize: 14, flexShrink: 0 }}>→</span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -293,17 +279,20 @@ export default function RotasPage() {
         ) : (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 10 }}>
-              <select value={rotaTeamFilter} onChange={e => setRotaTeamFilter(e.target.value)} style={{ background: S.dark, border: `1px solid ${S.border}`, borderRadius: 2, padding: '8px 12px', minHeight: 44, color: S.text, fontSize: 15, fontFamily: S.font.body, outline: 'none', flex: 1 }}>
+              <select value={rotaTeamFilter} onChange={e => setRotaTeamFilter(e.target.value)} className="pf-input" style={{ flex: 1 }}>
                 <option value="">All teams</option>
                 {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
-              <button onClick={() => setShowCreateRota(true)} style={{ padding: '8px 18px', minHeight: 44, background: S.gold, border: 'none', borderRadius: 2, color: S.dark, fontSize: 11, fontWeight: 'bold', cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', flexShrink: 0 }}>
+              <button onClick={() => setShowCreateRota(true)} className="pf-btn pf-btn--sm" style={{ flexShrink: 0 }}>
                 + Create Rota
               </button>
             </div>
 
             {rotas.filter(r => !rotaTeamFilter || r.team.id === rotaTeamFilter).length === 0 && (
-              <p style={{ fontSize: 13, color: S.soft, fontStyle: 'italic', textAlign: 'center', padding: '40px 0' }}>No rotas yet. Create your first one.</p>
+              <div className="pf-empty">
+                <span className="pf-empty-icon">✦</span>
+                No rotas yet. Create your first one.
+              </div>
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -313,24 +302,23 @@ export default function RotasPage() {
                   const date = new Date(r.service_date);
                   const isPast = date < new Date();
                   return (
-                    <div key={r.id}
+                    <button key={r.id}
                       onClick={() => setSelectedRota(r)}
-                      style={{ background: S.card, border: `1px solid ${S.border}`, borderRadius: 3, padding: '14px 18px', cursor: 'pointer', opacity: isPast ? 0.7 : 1, transition: 'border-color 0.2s' }}
-                      onMouseEnter={e => (e.currentTarget.style.borderColor = S.goldBorder)}
-                      onMouseLeave={e => (e.currentTarget.style.borderColor = S.border)}
+                      className="pf-card pf-card--link"
+                      style={{ width: '100%', textAlign: 'left', font: 'inherit', cursor: 'pointer', opacity: isPast ? 0.7 : 1 }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                          <p style={{ margin: '0 0 2px', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.muted }}>{r.team.name}</p>
-                          <p style={{ margin: '0 0 4px', fontSize: 15, color: S.textLight, fontFamily: S.font.display }}>{r.title ?? date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                          <p style={{ margin: 0, fontSize: 11, color: S.soft }}>
+                          <p className="pf-card-label" style={{ margin: '0 0 2px' }}>{r.team.name}</p>
+                          <p style={{ margin: '0 0 4px', fontSize: 15, color: 'var(--pf-text-bright)', fontFamily: 'var(--pf-serif)' }}>{r.title ?? date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                          <p style={{ margin: 0, fontSize: 11, color: 'var(--pf-text-soft)' }}>
                             {date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
                             {' · '}{r.slot_count} slot{r.slot_count !== 1 ? 's' : ''}
                           </p>
                         </div>
-                        <span style={{ color: S.soft, fontSize: 14 }}>→</span>
+                        <span style={{ color: 'var(--pf-text-soft)', fontSize: 14 }}>→</span>
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
             </div>
@@ -342,33 +330,38 @@ export default function RotasPage() {
       {tab === 'swaps' && (
         <div>
           {swaps.length === 0 && (
-            <p style={{ fontSize: 13, color: S.soft, fontStyle: 'italic', textAlign: 'center', padding: '40px 0' }}>No pending swap requests.</p>
+            <div className="pf-empty">
+              <span className="pf-empty-icon">✦</span>
+              No pending swap requests.
+            </div>
           )}
           {swaps.map(swap => {
             const dateStr = new Date(swap.slot.rota.service_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
             return (
-              <div key={swap.id} style={{ background: S.card, border: `1px solid ${S.goldBorder}`, borderRadius: 3, padding: '16px 18px', marginBottom: 10 }}>
+              <div key={swap.id} className="pf-card pf-card--accent" style={{ marginBottom: 10 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 12 }}>
                   <div>
-                    <p style={{ margin: '0 0 2px', fontSize: 15, color: S.textLight, fontFamily: S.font.display }}>{swap.requester.full_name ?? 'Unknown'}</p>
-                    <p style={{ margin: '0 0 4px', fontSize: 12, color: S.muted }}>
+                    <p style={{ margin: '0 0 2px', fontSize: 15, color: 'var(--pf-text-bright)', fontFamily: 'var(--pf-serif)' }}>{swap.requester.full_name ?? 'Unknown'}</p>
+                    <p style={{ margin: '0 0 4px', fontSize: 12, color: 'var(--pf-gold)' }}>
                       {swap.slot.rota.team.name} · {swap.slot.role_name} · {dateStr}
                     </p>
-                    {swap.reason && <p style={{ margin: '0 0 4px', fontSize: 12, color: S.soft, fontStyle: 'italic' }}>{swap.reason}</p>}
-                    {swap.swap_target && <p style={{ margin: 0, fontSize: 11, color: S.soft }}>Requested to swap with: {swap.swap_target.full_name}</p>}
+                    {swap.reason && <p style={{ margin: '0 0 4px', fontSize: 12, color: 'var(--pf-text-soft)', fontStyle: 'italic' }}>{swap.reason}</p>}
+                    {swap.swap_target && <p style={{ margin: 0, fontSize: 11, color: 'var(--pf-text-soft)' }}>Requested to swap with: {swap.swap_target.full_name}</p>}
                   </div>
-                  <span style={{ fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: S.gold, background: S.goldDim, border: `1px solid ${S.goldBorder}`, padding: '2px 8px', borderRadius: 10, flexShrink: 0 }}>Pending</span>
+                  <span className="pf-chip" style={{ flexShrink: 0 }}>Pending</span>
                 </div>
                 <div style={{ display: 'flex', gap: 12 }}>
                   <button
                     onClick={() => handleApproveSwap(swap)}
                     disabled={processingSwap === swap.id}
-                    style={{ flex: 1, padding: '8px', minHeight: 44, background: S.goldDim, border: `1px solid ${S.goldBorder}`, borderRadius: 2, color: S.gold, fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
+                    className="pf-btn pf-btn--sm"
+                    style={{ flex: 1 }}
                   >Approve</button>
                   <button
                     onClick={() => handleDeclineSwap(swap.id, swap.slot.id)}
                     disabled={processingSwap === swap.id}
-                    style={{ flex: 1, padding: '8px', minHeight: 44, background: 'transparent', border: `1px solid ${S.border}`, borderRadius: 2, color: '#c47a7a', fontSize: 11, cursor: 'pointer', fontFamily: S.font.body, letterSpacing: '0.08em', textTransform: 'uppercase' }}
+                    className="pf-btn pf-btn--quiet pf-btn--sm"
+                    style={{ flex: 1, color: 'var(--pf-danger)' }}
                   >Decline</button>
                 </div>
               </div>
