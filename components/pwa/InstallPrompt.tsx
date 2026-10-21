@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { isIOS, isStandalone } from '@/lib/notifications/push';
+import { isIOS, isStandalone, isNativeApp } from '@/lib/notifications/push';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -18,6 +18,9 @@ export default function InstallPrompt() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    // "Add to home screen" is meaningless inside the native app shell —
+    // the user is already running it as an installed app.
+    if (isNativeApp()) return;
     if (sessionStorage.getItem(DISMISSED_KEY)) return;
     if (isStandalone()) return;
 

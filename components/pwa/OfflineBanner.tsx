@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { isNativeApp } from '@/lib/notifications/push';
 
 export default function OfflineBanner() {
   const [offline, setOffline] = useState(false);
@@ -35,7 +36,10 @@ export default function OfflineBanner() {
         letterSpacing: '0.06em',
       }}
     >
-      ◈ You are offline — cached content is available
+      {/* Native app has no service worker/cache (see
+          ServiceWorkerRegistrar.tsx), so unlike the installable PWA
+          there's genuinely nothing cached to fall back to. */}
+      ◈ {isNativeApp() ? 'You are offline' : 'You are offline — cached content is available'}
     </div>
   );
 }
